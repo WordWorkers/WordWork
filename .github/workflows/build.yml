@@ -1,0 +1,170 @@
+name: Build
+
+# Installable apps for every platform:
+#   macOS Apple Silicon (.dmg)  macOS Intel (.dmg)  Windows (.exe installer, .msi)
+#   Linux (.deb, .rpm, .AppImage)
+#
+# Every push to main and every pull request uploads the files as workflow
+# artifacts. Pushing a tag like v2.0.0 also creates a *draft* GitHub release
+# with all files and a SHA256SUMS file – review it and press Publish.
+#
+# macOS builds are ad-hoc signed until Apple secrets are added (see
+# docs/INSTALL.md). With the secrets APPLE_CERTIFICATE,
+# APPLE_CERTIFICATE_PASSWORD, APPLE_SIGNING_IDENTITY, APPLE_ID, APPLE_PASSWORD
+# and APPLE_TEAM_ID set, the same job signs with the Developer ID and
+# notarizes – nothing else to change.
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TAURI_CLI: "@tauri-apps/cli@2.12.4"
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS (Apple Silicon)
+            os: macos-14
+            target: aarch64-apple-darwin
+            bundles: app,dmg
+          - name: macOS (Intel)
+            # Cross-compiled on the Apple Silicon runner (Intel runners are being retired).
+            os: macos-14
+            target: x86_64-apple-darwin
+            bundles: app,dmg
+          - name: Windows
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+            bundles: nsis,msi
+          - name: Linux
+            # Oldest supported Ubuntu → the .deb/.AppImage run on more distributions.
+            os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            bundles: deb,rpm,appimage
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: System packages (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libsoup-3.0-dev libgtk-3-dev librsvg2-dev \
+            libxdo-dev libssl-dev libayatana-appindicator3-dev libdbus-1-dev patchelf file
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Frontend dependencies
+        run: npm ci --no-audit --no-fund
+        working-directory: frontend
+
+      - name: Pandoc sidecar (pinned 3.9, checksum-verified)
+        run: scripts/fetch-pandoc.sh ${{ matrix.target }}
+
+      - name: Apple signing (only if the secrets exist)
+        if: runner.os == 'macOS'
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          if [ -n "$APPLE_SIGNING_IDENTITY" ]; then
+            for v in APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_SIGNING_IDENTITY APPLE_ID APPLE_PASSWORD APPLE_TEAM_ID; do
+              # Multi-line safe; the values stay masked in the log.
+              { echo "$v<<__EOF__"; printf '%s\n' "${!v}"; echo "__EOF__"; } >> "$GITHUB_ENV"
+            done
+            echo "Signing with Developer ID and notarizing."
+          else
+            echo "No Apple secrets – ad-hoc signing (users confirm once under Privacy & Security)."
+          fi
+
+      - name: Build
+        run: npx --yes "$TAURI_CLI" build --ci --target ${{ matrix.target }} --bundles ${{ matrix.bundles }}
+
+      - name: Collect installers
+        run: |
+          set -euo pipefail
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)
+          bundle="target/${{ matrix.target }}/release/bundle"
+          mkdir -p dist
+          case "${{ matrix.target }}" in
+            aarch64-apple-darwin) cp "$bundle"/dmg/*.dmg "dist/Word-Work_${version}_macOS-AppleSilicon.dmg" ;;
+            x86_64-apple-darwin)  cp "$bundle"/dmg/*.dmg "dist/Word-Work_${version}_macOS-Intel.dmg" ;;
+            x86_64-pc-windows-msvc)
+              cp "$bundle"/nsis/*-setup.exe "dist/Word-Work_${version}_Windows-x64-setup.exe"
+              cp "$bundle"/msi/*.msi "dist/Word-Work_${version}_Windows-x64.msi" ;;
+            x86_64-unknown-linux-gnu)
+              cp "$bundle"/deb/*.deb "dist/word-work_${version}_amd64.deb"
+              cp "$bundle"/rpm/*.rpm "dist/word-work-${version}.x86_64.rpm"
+              cp "$bundle"/appimage/*.AppImage "dist/Word-Work_${version}_x86_64.AppImage" ;;
+          esac
+          ls -lh dist
+
+      - name: Check the macOS signature
+        if: runner.os == 'macOS'
+        run: |
+          app=$(ls -d target/${{ matrix.target }}/release/bundle/macos/*.app | head -1)
+          codesign --verify --deep --strict --verbose=2 "$app"
+          codesign -dv "$app" 2>&1 | grep -E "Signature|Authority|TeamIdentifier" || true
+          for bin in "$app"/Contents/MacOS/*; do echo "$(basename "$bin"): $(lipo -archs "$bin")"; done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: word-work-${{ matrix.target }}
+          path: dist/*
+          if-no-files-found: error
+
+  release:
+    name: Draft release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Release notes
+        run: sed "s#REPO_URL#${{ github.server_url }}/${{ github.repository }}#g" docs/RELEASE_NOTES.md > notes.md
+      - name: Checksums
+        run: |
+          cd dist
+          sha256sum * > SHA256SUMS
+          cat SHA256SUMS
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          name: Word Work ${{ github.ref_name }}
+          body_path: notes.md
+          files: dist/*

@@ -1,0 +1,31 @@
+[package]
+name = "ww-core"
+description = "Word Work core: storage, language tools, import/export and AI – no UI dependencies"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+reqwest.workspace = true
+futures-util.workspace = true
+log.workspace = true
+spellbook = "0.4"
+wait-timeout = "0.2"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+fancy-regex = "0.20"
+regex = "1"
+tempfile = "3"
+parking_lot = "0.12"
+zip = { version = "2", default-features = false, features = ["deflate"] }
+encoding_rs = "0.8"
+dunce = "1"
+
+[dev-dependencies]
+wiremock = "0.6"

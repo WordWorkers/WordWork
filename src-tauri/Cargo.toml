@@ -1,0 +1,42 @@
+[package]
+name = "word-work"
+description = "Word Work – distraktionsfri ordbehandlare"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+
+[lib]
+name = "word_work_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.7", features = [] }
+
+[dependencies]
+ww-core = { path = "../crates/ww-core" }
+tauri = { version = "2.12", features = [] }
+tauri-plugin-dialog = "2.6"
+tauri-plugin-opener = "2.7"
+tauri-plugin-clipboard-manager = "2.5"
+tauri-plugin-window-state = "2.5"
+tauri-plugin-single-instance = "2.5"
+parking_lot = "0.12"
+url = "2"
+serde.workspace = true
+serde_json.workspace = true
+tokio-util.workspace = true
+log.workspace = true
+
+# API key for the AI server, in the platform's own store.
+[target.'cfg(target_os = "macos")'.dependencies]
+keyring = { version = "3", features = ["apple-native"] }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+keyring = { version = "3", features = ["windows-native"] }
+
+# Linux: the desktop's keyring (GNOME Keyring / KWallet via Secret Service),
+# cached in the kernel keyring.
+[target.'cfg(target_os = "linux")'.dependencies]
+keyring = { version = "3", features = ["linux-native-sync-persistent", "crypto-rust"] }

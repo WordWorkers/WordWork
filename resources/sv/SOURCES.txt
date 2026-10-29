@@ -1,0 +1,13 @@
+Språkresurser i den här mappen
+==============================
+
+sv_SE.aff, sv_SE.dic
+  Svensk rättstavningsordlista (Hunspell-format), "Den stora svenska ordlistan",
+  Göran Andersson. Licens: GNU LGPL 3.0 (se LICENSE_sv_SE.txt).
+  Hämtad via npm-paketet dictionary-sv 4.0.0 (https://github.com/wooorm/dictionaries).
+
+th_sv_SE.dat
+  Svensk synonymordlista i MyThes-format, direkt konverterad från Synlex
+  (Folkets synonymlexikon, Viggo Kann, KTH 2009). Se README_th_sv_SE.txt.
+  Hämtad från https://github.com/LibreOffice/dictionaries (sv_SE/th_sv_SE.dat).
+  Ändring: omkodad från ISO-8859-1 till UTF-8 för Word Work.

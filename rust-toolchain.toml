@@ -1,0 +1,7 @@
+# Picked up automatically by rustup: installs the toolchain, components and
+# macOS targets on first `cargo` run in this repo. (Ignored by non-rustup
+# installs such as Homebrew's `rust` – use rustup, see README.)
+[toolchain]
+channel = "stable"
+components = ["rustfmt", "clippy"]
+targets = ["aarch64-apple-darwin", "x86_64-apple-darwin"]

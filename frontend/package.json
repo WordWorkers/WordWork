@@ -1,0 +1,31 @@
+{
+  "name": "word-work-frontend",
+  "private": true,
+  "version": "2.0.0",
+  "license": "Apache-2.0",
+  "author": "Mikke Schirén",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource-variable/literata": "^5.3.0",
+    "@fontsource-variable/source-sans-3": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@tauri-apps/api": "^2.12.4",
+    "@tiptap/core": "^3.31.4",
+    "@tiptap/extensions": "^3.31.4",
+    "@tiptap/markdown": "^3.31.4",
+    "@tiptap/pm": "^3.31.4",
+    "@tiptap/starter-kit": "^3.31.4",
+    "diff": "^9.0.0",
+    "dompurify": "^3.4.16",
+    "marked": "^17.0.6"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^8.3.3"
+  }
+}

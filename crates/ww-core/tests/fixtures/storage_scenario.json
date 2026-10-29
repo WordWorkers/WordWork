@@ -1,0 +1,22 @@
+[
+  ["create", "Ålgång", "---\ntitle: Ålgång\nauthor: Mikke\n---\n\n# Ålgång\n\nÅlarna vandrar – ”som alltid”.\n"],
+  ["create", null, ""],
+  ["create", null, "Hej"],
+  ["save", "Ålgång", "---\ntitle: Ålgång\nauthor: Mikke\n---\n\n# Ålgång\n\nÅlarna vandrar – ”som alltid”. Mer text.\n", true],
+  ["save", "Ålgång", "Ny text utan frontmatter.\n", false],
+  ["snapshot", "Ålgång", "named", "Till redaktör"],
+  ["snapshot", "Ålgång", "named", "Ny etikett, samma text"],
+  ["save", "Ålgång", "Tredje versionen.\n", true],
+  ["restore", "Ålgång", 0],
+  ["chat", "Ålgång", "c1", [{"role": "user", "content": "Granska", "label": "Granska språket", "x": 1}, {"role": "assistant", "content": "Svar", "thinking": "hmm", "meta": "qwen · 3 s"}], "qwen3:8b"],
+  ["append", "Ålgång", "c1", [{"role": "user", "content": "Följdfråga"}, {"role": "assistant", "content": "", "meta": "Avbrutet"}], "qwen3:8b"],
+  ["chat", "Ålgång", "c2", [{"role": "user", "content": "  Ett   långt\nsamtal  "}], ""],
+  ["chat_delete", "Ålgång", "c2"],
+  ["rename", "Ålgång", "Ålgång – krönika"],
+  ["settings", {"theme": "sepia", "size": 21, "lineHeight": 1.7, "aiThink": false, "defaultGenre": "", "list": [1, 2]}],
+  ["rename", "Namnlös", "Utkast"],
+  ["delete", "Utkast"],
+  ["create", "Utkast", "Nytt utkast"],
+  ["restore_trash", "Utkast"],
+  ["delete", "Namnlös 2"]
+]

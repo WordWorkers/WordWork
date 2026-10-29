@@ -1,0 +1,8083 @@
+{
+"words": {
+"AA": {
+"ok": true
+},
+"AI": {
+"ok": true
+},
+"AI-assistent": {
+"ok": true
+},
+"AI-assistenten": {
+"ok": true
+},
+"AI-chatt": {
+"ok": true
+},
+"AI-endpoints": {
+"ok": false
+},
+"AI-frågor": {
+"ok": true
+},
+"AI-instruktionen": {
+"ok": true
+},
+"AI-knapp": {
+"ok": true
+},
+"AI-knappen": {
+"ok": true
+},
+"AI-modell": {
+"ok": true
+},
+"AI-modulen": {
+"ok": true
+},
+"AI-panel": {
+"ok": true
+},
+"AI-panelen": {
+"ok": true
+},
+"AI-samtal": {
+"ok": true
+},
+"AI-samtalen": {
+"ok": true
+},
+"AI-server": {
+"ok": true
+},
+"AI-servern": {
+"ok": true
+},
+"AI-serverns": {
+"ok": true
+},
+"AI-servrar": {
+"ok": true
+},
+"AI-stöd": {
+"ok": true
+},
+"AI-stödet": {
+"ok": true
+},
+"AI-svaren": {
+"ok": true
+},
+"AI-text": {
+"ok": true
+},
+"AI-verktyg": {
+"ok": true
+},
+"API": {
+"ok": false
+},
+"API-dokumentation": {
+"ok": false
+},
+"API-nyckel": {
+"ok": false
+},
+"API-nyckeln": {
+"ok": false
+},
+"API-svar": {
+"ok": false
+},
+"Aa": {
+"ok": false
+},
+"Absurdistisk": {
+"ok": true
+},
+"Actions": {
+"ok": false
+},
+"Adress": {
+"ok": true
+},
+"Alla": {
+"ok": true
+},
+"Allt": {
+"ok": true
+},
+"Alt": {
+"ok": true
+},
+"Alternativ": {
+"ok": true
+},
+"Analys": {
+"ok": true
+},
+"Analys-panelen": {
+"ok": true
+},
+"Analyspanel": {
+"ok": true
+},
+"Anchore": {
+"ok": false
+},
+"Andersson": {
+"ok": true
+},
+"Ange": {
+"ok": true
+},
+"Annat": {
+"ok": true
+},
+"Antal": {
+"ok": true
+},
+"Anteckningar": {
+"ok": true
+},
+"Anteckningarna": {
+"ok": true
+},
+"Använd": {
+"ok": true
+},
+"Användare": {
+"ok": true
+},
+"Användaren": {
+"ok": true
+},
+"Används": {
+"ok": true
+},
+"Apache": {
+"ok": true
+},
+"Appen": {
+"ok": true
+},
+"Arkitekturbeslut": {
+"ok": true
+},
+"Artikel": {
+"ok": true
+},
+"Att": {
+"ok": true
+},
+"Authorization": {
+"ok": false
+},
+"Automatisk": {
+"ok": true
+},
+"Automatiska": {
+"ok": true
+},
+"Automatiskt": {
+"ok": true
+},
+"Autospar": {
+"ok": false
+},
+"Avbrutet": {
+"ok": true
+},
+"Avvisar": {
+"ok": true
+},
+"BSD": {
+"ok": false
+},
+"Backend": {
+"ok": false
+},
+"Backend-proxy": {
+"ok": false
+},
+"Backsteg": {
+"ok": true
+},
+"Bara": {
+"ok": true
+},
+"Baserad": {
+"ok": true
+},
+"Bearer": {
+"ok": false,
+"sugg": [
+"Barer",
+"Besoarer",
+"Beredare",
+"Beridare",
+"Barberare"
+],
+"t": 1.67
+},
+"Bearer-huvud": {
+"ok": false
+},
+"Begränsningar": {
+"ok": true
+},
+"Beskrivning": {
+"ok": true
+},
+"Beslut": {
+"ok": true
+},
+"Beställare": {
+"ok": true
+},
+"Bilder": {
+"ok": true
+},
+"Bodén": {
+"ok": true
+},
+"Borttagna": {
+"ok": true
+},
+"Brytningen": {
+"ok": true
+},
+"Bundlad": {
+"ok": true
+},
+"Byline": {
+"ok": true
+},
+"Byte": {
+"ok": true
+},
+"Bäst": {
+"ok": true
+},
+"C": {
+"ok": true
+},
+"CI": {
+"ok": false
+},
+"CI-arbetsflöde": {
+"ok": false
+},
+"CSP": {
+"ok": false
+},
+"CSS-räknare": {
+"ok": true
+},
+"Cache-Control": {
+"ok": false
+},
+"Calibri": {
+"ok": false
+},
+"Cambria": {
+"ok": false
+},
+"Chainguard": {
+"ok": false
+},
+"Chainguards": {
+"ok": false
+},
+"Chattpanel": {
+"ok": true
+},
+"Christina": {
+"ok": true
+},
+"Citat": {
+"ok": true
+},
+"Citatlista": {
+"ok": true
+},
+"Citatstil": {
+"ok": true
+},
+"Citattecken": {
+"ok": true
+},
+"Claude": {
+"ok": true
+},
+"ClipboardItem": {
+"ok": false
+},
+"Cmd": {
+"ok": false
+},
+"CodeMirror": {
+"ok": false
+},
+"Container": {
+"ok": true
+},
+"Containern": {
+"ok": true
+},
+"Content-Security-Policy": {
+"ok": false
+},
+"Copyright": {
+"ok": true
+},
+"CriticMarkup": {
+"ok": false
+},
+"Ctrl": {
+"ok": true
+},
+"DELETE": {
+"ok": false
+},
+"DNS-rebinding": {
+"ok": false
+},
+"DOCX": {
+"ok": false
+},
+"DOMPurify": {
+"ok": false,
+"sugg": [],
+"t": 4.69
+},
+"DSSO": {
+"ok": true
+},
+"DSSO-ordlistan": {
+"ok": true
+},
+"DSSO-ordlistans": {
+"ok": true
+},
+"Dagens": {
+"ok": true
+},
+"Dansbandsflöjtisterna": {
+"ok": true
+},
+"Datamappen": {
+"ok": true
+},
+"De": {
+"ok": true
+},
+"Deadline": {
+"ok": true
+},
+"Definitioner": {
+"ok": true
+},
+"Den": {
+"ok": true
+},
+"Desktop": {
+"ok": false
+},
+"Dessutom": {
+"ok": true
+},
+"Det": {
+"ok": true
+},
+"Dialogen": {
+"ok": true
+},
+"Docker": {
+"ok": false
+},
+"Docker-container": {
+"ok": false
+},
+"Docker-imagen": {
+"ok": false
+},
+"Docker-secret": {
+"ok": false
+},
+"Dockerfile": {
+"ok": false
+},
+"Dokument": {
+"ok": true
+},
+"Dokument-API": {
+"ok": false
+},
+"Dokumentation": {
+"ok": true
+},
+"Dokumenten": {
+"ok": true
+},
+"Dokumentets": {
+"ok": true
+},
+"Dokumentformat": {
+"ok": true
+},
+"Dra": {
+"ok": true
+},
+"Drift": {
+"ok": true
+},
+"Du": {
+"ok": true
+},
+"Där": {
+"ok": true
+},
+"Därför": {
+"ok": true
+},
+"E": {
+"ok": true
+},
+"EU-kommissionen": {
+"ok": true
+},
+"Editor": {
+"ok": true
+},
+"Edward": {
+"ok": true
+},
+"Egen": {
+"ok": true
+},
+"Egna": {
+"ok": true
+},
+"Ej": {
+"ok": true
+},
+"Eksem": {
+"ok": true
+},
+"En": {
+"ok": true
+},
+"Endast": {
+"ok": true
+},
+"Enkelt": {
+"ok": true
+},
+"Enkla": {
+"ok": true
+},
+"Enter": {
+"ok": false
+},
+"Ersätt": {
+"ok": true
+},
+"Ersättningar": {
+"ok": true
+},
+"Esc": {
+"ok": false
+},
+"Ett": {
+"ok": true
+},
+"Exempel": {
+"ok": true
+},
+"Export": {
+"ok": true
+},
+"Export-mallarna": {
+"ok": true
+},
+"Exporten": {
+"ok": true
+},
+"Exportera": {
+"ok": true
+},
+"Exportmallar": {
+"ok": true
+},
+"F": {
+"ok": true
+},
+"Fas": {
+"ok": true
+},
+"Faser": {
+"ok": true
+},
+"FastAPI": {
+"ok": false
+},
+"Felsökning": {
+"ok": true
+},
+"Fem": {
+"ok": true
+},
+"Filen": {
+"ok": true
+},
+"Filer": {
+"ok": true
+},
+"Flikar": {
+"ok": true
+},
+"FocusWriter-stil": {
+"ok": false
+},
+"Fokus": {
+"ok": true
+},
+"Folkets": {
+"ok": true
+},
+"Font": {
+"ok": true
+},
+"Fontsource": {
+"ok": false
+},
+"Formatering": {
+"ok": true
+},
+"Forskare": {
+"ok": true
+},
+"Fotnoten": {
+"ok": true
+},
+"Fotnoter": {
+"ok": true
+},
+"Fotnotstexten": {
+"ok": true
+},
+"Framsteg": {
+"ok": true
+},
+"Frasen": {
+"ok": true
+},
+"Fraser": {
+"ok": true
+},
+"Fritt": {
+"ok": true
+},
+"Frontend": {
+"ok": false
+},
+"Frontmatter": {
+"ok": false
+},
+"Fråga": {
+"ok": true
+},
+"Fullt": {
+"ok": true
+},
+"Funktionalitet": {
+"ok": true
+},
+"För": {
+"ok": true
+},
+"Före": {
+"ok": true
+},
+"Föreslå": {
+"ok": true
+},
+"Förstudie": {
+"ok": true
+},
+"Förteckningen": {
+"ok": true
+},
+"Förvald": {
+"ok": true
+},
+"G": {
+"ok": true
+},
+"GENRES": {
+"ok": true
+},
+"GET": {
+"ok": true
+},
+"GPL": {
+"ok": false
+},
+"GPL-licensierade": {
+"ok": false,
+"sugg": [
+"GP-licensierade",
+"Gps-licensierade"
+],
+"t": 7.53
+},
+"GUI": {
+"ok": false
+},
+"Genom": {
+"ok": true
+},
+"Georgia": {
+"ok": true
+},
+"GitHub": {
+"ok": false
+},
+"Godtar": {
+"ok": true
+},
+"Granska": {
+"ok": true
+},
+"Grundregler": {
+"ok": true
+},
+"Grype": {
+"ok": false
+},
+"Gränsen": {
+"ok": true
+},
+"Gränssnitt": {
+"ok": true
+},
+"Gränssnittet": {
+"ok": true
+},
+"Gäller": {
+"ok": true
+},
+"Går": {
+"ok": true
+},
+"Gör": {
+"ok": true
+},
+"Göran": {
+"ok": true
+},
+"Göteborg": {
+"ok": true
+},
+"HTML": {
+"ok": true
+},
+"HTML-kommentar": {
+"ok": true
+},
+"HTML-kommentarer": {
+"ok": true
+},
+"Han": {
+"ok": true
+},
+"Hela": {
+"ok": true
+},
+"Hello": {
+"ok": false
+},
+"Helskärm": {
+"ok": true
+},
+"Historik": {
+"ok": true
+},
+"Historikpanel": {
+"ok": false
+},
+"Hitta": {
+"ok": true
+},
+"Hopp": {
+"ok": true
+},
+"Host-kontroll": {
+"ok": false
+},
+"Hunspell": {
+"ok": true
+},
+"Hunspell-binär": {
+"ok": true
+},
+"Hunspell-format": {
+"ok": true
+},
+"Hunspell-motor": {
+"ok": true
+},
+"Hunspell-ordlista": {
+"ok": true
+},
+"Huvudrubriken": {
+"ok": true
+},
+"Huvudstaden": {
+"ok": true
+},
+"Högerklick": {
+"ok": true
+},
+"Högerklicka": {
+"ok": true
+},
+"Högerklicksmeny": {
+"ok": true
+},
+"I": {
+"ok": true
+},
+"IBM": {
+"ok": true
+},
+"Ignorera": {
+"ok": true
+},
+"Ikoner": {
+"ok": true
+},
+"Imagen": {
+"ok": true
+},
+"Import": {
+"ok": true
+},
+"Importera": {
+"ok": true
+},
+"Importfiltret": {
+"ok": true
+},
+"Inbäddade": {
+"ok": true
+},
+"Inbäddnings": {
+"ok": true
+},
+"Infoga": {
+"ok": true
+},
+"Ingen": {
+"ok": true
+},
+"Inget": {
+"ok": true
+},
+"Ingress": {
+"ok": true
+},
+"Inklistrad": {
+"ok": true
+},
+"Innan": {
+"ok": true
+},
+"Institutionen": {
+"ok": true
+},
+"Instruktioner": {
+"ok": true
+},
+"Instruktionerna": {
+"ok": true
+},
+"Inställningar": {
+"ok": true
+},
+"Inställningarna": {
+"ok": true
+},
+"Inställningsfilen": {
+"ok": true
+},
+"Inte": {
+"ok": true
+},
+"Integritet": {
+"ok": true
+},
+"Internt": {
+"ok": true
+},
+"J": {
+"ok": true
+},
+"JS-alternativ": {
+"ok": true
+},
+"JSON-fil": {
+"ok": false
+},
+"JSON-filer": {
+"ok": false
+},
+"JSON-objekt": {
+"ok": false
+},
+"K": {
+"ok": true
+},
+"KTH": {
+"ok": true
+},
+"Kan": {
+"ok": true
+},
+"Kann": {
+"ok": false
+},
+"Klarar": {
+"ok": true
+},
+"Klick": {
+"ok": true
+},
+"Klicka": {
+"ok": true
+},
+"Klickbara": {
+"ok": true
+},
+"Klienten": {
+"ok": true
+},
+"Klistrar": {
+"ok": true
+},
+"Knapparna": {
+"ok": true
+},
+"Kod": {
+"ok": true
+},
+"Kodblock": {
+"ok": true
+},
+"Kolla": {
+"ok": true
+},
+"Kom": {
+"ok": true
+},
+"Kommentarer": {
+"ok": true
+},
+"Kommentera": {
+"ok": true
+},
+"Komplement": {
+"ok": true
+},
+"Konfiguration": {
+"ok": true
+},
+"Kontextfönstret": {
+"ok": true
+},
+"Kontextstorlek": {
+"ok": true
+},
+"Kontrast": {
+"ok": true
+},
+"Kontroll": {
+"ok": true
+},
+"Kontrollen": {
+"ok": true
+},
+"Kontrollera": {
+"ok": true
+},
+"Kontrollerat": {
+"ok": true
+},
+"Kopiera": {
+"ok": true
+},
+"Korta": {
+"ok": true
+},
+"Kortkommando": {
+"ok": true
+},
+"Kortkommandolista": {
+"ok": false
+},
+"Kortkommandon": {
+"ok": true
+},
+"Krönika": {
+"ok": true
+},
+"Kursiv": {
+"ok": true
+},
+"Kvar": {
+"ok": true
+},
+"Kärneditor": {
+"ok": true
+},
+"Kör": {
+"ok": true
+},
+"Körs": {
+"ok": true
+},
+"LGPL": {
+"ok": false,
+"sugg": [],
+"t": 0.99
+},
+"LICENSE": {
+"ok": false
+},
+"LICENSES": {
+"ok": false
+},
+"LIX": {
+"ok": false
+},
+"LIX-beräkningen": {
+"ok": false
+},
+"LIX-värdet": {
+"ok": false
+},
+"LM": {
+"ok": false
+},
+"Ladda": {
+"ok": true
+},
+"Lagras": {
+"ok": true
+},
+"Lagring": {
+"ok": true
+},
+"Lagringen": {
+"ok": true
+},
+"Lagringsformat": {
+"ok": true
+},
+"Letter-format": {
+"ok": true
+},
+"Leverans": {
+"ok": true
+},
+"Leveransform": {
+"ok": true
+},
+"LibreOffice": {
+"ok": true
+},
+"LibreOffice-konvertering": {
+"ok": true
+},
+"License": {
+"ok": false
+},
+"Licenser": {
+"ok": true
+},
+"Licenskoll": {
+"ok": true
+},
+"Licenstexten": {
+"ok": true
+},
+"Linux": {
+"ok": true
+},
+"Lista": {
+"ok": true
+},
+"Listan": {
+"ok": true
+},
+"Listar": {
+"ok": true
+},
+"Literata": {
+"ok": false,
+"sugg": [
+"Litterata"
+],
+"t": 1.46
+},
+"Lokal": {
+"ok": true
+},
+"Lokala": {
+"ok": true
+},
+"Lua": {
+"ok": false
+},
+"Lua-filter": {
+"ok": false
+},
+"Lua-filtret": {
+"ok": false
+},
+"Lyrik": {
+"ok": true
+},
+"Lägg": {
+"ok": true
+},
+"Lägger": {
+"ok": true
+},
+"Längdmål": {
+"ok": true
+},
+"Längdmålet": {
+"ok": true
+},
+"Långa": {
+"ok": true
+},
+"M": {
+"ok": true
+},
+"MB": {
+"ok": true
+},
+"MD": {
+"ok": true
+},
+"MIT": {
+"ok": false
+},
+"MPL": {
+"ok": false
+},
+"Machine": {
+"ok": false
+},
+"Mallarna": {
+"ok": true
+},
+"Manuell": {
+"ok": true
+},
+"Manuella": {
+"ok": true
+},
+"Manus": {
+"ok": true
+},
+"Mapp": {
+"ok": true
+},
+"Markdown": {
+"ok": false
+},
+"Markdown-filen": {
+"ok": false
+},
+"Markdown-filer": {
+"ok": false
+},
+"Markdown-formatering": {
+"ok": false
+},
+"Markdown-genvägar": {
+"ok": false
+},
+"Markdown-program": {
+"ok": false
+},
+"Markdown-tecken": {
+"ok": false
+},
+"Markdown-tecknen": {
+"ok": false
+},
+"Markdown-tokenizer": {
+"ok": false
+},
+"Markdown-vy": {
+"ok": false
+},
+"Markdown-vyn": {
+"ok": false
+},
+"Markdown-växling": {
+"ok": false
+},
+"Markera": {
+"ok": true
+},
+"Markerar": {
+"ok": true
+},
+"Markering": {
+"ok": true
+},
+"Matallergier": {
+"ok": true
+},
+"Med": {
+"ok": true
+},
+"Men": {
+"ok": true
+},
+"Metadata": {
+"ok": true
+},
+"Metadatapanel": {
+"ok": true
+},
+"Metadatapanelen": {
+"ok": true
+},
+"Mikke": {
+"ok": false
+},
+"Min": {
+"ok": true
+},
+"Minimal": {
+"ok": true
+},
+"Minsta": {
+"ok": true
+},
+"Modell": {
+"ok": true
+},
+"Modellistan": {
+"ok": true
+},
+"Modellval": {
+"ok": true
+},
+"Mono": {
+"ok": true
+},
+"Motivering": {
+"ok": true
+},
+"Multi-stage": {
+"ok": false
+},
+"MyThes-format": {
+"ok": false
+},
+"Mycket": {
+"ok": true
+},
+"Målet": {
+"ok": true
+},
+"N": {
+"ok": true
+},
+"NATO": {
+"ok": true
+},
+"NDJSON": {
+"ok": false
+},
+"NOTICE": {
+"ok": false
+},
+"Namngivna": {
+"ok": true
+},
+"New": {
+"ok": true
+},
+"Node-images": {
+"ok": false
+},
+"Nominalstil": {
+"ok": true
+},
+"Nu": {
+"ok": true
+},
+"Ny": {
+"ok": true
+},
+"Nya": {
+"ok": true
+},
+"Nyckeln": {
+"ok": true
+},
+"Nyhet": {
+"ok": true
+},
+"Nytt": {
+"ok": true
+},
+"När": {
+"ok": true
+},
+"Nästa": {
+"ok": true
+},
+"O": {
+"ok": true
+},
+"OCI-etiketter": {
+"ok": false
+},
+"OCI-etiketterna": {
+"ok": false
+},
+"ODT": {
+"ok": false
+},
+"ODT-mallarna": {
+"ok": false
+},
+"OVIX": {
+"ok": false
+},
+"Och": {
+"ok": true
+},
+"Officeprogram": {
+"ok": true
+},
+"Okända": {
+"ok": true
+},
+"Okänt": {
+"ok": true
+},
+"Ollama": {
+"ok": false
+},
+"Ollama-adress": {
+"ok": false
+},
+"Ollama-instans": {
+"ok": false
+},
+"Ollama-klient": {
+"ok": false
+},
+"Ollama-modeller": {
+"ok": false
+},
+"Ollama-server": {
+"ok": false
+},
+"Ollama-servern": {
+"ok": false
+},
+"OllamaClient": {
+"ok": false
+},
+"Ollamas": {
+"ok": false
+},
+"Om": {
+"ok": true
+},
+"Område": {
+"ok": true
+},
+"Open": {
+"ok": false,
+"sugg": [
+"Opel",
+"Åpen",
+"Owen",
+"Ropen",
+"Dopen",
+"Sopen"
+],
+"t": 0.34
+},
+"OpenAI": {
+"ok": false
+},
+"OpenAI-kompatibel": {
+"ok": false
+},
+"OpenAI-kompatibelt": {
+"ok": false
+},
+"OpenAI-kompatibla": {
+"ok": false
+},
+"OpenAI-läget": {
+"ok": false
+},
+"OpenAI-server": {
+"ok": false
+},
+"OpenDocument": {
+"ok": false
+},
+"OpenRouter": {
+"ok": false
+},
+"Optimering": {
+"ok": true
+},
+"Optimeringen": {
+"ok": true
+},
+"Opus": {
+"ok": true
+},
+"OrbStack": {
+"ok": false
+},
+"Ord": {
+"ok": true
+},
+"Ordet": {
+"ok": true
+},
+"Ordfrekvens": {
+"ok": true
+},
+"Orsak": {
+"ok": true
+},
+"PDF": {
+"ok": true
+},
+"PDF-export": {
+"ok": true
+},
+"PLAN": {
+"ok": true
+},
+"POST": {
+"ok": true
+},
+"PSF": {
+"ok": false
+},
+"PUT": {
+"ok": false
+},
+"Pagebreak": {
+"ok": false
+},
+"Pandoc": {
+"ok": false
+},
+"Pandoc-binären": {
+"ok": false
+},
+"Pandoc-integration": {
+"ok": false
+},
+"Pandocs": {
+"ok": false
+},
+"Panelen": {
+"ok": true
+},
+"Paneler": {
+"ok": true
+},
+"Papperskorgen": {
+"ok": true
+},
+"Personlig": {
+"ok": true
+},
+"Pi": {
+"ok": true
+},
+"Piltangenterna": {
+"ok": true
+},
+"Plex": {
+"ok": false
+},
+"Polering": {
+"ok": true
+},
+"Porten": {
+"ok": true
+},
+"Prestanda": {
+"ok": true
+},
+"Problem": {
+"ok": true
+},
+"Projektplan": {
+"ok": true
+},
+"Prosa": {
+"ok": true
+},
+"ProseMirror": {
+"ok": false
+},
+"ProseMirror-tillägg": {
+"ok": false
+},
+"Python": {
+"ok": true
+},
+"R": {
+"ok": true
+},
+"README": {
+"ok": false
+},
+"REST": {
+"ok": true
+},
+"RTF": {
+"ok": false
+},
+"Recension": {
+"ok": true
+},
+"Redigering": {
+"ok": true
+},
+"Regel": {
+"ok": true
+},
+"Reglerna": {
+"ok": true
+},
+"Rekommendera": {
+"ok": true
+},
+"Release": {
+"ok": true
+},
+"Ren": {
+"ok": true
+},
+"Rensa": {
+"ok": true
+},
+"Replikstreck": {
+"ok": true
+},
+"Repo-struktur": {
+"ok": false
+},
+"Reservkopian": {
+"ok": true
+},
+"Resonemang": {
+"ok": true
+},
+"Resonemanget": {
+"ok": true
+},
+"Resten": {
+"ok": true
+},
+"Resultat": {
+"ok": true
+},
+"Resultaten": {
+"ok": true
+},
+"Risk": {
+"ok": true
+},
+"Risker": {
+"ok": true
+},
+"Rubrik": {
+"ok": true
+},
+"Rubriken": {
+"ok": true
+},
+"Rätta": {
+"ok": true
+},
+"Rättigheterna": {
+"ok": true
+},
+"Rättning": {
+"ok": true
+},
+"Röd": {
+"ok": true
+},
+"S": {
+"ok": true
+},
+"SBOM": {
+"ok": false,
+"sugg": [
+"BOM",
+"SOM"
+],
+"t": 1.03
+},
+"SIL": {
+"ok": true
+},
+"SOURCES": {
+"ok": false
+},
+"SQLite": {
+"ok": false
+},
+"SSE": {
+"ok": false
+},
+"SVG": {
+"ok": false
+},
+"Sa": {
+"ok": true
+},
+"Sakprosa": {
+"ok": true
+},
+"Samtalen": {
+"ok": true
+},
+"Sans": {
+"ok": true
+},
+"Schirén": {
+"ok": false
+},
+"Scout": {
+"ok": true
+},
+"Se": {
+"ok": true
+},
+"Servern": {
+"ok": true
+},
+"Shift": {
+"ok": false
+},
+"Sidan": {
+"ok": true
+},
+"Sidopaneler": {
+"ok": true
+},
+"Siffrorna": {
+"ok": true
+},
+"Skanning": {
+"ok": true
+},
+"Skickas": {
+"ok": true
+},
+"Skickat": {
+"ok": true
+},
+"Skiljer": {
+"ok": true
+},
+"Skriv": {
+"ok": true
+},
+"Skriv-vyn": {
+"ok": true
+},
+"Skrivmål": {
+"ok": true
+},
+"Skydd": {
+"ok": true
+},
+"Släng": {
+"ok": true
+},
+"Snabbval": {
+"ok": true
+},
+"Source": {
+"ok": false
+},
+"Spara": {
+"ok": true
+},
+"Språkverktyg": {
+"ok": true
+},
+"Spädbarn": {
+"ok": true
+},
+"Standard": {
+"ok": true
+},
+"Standardmallen": {
+"ok": true
+},
+"Standardvärdena": {
+"ok": true
+},
+"Status": {
+"ok": true
+},
+"Statusrad": {
+"ok": true
+},
+"Statusraden": {
+"ok": true
+},
+"Stava-liknande": {
+"ok": true
+},
+"Stavning": {
+"ok": true
+},
+"Stavningskontroll": {
+"ok": true
+},
+"Stavningskontrollen": {
+"ok": true
+},
+"Stavningsmotorn": {
+"ok": true
+},
+"Stavningsordlistan": {
+"ok": true
+},
+"Stina": {
+"ok": true
+},
+"Stockholm": {
+"ok": true
+},
+"Stoppa": {
+"ok": true
+},
+"Studien": {
+"ok": true
+},
+"Studio": {
+"ok": true
+},
+"Stycken": {
+"ok": true
+},
+"Stäng": {
+"ok": true
+},
+"Stängs": {
+"ok": true
+},
+"Står": {
+"ok": true
+},
+"Svarar": {
+"ok": true
+},
+"Svaret": {
+"ok": true
+},
+"Svensk": {
+"ok": true
+},
+"Svenska": {
+"ok": true
+},
+"Syft": {
+"ok": false
+},
+"Synlex": {
+"ok": false
+},
+"Synonymer": {
+"ok": true
+},
+"Synonymerna": {
+"ok": true
+},
+"Systeminstruktionen": {
+"ok": true
+},
+"Systemprompt": {
+"ok": true
+},
+"Systemprompten": {
+"ok": true
+},
+"Säkerhet": {
+"ok": true
+},
+"Säkerhetskopiering": {
+"ok": true
+},
+"Så": {
+"ok": true
+},
+"Sök": {
+"ok": true
+},
+"THIRD_PARTY_LICENSES": {
+"ok": false
+},
+"THIRD_PARTY_NOTICES": {
+"ok": false
+},
+"TXT": {
+"ok": false
+},
+"Ta": {
+"ok": true
+},
+"Tab": {
+"ok": false
+},
+"Tabeller": {
+"ok": true
+},
+"Taggar": {
+"ok": true
+},
+"Tecken": {
+"ok": true
+},
+"Teckenpanel": {
+"ok": true
+},
+"Tekniskt": {
+"ok": true
+},
+"Teman": {
+"ok": true
+},
+"Test": {
+"ok": true
+},
+"Testat": {
+"ok": true
+},
+"Text": {
+"ok": true
+},
+"Texten": {
+"ok": true
+},
+"Texter": {
+"ok": true
+},
+"Texterna": {
+"ok": true
+},
+"Texttyp": {
+"ok": true
+},
+"Texttyperna": {
+"ok": true
+},
+"Tidigare": {
+"ok": true
+},
+"Tillgänglighet": {
+"ok": true
+},
+"Tillägg": {
+"ok": true
+},
+"Time": {
+"ok": false
+},
+"Times": {
+"ok": true
+},
+"TipTap": {
+"ok": false
+},
+"TipTap-inmatningsregler": {
+"ok": false
+},
+"TipTap-nod": {
+"ok": false
+},
+"TipTaps": {
+"ok": false
+},
+"Titel": {
+"ok": true
+},
+"Tom": {
+"ok": true
+},
+"Tomma": {
+"ok": true
+},
+"Topplista": {
+"ok": true
+},
+"Totalt": {
+"ok": true
+},
+"Två": {
+"ok": true
+},
+"Tydligt": {
+"ok": true
+},
+"TypeScript": {
+"ok": false
+},
+"Typografi": {
+"ok": true
+},
+"Typsnitt": {
+"ok": true
+},
+"Typsnitten": {
+"ok": true
+},
+"Tänk": {
+"ok": true
+},
+"UI": {
+"ok": false
+},
+"Umeå": {
+"ok": true
+},
+"Under": {
+"ok": true
+},
+"Uppdatering": {
+"ok": true
+},
+"Upplysning": {
+"ok": true
+},
+"Uppskattad": {
+"ok": true
+},
+"Upptagna": {
+"ok": true
+},
+"Utan": {
+"ok": true
+},
+"Utseende": {
+"ok": true
+},
+"Utveckling": {
+"ok": true
+},
+"Val": {
+"ok": true
+},
+"Valbart": {
+"ok": true
+},
+"Valet": {
+"ok": true
+},
+"Valfritt": {
+"ok": true
+},
+"Var": {
+"ok": true
+},
+"Variabel": {
+"ok": true
+},
+"Version": {
+"ok": true
+},
+"Versioner": {
+"ok": true
+},
+"Versionshistorik": {
+"ok": true
+},
+"Vi": {
+"ok": true
+},
+"Vid": {
+"ok": true
+},
+"Viggo": {
+"ok": true
+},
+"Visas": {
+"ok": true
+},
+"Vite": {
+"ok": true
+},
+"Välj": {
+"ok": true
+},
+"Värden": {
+"ok": true
+},
+"Värdnamn": {
+"ok": true
+},
+"Växla": {
+"ok": true
+},
+"Växling": {
+"ok": true
+},
+"Våra": {
+"ok": true
+},
+"WCAG": {
+"ok": false
+},
+"WW_AI_API": {
+"ok": false
+},
+"WW_AI_KEY": {
+"ok": false
+},
+"WW_AI_KEY_FILE": {
+"ok": false
+},
+"WW_AI_MODEL": {
+"ok": false
+},
+"WW_AI_URL": {
+"ok": false
+},
+"WW_ALLOWED_HOSTS": {
+"ok": false
+},
+"WW_DATA_DIR": {
+"ok": false
+},
+"WW_DATA_PATH": {
+"ok": false
+},
+"WW_OLLAMA_": {
+"ok": false
+},
+"WW_OLLAMA_MODEL": {
+"ok": false
+},
+"WW_OLLAMA_URL": {
+"ok": false
+},
+"WW_SNAPSHOT_MINUTES": {
+"ok": false
+},
+"WYSIWYG": {
+"ok": false
+},
+"WYSIWYG-lik": {
+"ok": false
+},
+"WYSIWYG-vyn": {
+"ok": false
+},
+"Webbapp": {
+"ok": true
+},
+"Webbläsare": {
+"ok": true
+},
+"Webbläsaren": {
+"ok": true
+},
+"West": {
+"ok": true
+},
+"Windows": {
+"ok": true
+},
+"Wolfi": {
+"ok": false
+},
+"Wolfi-paket": {
+"ok": false
+},
+"Wolfi-systempaket": {
+"ok": false
+},
+"Word": {
+"ok": false
+},
+"WordPress": {
+"ok": true
+},
+"Work": {
+"ok": false
+},
+"Works": {
+"ok": false
+},
+"YAML": {
+"ok": false
+},
+"YAML-frontmatter": {
+"ok": false
+},
+"YAML-hantering": {
+"ok": false
+},
+"York": {
+"ok": true
+},
+"Z": {
+"ok": true
+},
+"accent": {
+"ok": true
+},
+"accentfärg": {
+"ok": true
+},
+"adress": {
+"ok": true
+},
+"adressen": {
+"ok": true
+},
+"affischen": {
+"ok": true
+},
+"ai": {
+"ok": false
+},
+"ai_openai": {
+"ok": false
+},
+"aktuell": {
+"ok": true
+},
+"aktuella": {
+"ok": true
+},
+"aktuellt": {
+"ok": true
+},
+"aldrig": {
+"ok": true
+},
+"alla": {
+"ok": true
+},
+"allergi": {
+"ok": true
+},
+"allergiantikroppar": {
+"ok": true
+},
+"allergier": {
+"ok": true
+},
+"allergisk": {
+"ok": true
+},
+"allergiskt": {
+"ok": true
+},
+"alls": {
+"ok": true
+},
+"allt": {
+"ok": true
+},
+"alltid": {
+"ok": true
+},
+"alltså": {
+"ok": true
+},
+"alternativt": {
+"ok": true
+},
+"ambition": {
+"ok": true
+},
+"analys": {
+"ok": true
+},
+"analysen": {
+"ok": true
+},
+"anatomiska": {
+"ok": true
+},
+"andel": {
+"ok": true
+},
+"andra": {
+"ok": true
+},
+"anger": {
+"ok": true
+},
+"anges": {
+"ok": true
+},
+"annan": {
+"ok": true
+},
+"annars": {
+"ok": true
+},
+"annat": {
+"ok": true
+},
+"ansikte": {
+"ok": true
+},
+"antal": {
+"ok": true
+},
+"anteckning": {
+"ok": true
+},
+"anteckningar": {
+"ok": true
+},
+"anteckningen": {
+"ok": true
+},
+"använda": {
+"ok": true
+},
+"användare": {
+"ok": true
+},
+"användaren": {
+"ok": true
+},
+"användas": {
+"ok": true
+},
+"användbar": {
+"ok": true
+},
+"använder": {
+"ok": true
+},
+"användning": {
+"ok": true
+},
+"används": {
+"ok": true
+},
+"api": {
+"ok": false
+},
+"app": {
+"ok": true
+},
+"appen": {
+"ok": true
+},
+"aria-controls": {
+"ok": false
+},
+"aria-expanded": {
+"ok": false
+},
+"aria-label": {
+"ok": false
+},
+"artikel": {
+"ok": true
+},
+"assistant": {
+"ok": false
+},
+"assistent": {
+"ok": true
+},
+"assistenten": {
+"ok": true
+},
+"atomnod": {
+"ok": false
+},
+"atomärt": {
+"ok": true
+},
+"att": {
+"ok": true
+},
+"attribut": {
+"ok": true
+},
+"author": {
+"ok": false
+},
+"authors": {
+"ok": false
+},
+"auto": {
+"ok": false
+},
+"automatisk": {
+"ok": true
+},
+"automatiska": {
+"ok": true
+},
+"automatiskt": {
+"ok": true
+},
+"autospar": {
+"ok": false
+},
+"av": {
+"ok": true
+},
+"avböjer": {
+"ok": true
+},
+"avgränsningslinje": {
+"ok": true
+},
+"avgör": {
+"ok": true
+},
+"avsiktligt": {
+"ok": true
+},
+"avslutande": {
+"ok": true
+},
+"avsnitt": {
+"ok": true
+},
+"avsnittet": {
+"ok": true
+},
+"avstängt": {
+"ok": true
+},
+"avsändande": {
+"ok": true
+},
+"backend": {
+"ok": false
+},
+"backend-proxy": {
+"ok": false
+},
+"backup": {
+"ok": true
+},
+"bakgrund": {
+"ok": true
+},
+"banner": {
+"ok": true
+},
+"bara": {
+"ok": true
+},
+"barn": {
+"ok": true
+},
+"barnallergi": {
+"ok": true
+},
+"barnen": {
+"ok": true
+},
+"barnens": {
+"ok": true
+},
+"barnet": {
+"ok": true
+},
+"barnhälsovården": {
+"ok": true
+},
+"basadressen": {
+"ok": true
+},
+"bedöma": {
+"ok": true
+},
+"bedömning": {
+"ok": true
+},
+"befintlig": {
+"ok": true
+},
+"beforeunload": {
+"ok": false
+},
+"behandla": {
+"ok": true
+},
+"behåller": {
+"ok": true
+},
+"behålls": {
+"ok": true
+},
+"behöver": {
+"ok": true
+},
+"behövs": {
+"ok": true
+},
+"beroende": {
+"ok": true
+},
+"bestäms": {
+"ok": true
+},
+"besvarade": {
+"ok": true
+},
+"betonar": {
+"ok": true
+},
+"bevaras": {
+"ok": true
+},
+"bilarna": {
+"ok": true
+},
+"bild": {
+"ok": true
+},
+"bildruta": {
+"ok": true
+},
+"bin": {
+"ok": true
+},
+"bindestreck": {
+"ok": true
+},
+"binds": {
+"ok": true
+},
+"binär": {
+"ok": true
+},
+"bitar": {
+"ok": true
+},
+"blanksteg": {
+"ok": true
+},
+"blinkar": {
+"ok": true
+},
+"blinkning": {
+"ok": true
+},
+"blir": {
+"ok": true
+},
+"block": {
+"ok": true
+},
+"blockfält": {
+"ok": true
+},
+"blodet": {
+"ok": true
+},
+"blossa": {
+"ok": true
+},
+"boksida": {
+"ok": true
+},
+"bokskrivande": {
+"ok": true
+},
+"bokstäver": {
+"ok": true
+},
+"bollplank": {
+"ok": true
+},
+"bort": {
+"ok": true
+},
+"borttagna": {
+"ok": true
+},
+"borttagning": {
+"ok": true
+},
+"br": {
+"ok": false
+},
+"bra": {
+"ok": true
+},
+"break-after": {
+"ok": false
+},
+"bredd": {
+"ok": true
+},
+"bredvid": {
+"ok": true
+},
+"bråk": {
+"ok": true
+},
+"bubbla": {
+"ok": true
+},
+"build": {
+"ok": false
+},
+"bundlad": {
+"ok": true
+},
+"bygga": {
+"ok": true
+},
+"byggd": {
+"ok": true
+},
+"byggdes": {
+"ok": true
+},
+"bygger": {
+"ok": true
+},
+"bygget": {
+"ok": true
+},
+"byggs": {
+"ok": true
+},
+"byt": {
+"ok": true
+},
+"byta": {
+"ok": true
+},
+"bytas": {
+"ok": true
+},
+"byte": {
+"ok": true
+},
+"byter": {
+"ok": true
+},
+"byts": {
+"ok": true
+},
+"bytt": {
+"ok": true
+},
+"bättre": {
+"ok": true
+},
+"båda": {
+"ok": true
+},
+"både": {
+"ok": true
+},
+"böjda": {
+"ok": true
+},
+"böjningsflaggor": {
+"ok": true
+},
+"böjt": {
+"ok": true
+},
+"bör": {
+"ok": true
+},
+"börja": {
+"ok": true
+},
+"början": {
+"ok": true
+},
+"börjar": {
+"ok": true
+},
+"ca": {
+"ok": true
+},
+"cachas": {
+"ok": true
+},
+"cache": {
+"ok": true
+},
+"cd": {
+"ok": true
+},
+"centrerad": {
+"ok": true
+},
+"certifi": {
+"ok": false,
+"sugg": [
+"certifiera",
+"certifikat"
+],
+"t": 1.01
+},
+"cgr": {
+"ok": false
+},
+"chainguard": {
+"ok": false
+},
+"chapters": {
+"ok": false
+},
+"chat": {
+"ok": false
+},
+"chat_id": {
+"ok": false,
+"sugg": [
+"chattid"
+],
+"t": 0.86
+},
+"chats": {
+"ok": false
+},
+"chatt": {
+"ok": true
+},
+"chattmodell": {
+"ok": true
+},
+"chattmodellen": {
+"ok": true
+},
+"checkas": {
+"ok": true
+},
+"chmod": {
+"ok": false
+},
+"ci": {
+"ok": false
+},
+"cirka": {
+"ok": true
+},
+"citat": {
+"ok": true
+},
+"citatet": {
+"ok": true
+},
+"citattecken": {
+"ok": true
+},
+"citattecknet": {
+"ok": true
+},
+"citera": {
+"ok": true
+},
+"citeras": {
+"ok": true
+},
+"client": {
+"ok": false
+},
+"cm": {
+"ok": true
+},
+"com": {
+"ok": false
+},
+"comment": {
+"ok": false
+},
+"comments": {
+"ok": false
+},
+"completions": {
+"ok": false
+},
+"compose": {
+"ok": false
+},
+"container": {
+"ok": true
+},
+"containern": {
+"ok": true
+},
+"containerns": {
+"ok": true
+},
+"content": {
+"ok": false
+},
+"content-visibility": {
+"ok": false
+},
+"convert": {
+"ok": false
+},
+"copy": {
+"ok": false
+},
+"cp": {
+"ok": true
+},
+"cpp-server": {
+"ok": false
+},
+"create_app": {
+"ok": false
+},
+"created": {
+"ok": false
+},
+"curl": {
+"ok": false
+},
+"currentColor": {
+"ok": false
+},
+"cves": {
+"ok": false
+},
+"d": {
+"ok": true
+},
+"dag": {
+"ok": true
+},
+"dagar": {
+"ok": true
+},
+"dagen": {
+"ok": true
+},
+"dagens": {
+"ok": true
+},
+"data": {
+"ok": true
+},
+"datafiler": {
+"ok": true
+},
+"datamapp": {
+"ok": true
+},
+"datamappen": {
+"ok": true
+},
+"dator": {
+"ok": true
+},
+"datorn": {
+"ok": true
+},
+"datorns": {
+"ok": true
+},
+"datum": {
+"ok": true
+},
+"de": {
+"ok": true
+},
+"deadline": {
+"ok": true
+},
+"debouncad": {
+"ok": false
+},
+"definitionerna": {
+"ok": true
+},
+"del": {
+"ok": true
+},
+"delar": {
+"ok": true
+},
+"delats": {
+"ok": true
+},
+"deltid": {
+"ok": true
+},
+"dem": {
+"ok": true
+},
+"den": {
+"ok": true
+},
+"deras": {
+"ok": true
+},
+"dess": {
+"ok": true
+},
+"det": {
+"ok": true
+},
+"detalj": {
+"ok": true
+},
+"detta": {
+"ok": true
+},
+"dev": {
+"ok": false
+},
+"dglive": {
+"ok": false
+},
+"dialog": {
+"ok": true
+},
+"dialogen": {
+"ok": true
+},
+"dig": {
+"ok": true
+},
+"dimning": {
+"ok": false
+},
+"din": {
+"ok": true
+},
+"dina": {
+"ok": true
+},
+"direkt": {
+"ok": true
+},
+"disk": {
+"ok": true
+},
+"distraktionsfri": {
+"ok": true
+},
+"distroless": {
+"ok": false
+},
+"dock": {
+"ok": true
+},
+"docker": {
+"ok": false
+},
+"docker-compose": {
+"ok": false
+},
+"dockerignore": {
+"ok": false
+},
+"docs": {
+"ok": false
+},
+"document_name": {
+"ok": false
+},
+"documents": {
+"ok": false
+},
+"docx": {
+"ok": false,
+"sugg": [
+"dock"
+],
+"t": 0.38
+},
+"dokument": {
+"ok": true
+},
+"dokument-API": {
+"ok": false
+},
+"dokumentegenskaper": {
+"ok": true
+},
+"dokumenten": {
+"ok": true
+},
+"dokumentet": {
+"ok": true
+},
+"dokumentlistan": {
+"ok": true
+},
+"dokumenttitel": {
+"ok": true
+},
+"dra": {
+"ok": true
+},
+"dramaturgi": {
+"ok": true
+},
+"du": {
+"ok": true
+},
+"dubbelt": {
+"ok": true
+},
+"där": {
+"ok": true
+},
+"därav": {
+"ok": true
+},
+"däremot": {
+"ok": true
+},
+"därför": {
+"ok": true
+},
+"därmed": {
+"ok": true
+},
+"då": {
+"ok": true
+},
+"döljbar": {
+"ok": false
+},
+"döljer": {
+"ok": true
+},
+"döljs": {
+"ok": true
+},
+"e-post": {
+"ok": true
+},
+"editor": {
+"ok": true
+},
+"efter": {
+"ok": true
+},
+"efter-vy": {
+"ok": true
+},
+"eftersom": {
+"ok": true
+},
+"egen": {
+"ok": true
+},
+"eget": {
+"ok": true
+},
+"egna": {
+"ok": true
+},
+"ekosystem": {
+"ok": true
+},
+"eksem": {
+"ok": true
+},
+"eksemet": {
+"ok": true
+},
+"eksemets": {
+"ok": true
+},
+"eller": {
+"ok": true
+},
+"ellips": {
+"ok": true
+},
+"else": {
+"ok": false
+},
+"emot": {
+"ok": true
+},
+"en": {
+"ok": true
+},
+"ena": {
+"ok": true
+},
+"enanvändarapp": {
+"ok": false
+},
+"enbart": {
+"ok": true
+},
+"enda": {
+"ok": true
+},
+"endast": {
+"ok": true
+},
+"enkel": {
+"ok": true
+},
+"enklaste": {
+"ok": true
+},
+"enligt": {
+"ok": true
+},
+"ensam": {
+"ok": true
+},
+"ensamt": {
+"ok": true
+},
+"env": {
+"ok": false
+},
+"erbjuda": {
+"ok": true
+},
+"erbjuds": {
+"ok": true
+},
+"error": {
+"ok": false
+},
+"ersätt": {
+"ok": true
+},
+"ersätt-fältet": {
+"ok": true
+},
+"ersätter": {
+"ok": true
+},
+"ersättning": {
+"ok": true
+},
+"ersättningar": {
+"ok": true
+},
+"ersätts": {
+"ok": true
+},
+"essä": {
+"ok": true
+},
+"etc": {
+"ok": false
+},
+"etiketten": {
+"ok": true
+},
+"etikettikonen": {
+"ok": true
+},
+"ett": {
+"ok": true
+},
+"ev": {
+"ok": false
+},
+"eventuell": {
+"ok": true
+},
+"ex": {
+"ok": true
+},
+"exakt": {
+"ok": true
+},
+"exakta": {
+"ok": true
+},
+"example": {
+"ok": false
+},
+"execCommand": {
+"ok": false
+},
+"exempel": {
+"ok": true
+},
+"export": {
+"ok": true
+},
+"exportdialogen": {
+"ok": true
+},
+"exporten": {
+"ok": true
+},
+"exporter": {
+"ok": true
+},
+"exportera": {
+"ok": true
+},
+"exporteras": {
+"ok": true
+},
+"exportmallar": {
+"ok": true
+},
+"extern": {
+"ok": true
+},
+"facktermer": {
+"ok": true
+},
+"factory": {
+"ok": false,
+"sugg": [
+"facto"
+],
+"t": 1.19
+},
+"fakta": {
+"ok": true
+},
+"faktapåståenden": {
+"ok": true
+},
+"faktiskt": {
+"ok": true
+},
+"fanns": {
+"ok": true
+},
+"fas": {
+"ok": true
+},
+"fel": {
+"ok": true
+},
+"felaktiga": {
+"ok": true
+},
+"felaktigt": {
+"ok": true
+},
+"fellstavat": {
+"ok": false,
+"sugg": [
+"felstavat"
+],
+"t": 0.3
+},
+"felstavat": {
+"ok": true
+},
+"felsökning": {
+"ok": true
+},
+"femte": {
+"ok": true
+},
+"fet": {
+"ok": true
+},
+"fetstil": {
+"ok": true
+},
+"fil": {
+"ok": true
+},
+"filen": {
+"ok": true
+},
+"filer": {
+"ok": true
+},
+"filters": {
+"ok": true
+},
+"filtrera": {
+"ok": true
+},
+"finally": {
+"ok": false
+},
+"finns": {
+"ok": true
+},
+"fisk": {
+"ok": true
+},
+"fler": {
+"ok": true
+},
+"flera": {
+"ok": true
+},
+"flerradigt": {
+"ok": true
+},
+"flik": {
+"ok": true
+},
+"fliken": {
+"ok": true
+},
+"flytta": {
+"ok": true
+},
+"flyttades": {
+"ok": true
+},
+"flyttar": {
+"ok": true
+},
+"flyttas": {
+"ok": true
+},
+"fokus": {
+"ok": true
+},
+"fokusläge": {
+"ok": false
+},
+"footnote": {
+"ok": false
+},
+"footnotes": {
+"ok": false
+},
+"format": {
+"ok": true
+},
+"formaten": {
+"ok": true
+},
+"formaterad": {
+"ok": true
+},
+"formatering": {
+"ok": true
+},
+"formateringen": {
+"ok": true
+},
+"formatet": {
+"ok": true
+},
+"formulering": {
+"ok": true
+},
+"formuleringar": {
+"ok": true
+},
+"forskare": {
+"ok": true
+},
+"forskarna": {
+"ok": true
+},
+"fortfarande": {
+"ok": true
+},
+"fortsätter": {
+"ok": true
+},
+"fotbollsmatchens": {
+"ok": true
+},
+"fotnot": {
+"ok": true
+},
+"fotnoten": {
+"ok": true
+},
+"fotnoter": {
+"ok": true
+},
+"fotnoterna": {
+"ok": true
+},
+"fotnotstexten": {
+"ok": true
+},
+"framgår": {
+"ok": true
+},
+"framtidssäkert": {
+"ok": true
+},
+"fras": {
+"ok": true
+},
+"frasen": {
+"ok": true
+},
+"fraser": {
+"ok": true
+},
+"frekvens": {
+"ok": true
+},
+"fri": {
+"ok": true
+},
+"fritextsökning": {
+"ok": true
+},
+"from": {
+"ok": true
+},
+"frontend": {
+"ok": false
+},
+"frontmatter": {
+"ok": false
+},
+"främmande": {
+"ok": true
+},
+"fråga": {
+"ok": true
+},
+"frågan": {
+"ok": true
+},
+"frågar": {
+"ok": true
+},
+"frågor": {
+"ok": true
+},
+"från": {
+"ok": true
+},
+"fullständiga": {
+"ok": true
+},
+"fungerar": {
+"ok": true
+},
+"funktionen": {
+"ok": true
+},
+"fyller": {
+"ok": true
+},
+"fyra": {
+"ok": true
+},
+"fält": {
+"ok": true
+},
+"fälten": {
+"ok": true
+},
+"färdig": {
+"ok": true
+},
+"färdigskriven": {
+"ok": true
+},
+"färger": {
+"ok": true
+},
+"få": {
+"ok": true
+},
+"fångas": {
+"ok": true
+},
+"får": {
+"ok": true
+},
+"följa": {
+"ok": true
+},
+"följdfrågor": {
+"ok": true
+},
+"följer": {
+"ok": true
+},
+"följt": {
+"ok": true
+},
+"fönstret": {
+"ok": true
+},
+"för": {
+"ok": true
+},
+"förbi": {
+"ok": true
+},
+"förbjuder": {
+"ok": true
+},
+"fördröjning": {
+"ok": true
+},
+"före": {
+"ok": true
+},
+"föregående": {
+"ok": true
+},
+"förekom": {
+"ok": true
+},
+"förekomsten": {
+"ok": true
+},
+"förekomster": {
+"ok": true
+},
+"föreslå": {
+"ok": true
+},
+"föreslår": {
+"ok": true
+},
+"författare": {
+"ok": true
+},
+"författarens": {
+"ok": true
+},
+"förhandsgranska": {
+"ok": true
+},
+"förhandsvisning": {
+"ok": true
+},
+"förklarar": {
+"ok": true
+},
+"förklaring": {
+"ok": true
+},
+"förklaringar": {
+"ok": true
+},
+"förlag": {
+"ok": true
+},
+"förlorat": {
+"ok": true
+},
+"förra": {
+"ok": true
+},
+"förslag": {
+"ok": true
+},
+"först": {
+"ok": true
+},
+"första": {
+"ok": true
+},
+"försämrad": {
+"ok": true
+},
+"försöker": {
+"ok": true
+},
+"förvald": {
+"ok": true
+},
+"förvarning": {
+"ok": true
+},
+"föräldrar": {
+"ok": true
+},
+"föräldrarna": {
+"ok": true
+},
+"gamla": {
+"ok": true
+},
+"gammal": {
+"ok": true
+},
+"gav": {
+"ok": true
+},
+"gem": {
+"ok": true
+},
+"gem-ikon": {
+"ok": true
+},
+"gemet": {
+"ok": true
+},
+"generiska": {
+"ok": true
+},
+"genom": {
+"ok": true
+},
+"genomsnittlig": {
+"ok": true
+},
+"genre": {
+"ok": true
+},
+"genres": {
+"ok": true
+},
+"ger": {
+"ok": true
+},
+"getPlainText": {
+"ok": false
+},
+"gick": {
+"ok": true
+},
+"git": {
+"ok": false,
+"sugg": [
+"tig",
+"hit",
+"gir",
+"it",
+"gikt",
+"gift"
+],
+"t": 0.03
+},
+"github": {
+"ok": false
+},
+"gjordes": {
+"ok": true
+},
+"gjort": {
+"ok": true
+},
+"go": {
+"ok": true
+},
+"godkänns": {
+"ok": true
+},
+"godtar": {
+"ok": true
+},
+"godtogs": {
+"ok": true
+},
+"grader": {
+"ok": true
+},
+"granska": {
+"ok": true
+},
+"granskar": {
+"ok": true
+},
+"granskas": {
+"ok": true
+},
+"granskning": {
+"ok": true
+},
+"grov": {
+"ok": true
+},
+"grunden": {
+"ok": true
+},
+"grundform": {
+"ok": true
+},
+"grundformen": {
+"ok": true
+},
+"grundfunktioner": {
+"ok": true
+},
+"grundregler": {
+"ok": true
+},
+"grundreglerna": {
+"ok": true
+},
+"grype": {
+"ok": false
+},
+"gränssnitt": {
+"ok": true
+},
+"gränssnittet": {
+"ok": true
+},
+"gråtext": {
+"ok": false
+},
+"gul": {
+"ok": true
+},
+"gälla": {
+"ok": true
+},
+"gäller": {
+"ok": true
+},
+"gång": {
+"ok": true
+},
+"gånger": {
+"ok": true
+},
+"går": {
+"ok": true
+},
+"gått": {
+"ok": true
+},
+"gör": {
+"ok": true
+},
+"göra": {
+"ok": true
+},
+"görs": {
+"ok": true
+},
+"ha": {
+"ok": true
+},
+"hade": {
+"ok": true
+},
+"hals": {
+"ok": true
+},
+"hamnar": {
+"ok": true
+},
+"han": {
+"ok": true
+},
+"hanterar": {
+"ok": true
+},
+"har": {
+"ok": true
+},
+"health": {
+"ok": false,
+"sugg": [
+"heltal",
+"Thea"
+],
+"t": 0.87
+},
+"hej": {
+"ok": true
+},
+"hejsan": {
+"ok": true
+},
+"hel": {
+"ok": true
+},
+"hela": {
+"ok": true
+},
+"helhet": {
+"ok": true
+},
+"heller": {
+"ok": true
+},
+"helt": {
+"ok": true
+},
+"heltid": {
+"ok": true
+},
+"het": {
+"ok": true
+},
+"historik": {
+"ok": true
+},
+"historiken": {
+"ok": true
+},
+"history": {
+"ok": false
+},
+"hitta": {
+"ok": true
+},
+"hittar": {
+"ok": true
+},
+"hittas": {
+"ok": true
+},
+"hjälp": {
+"ok": true
+},
+"hjälpreda": {
+"ok": true
+},
+"hon": {
+"ok": true
+},
+"hoppa": {
+"ok": true
+},
+"hoppas": {
+"ok": true
+},
+"hos": {
+"ok": true
+},
+"host": {
+"ok": false
+},
+"html": {
+"ok": true
+},
+"http": {
+"ok": true
+},
+"https": {
+"ok": true
+},
+"hudbarriär": {
+"ok": true
+},
+"hudbarriären": {
+"ok": true
+},
+"hudkontakten": {
+"ok": true
+},
+"hunnit": {
+"ok": true
+},
+"hur": {
+"ok": true
+},
+"hus": {
+"ok": true
+},
+"husen": {
+"ok": true
+},
+"husets": {
+"ok": true
+},
+"huvud": {
+"ok": true
+},
+"hämtar": {
+"ok": true
+},
+"hämtas": {
+"ok": true
+},
+"händer": {
+"ok": true
+},
+"hänvisning": {
+"ok": true
+},
+"här": {
+"ok": true
+},
+"härifrån": {
+"ok": true
+},
+"håller": {
+"ok": true
+},
+"hårda": {
+"ok": true
+},
+"högerklick": {
+"ok": true
+},
+"högerklicka": {
+"ok": true
+},
+"högerklickade": {
+"ok": true
+},
+"högerklicksmenyn": {
+"ok": true
+},
+"högre": {
+"ok": true
+},
+"högst": {
+"ok": true
+},
+"högt": {
+"ok": true
+},
+"höjd": {
+"ok": true
+},
+"i": {
+"ok": true
+},
+"ibland": {
+"ok": true
+},
+"icons": {
+"ok": false
+},
+"id": {
+"ok": true
+},
+"identisk": {
+"ok": true
+},
+"igen": {
+"ok": true
+},
+"igenom": {
+"ok": true
+},
+"ignorera": {
+"ok": true
+},
+"ignoreras": {
+"ok": true
+},
+"igång": {
+"ok": true
+},
+"ikon": {
+"ok": true
+},
+"ikoner": {
+"ok": true
+},
+"image": {
+"ok": true
+},
+"image-skanning": {
+"ok": true
+},
+"imagen": {
+"ok": true
+},
+"images": {
+"ok": true
+},
+"import": {
+"ok": true
+},
+"importerad": {
+"ok": true
+},
+"in": {
+"ok": true
+},
+"index": {
+"ok": true
+},
+"indrag": {
+"ok": true
+},
+"indragna": {
+"ok": true
+},
+"infoga": {
+"ok": true
+},
+"infoga-knapp": {
+"ok": true
+},
+"infogar": {
+"ok": true
+},
+"inga": {
+"ok": true
+},
+"ingen": {
+"ok": true
+},
+"ingenting": {
+"ok": true
+},
+"inget": {
+"ok": true
+},
+"ingress": {
+"ok": true
+},
+"ingressen": {
+"ok": true
+},
+"ingår": {
+"ok": true
+},
+"inklusive": {
+"ok": true
+},
+"inloggning": {
+"ok": true
+},
+"inläsning": {
+"ok": true
+},
+"inmatningsreglerna": {
+"ok": true
+},
+"innan": {
+"ok": true
+},
+"innebär": {
+"ok": true
+},
+"innehåller": {
+"ok": true
+},
+"innehållet": {
+"ok": true
+},
+"inom": {
+"ok": true
+},
+"insertText": {
+"ok": false
+},
+"install": {
+"ok": false
+},
+"installerats": {
+"ok": true
+},
+"instans": {
+"ok": true
+},
+"instruerar": {
+"ok": true
+},
+"instruktion": {
+"ok": true
+},
+"instruktioner": {
+"ok": true
+},
+"instruktionerna": {
+"ok": true
+},
+"inställd": {
+"ok": true
+},
+"inställningar": {
+"ok": true
+},
+"inställningarna": {
+"ok": true
+},
+"inte": {
+"ok": true
+},
+"integration": {
+"ok": true
+},
+"internal": {
+"ok": false
+},
+"internt": {
+"ok": true
+},
+"interpunktion": {
+"ok": true
+},
+"intervjuer": {
+"ok": true
+},
+"intetsägande": {
+"ok": true
+},
+"involverade": {
+"ok": true
+},
+"irriterande": {
+"ok": true
+},
+"itet": {
+"ok": false
+},
+"iväg": {
+"ok": true
+},
+"ja": {
+"ok": true
+},
+"jfr": {
+"ok": true
+},
+"json": {
+"ok": false
+},
+"just": {
+"ok": true
+},
+"justeras": {
+"ok": true
+},
+"justerbar": {
+"ok": true
+},
+"jämför": {
+"ok": true
+},
+"jämföra": {
+"ok": true
+},
+"jämfört": {
+"ok": true
+},
+"järnvägsstationen": {
+"ok": true
+},
+"kalla": {
+"ok": true
+},
+"kallad": {
+"ok": true
+},
+"kan": {
+"ok": true
+},
+"kanten": {
+"ok": true
+},
+"kapitel": {
+"ok": true
+},
+"kapitelbrytning": {
+"ok": true
+},
+"kapitelnavigering": {
+"ok": true
+},
+"kastade": {
+"ok": true
+},
+"kladda": {
+"ok": true
+},
+"klar": {
+"ok": true
+},
+"klarar": {
+"ok": true
+},
+"klick": {
+"ok": true
+},
+"klicka": {
+"ok": true
+},
+"klickar": {
+"ok": true
+},
+"klickbara": {
+"ok": true
+},
+"klinisk": {
+"ok": true
+},
+"klistras": {
+"ok": true
+},
+"knapp": {
+"ok": true
+},
+"knapparna": {
+"ok": true
+},
+"knappen": {
+"ok": true
+},
+"kod": {
+"ok": true
+},
+"kodblock": {
+"ok": true
+},
+"koden": {
+"ok": true
+},
+"kommentar": {
+"ok": true
+},
+"kommentaren": {
+"ok": true
+},
+"kommentarer": {
+"ok": true
+},
+"kommentarerna": {
+"ok": true
+},
+"kommentera": {
+"ok": true
+},
+"kommenterad": {
+"ok": true
+},
+"kommenterade": {
+"ok": true
+},
+"kommenteras": {
+"ok": true
+},
+"kommer": {
+"ok": true
+},
+"kommunen": {
+"ok": true
+},
+"komplettering": {
+"ok": true
+},
+"komponenter": {
+"ok": true
+},
+"konfiguration": {
+"ok": true
+},
+"konfliktskydd": {
+"ok": true
+},
+"kontakt": {
+"ok": true
+},
+"kontext": {
+"ok": true
+},
+"kontextfönstret": {
+"ok": true
+},
+"kontorsprogrammens": {
+"ok": true
+},
+"kontrast": {
+"ok": true
+},
+"kontroll": {
+"ok": true
+},
+"kontrollen": {
+"ok": true
+},
+"kontrollera": {
+"ok": true
+},
+"kontrollerar": {
+"ok": true
+},
+"kontrolleras": {
+"ok": true
+},
+"konvertera": {
+"ok": true
+},
+"konverterbart": {
+"ok": true
+},
+"kopia": {
+"ok": true
+},
+"kopiera": {
+"ok": true
+},
+"kopiering": {
+"ok": true
+},
+"kopplar": {
+"ok": true
+},
+"kopplat": {
+"ok": true
+},
+"korruption": {
+"ok": true
+},
+"kortas": {
+"ok": true
+},
+"kortkommando": {
+"ok": true
+},
+"kortkommandon": {
+"ok": true
+},
+"krasch": {
+"ok": true
+},
+"krav": {
+"ok": true
+},
+"kravet": {
+"ok": true
+},
+"kring": {
+"ok": true
+},
+"kritik": {
+"ok": true
+},
+"kroppen": {
+"ok": true
+},
+"kräver": {
+"ok": true
+},
+"krönikan": {
+"ok": true
+},
+"krönikörer": {
+"ok": true
+},
+"kulturjornalist": {
+"ok": false,
+"sugg": [
+"kulturjournalist",
+"motorjournalist"
+],
+"t": 9.09
+},
+"kulturjournalist": {
+"ok": true
+},
+"kulturjournalister": {
+"ok": true
+},
+"kulturjournalisterna": {
+"ok": true
+},
+"kulturjournalistik": {
+"ok": true
+},
+"kunde": {
+"ok": true
+},
+"kunskap": {
+"ok": true
+},
+"kursiv": {
+"ok": true
+},
+"kursivera": {
+"ok": true
+},
+"kvar": {
+"ok": true
+},
+"kvällstidningsjournalist": {
+"ok": true
+},
+"källa": {
+"ok": true
+},
+"källkoden": {
+"ok": true
+},
+"källkodslänken": {
+"ok": true
+},
+"källor": {
+"ok": true
+},
+"källtext": {
+"ok": true
+},
+"källtexten": {
+"ok": true
+},
+"kända": {
+"ok": true
+},
+"känsligt": {
+"ok": true
+},
+"köpet": {
+"ok": true
+},
+"kör": {
+"ok": true
+},
+"körde": {
+"ok": true
+},
+"körs": {
+"ok": true
+},
+"label": {
+"ok": false
+},
+"laddar": {
+"ok": true
+},
+"lagras": {
+"ok": true
+},
+"lagring": {
+"ok": true
+},
+"lagringen": {
+"ok": true
+},
+"lagringsformat": {
+"ok": true
+},
+"landet": {
+"ok": true
+},
+"lapp": {
+"ok": true
+},
+"lappen": {
+"ok": true
+},
+"layout": {
+"ok": true
+},
+"lead": {
+"ok": false
+},
+"length": {
+"ok": false
+},
+"leveranser": {
+"ok": true
+},
+"leverera": {
+"ok": true
+},
+"lexikon": {
+"ok": true
+},
+"licens": {
+"ok": true
+},
+"licensen": {
+"ok": true
+},
+"licenser": {
+"ok": true
+},
+"licenses": {
+"ok": false
+},
+"licenstexten": {
+"ok": true
+},
+"licenstexterna": {
+"ok": true
+},
+"ligger": {
+"ok": true
+},
+"liksom": {
+"ok": true
+},
+"linjeikoner": {
+"ok": true
+},
+"lint": {
+"ok": false
+},
+"lista": {
+"ok": true
+},
+"listan": {
+"ok": true
+},
+"listar": {
+"ok": true
+},
+"listas": {
+"ok": true
+},
+"listor": {
+"ok": true
+},
+"livsmedel": {
+"ok": true
+},
+"lix": {
+"ok": false
+},
+"ljudmodeller": {
+"ok": true
+},
+"ljust": {
+"ok": true
+},
+"llama": {
+"ok": false
+},
+"localStorage": {
+"ok": false
+},
+"localhost": {
+"ok": false
+},
+"lokal": {
+"ok": true
+},
+"lokalt": {
+"ok": true
+},
+"longsentences": {
+"ok": false
+},
+"lua": {
+"ok": false
+},
+"luft": {
+"ok": true
+},
+"lugn": {
+"ok": true
+},
+"lyktstolpar": {
+"ok": true
+},
+"lägga": {
+"ok": true
+},
+"lägger": {
+"ok": true
+},
+"läggs": {
+"ok": true
+},
+"lämna": {
+"ok": true
+},
+"lämnar": {
+"ok": true
+},
+"lämnas": {
+"ok": true
+},
+"längdmål": {
+"ok": true
+},
+"länge": {
+"ok": true
+},
+"längre": {
+"ok": true
+},
+"längst": {
+"ok": true
+},
+"längsta": {
+"ok": true
+},
+"länk": {
+"ok": true
+},
+"länkadresser": {
+"ok": true
+},
+"länkar": {
+"ok": true
+},
+"länkat": {
+"ok": true
+},
+"länken": {
+"ok": true
+},
+"lära": {
+"ok": true
+},
+"läsa": {
+"ok": true
+},
+"läsbara": {
+"ok": true
+},
+"läsbarhet": {
+"ok": true
+},
+"läser": {
+"ok": true
+},
+"läses": {
+"ok": true
+},
+"läst": {
+"ok": true
+},
+"läste": {
+"ok": true
+},
+"lästid": {
+"ok": true
+},
+"lätt": {
+"ok": true
+},
+"lång": {
+"ok": true
+},
+"långa": {
+"ok": true
+},
+"långsam": {
+"ok": true
+},
+"långt": {
+"ok": true
+},
+"låsning": {
+"ok": true
+},
+"låta": {
+"ok": true
+},
+"låter": {
+"ok": true
+},
+"m": {
+"ok": true
+},
+"main": {
+"ok": false
+},
+"make_templates": {
+"ok": false
+},
+"mallar": {
+"ok": true
+},
+"mallarna": {
+"ok": true
+},
+"man": {
+"ok": true
+},
+"manuell": {
+"ok": true
+},
+"manuellt": {
+"ok": true
+},
+"manus": {
+"ok": true
+},
+"mapp": {
+"ok": true
+},
+"mappen": {
+"ok": true
+},
+"marginaler": {
+"ok": true
+},
+"markdown": {
+"ok": false
+},
+"marked": {
+"ok": false
+},
+"markera": {
+"ok": true
+},
+"markerad": {
+"ok": true
+},
+"markerade": {
+"ok": true
+},
+"markerar": {
+"ok": true
+},
+"markeras": {
+"ok": true
+},
+"markerat": {
+"ok": true
+},
+"markering": {
+"ok": true
+},
+"markeringar": {
+"ok": true
+},
+"markeringen": {
+"ok": true
+},
+"markören": {
+"ok": true
+},
+"mat": {
+"ok": true
+},
+"matallergi": {
+"ok": true
+},
+"matallergier": {
+"ok": true
+},
+"matchar": {
+"ok": true
+},
+"maten": {
+"ok": true
+},
+"md": {
+"ok": false
+},
+"med": {
+"ok": true
+},
+"medan": {
+"ok": true
+},
+"meddelande": {
+"ok": true
+},
+"meddelanden": {
+"ok": true
+},
+"median": {
+"ok": true
+},
+"mellan": {
+"ok": true
+},
+"mellanslag": {
+"ok": true
+},
+"men": {
+"ok": true
+},
+"mening": {
+"ok": true
+},
+"meningar": {
+"ok": true
+},
+"meningarna": {
+"ok": true
+},
+"meningslängd": {
+"ok": true
+},
+"meny": {
+"ok": true
+},
+"menyer": {
+"ok": true
+},
+"mer": {
+"ok": true
+},
+"messages": {
+"ok": false
+},
+"meta": {
+"ok": true
+},
+"metadata": {
+"ok": true
+},
+"metadatablocket": {
+"ok": true
+},
+"metadatapanel": {
+"ok": true
+},
+"metadatapanelen": {
+"ok": true
+},
+"miljövariabel": {
+"ok": true
+},
+"miljövariabler": {
+"ok": true
+},
+"mindre": {
+"ok": true
+},
+"minimal": {
+"ok": true
+},
+"minimala": {
+"ok": true
+},
+"minnet": {
+"ok": true
+},
+"minst": {
+"ok": true
+},
+"minut": {
+"ok": true
+},
+"minuter": {
+"ok": true
+},
+"missades": {
+"ok": true
+},
+"misslyckas": {
+"ok": true
+},
+"mitt": {
+"ok": true
+},
+"mitten": {
+"ok": true
+},
+"mjs": {
+"ok": false
+},
+"mjölkallergi": {
+"ok": true
+},
+"model": {
+"ok": false
+},
+"modell": {
+"ok": true
+},
+"modellen": {
+"ok": true
+},
+"modellens": {
+"ok": true
+},
+"modeller": {
+"ok": true
+},
+"modellval": {
+"ok": true
+},
+"models": {
+"ok": false
+},
+"moln": {
+"ok": true
+},
+"molnsynkad": {
+"ok": false
+},
+"mono": {
+"ok": true
+},
+"monterad": {
+"ok": true
+},
+"morgon": {
+"ok": true
+},
+"mot": {
+"ok": true
+},
+"ms": {
+"ok": true
+},
+"musen": {
+"ok": true
+},
+"muspekaren": {
+"ok": true
+},
+"mycket": {
+"ok": true
+},
+"märke": {
+"ok": true
+},
+"märks": {
+"ok": true
+},
+"mätare": {
+"ok": true
+},
+"mätt": {
+"ok": true
+},
+"mål": {
+"ok": true
+},
+"månader": {
+"ok": true
+},
+"månaders": {
+"ok": true
+},
+"många": {
+"ok": true
+},
+"möjlig": {
+"ok": true
+},
+"möjlighet": {
+"ok": true
+},
+"mörkt": {
+"ok": true
+},
+"n": {
+"ok": true
+},
+"namn": {
+"ok": true
+},
+"namnbyte": {
+"ok": true
+},
+"namnet": {
+"ok": true
+},
+"namngiven": {
+"ok": true
+},
+"namngivna": {
+"ok": true
+},
+"nbsp": {
+"ok": false
+},
+"nedan": {
+"ok": true
+},
+"nej": {
+"ok": true
+},
+"ner": {
+"ok": true
+},
+"net": {
+"ok": false
+},
+"ning": {
+"ok": false
+},
+"nio": {
+"ok": true
+},
+"nivå": {
+"ok": true
+},
+"no-cache": {
+"ok": false
+},
+"node": {
+"ok": false
+},
+"nogon": {
+"ok": false,
+"sugg": [
+"logon",
+"någon",
+"nog"
+],
+"t": 0.59
+},
+"nominalkvot": {
+"ok": true
+},
+"nominalstil": {
+"ok": true
+},
+"noteringar": {
+"ok": true
+},
+"notes": {
+"ok": false
+},
+"notices": {
+"ok": false
+},
+"npm": {
+"ok": false
+},
+"npm-json": {
+"ok": false,
+"sugg": [],
+"t": 1.59
+},
+"npm-paket": {
+"ok": false
+},
+"nu": {
+"ok": true
+},
+"num_ctx": {
+"ok": false
+},
+"numrerad": {
+"ok": true
+},
+"numreras": {
+"ok": true
+},
+"nuvarande": {
+"ok": true
+},
+"ny": {
+"ok": true
+},
+"nya": {
+"ok": true
+},
+"nyckel": {
+"ok": true
+},
+"nycklar": {
+"ok": true
+},
+"när": {
+"ok": true
+},
+"nästa": {
+"ok": true
+},
+"nätverksfel": {
+"ok": true
+},
+"nå": {
+"ok": true
+},
+"något": {
+"ok": true
+},
+"några": {
+"ok": true
+},
+"nåogn": {
+"ok": false,
+"sugg": [
+"någon"
+],
+"t": 0.58
+},
+"når": {
+"ok": true
+},
+"nås": {
+"ok": true
+},
+"o": {
+"ok": true
+},
+"oavsett": {
+"ok": true
+},
+"oberoende": {
+"ok": true
+},
+"observationsstudie": {
+"ok": true
+},
+"och": {
+"ok": true
+},
+"också": {
+"ok": true
+},
+"odt": {
+"ok": false
+},
+"ofta": {
+"ok": true
+},
+"oftare": {
+"ok": true
+},
+"ofullständiga": {
+"ok": true
+},
+"ofullständigt": {
+"ok": true
+},
+"oförändrade": {
+"ok": true
+},
+"okända": {
+"ok": true
+},
+"olika": {
+"ok": true
+},
+"ollama": {
+"ok": false
+},
+"om": {
+"ok": true
+},
+"omfånget": {
+"ok": true
+},
+"omgjorda": {
+"ok": true
+},
+"ominstallation": {
+"ok": true
+},
+"omkodad": {
+"ok": true
+},
+"omladdning": {
+"ok": true
+},
+"omladdningen": {
+"ok": true
+},
+"omskrivning": {
+"ok": true
+},
+"online": {
+"ok": true
+},
+"open": {
+"ok": false
+},
+"openai": {
+"ok": false
+},
+"opublicerade": {
+"ok": true
+},
+"orange": {
+"ok": true
+},
+"ord": {
+"ok": true
+},
+"ordbehandlare": {
+"ok": true
+},
+"ordbehandlaren": {
+"ok": true
+},
+"ordbehnadlare": {
+"ok": false,
+"sugg": [
+"ordbehandlare"
+],
+"t": 6.85
+},
+"orden": {
+"ok": true
+},
+"ordet": {
+"ok": true
+},
+"ordfrekvens": {
+"ok": true
+},
+"ordfrekvenspanel": {
+"ok": true
+},
+"ordklassanalys": {
+"ok": true
+},
+"ordklasser": {
+"ok": true
+},
+"ordklasstaggning": {
+"ok": true
+},
+"ordlista": {
+"ok": true
+},
+"ordlistan": {
+"ok": true
+},
+"ordlistor": {
+"ok": true
+},
+"ordräkning": {
+"ok": true
+},
+"ordvariation": {
+"ok": true
+},
+"original": {
+"ok": true
+},
+"originalet": {
+"ok": true
+},
+"orsakar": {
+"ok": true
+},
+"orsaken": {
+"ok": true
+},
+"orörda": {
+"ok": true
+},
+"osparade": {
+"ok": true
+},
+"oss": {
+"ok": true
+},
+"ovanför": {
+"ok": true
+},
+"p": {
+"ok": true
+},
+"page": {
+"ok": true
+},
+"paket": {
+"ok": true
+},
+"panelen": {
+"ok": true
+},
+"panelens": {
+"ok": true
+},
+"paneler": {
+"ok": true
+},
+"panelknappar": {
+"ok": true
+},
+"papperskorg": {
+"ok": true
+},
+"papperskorgen": {
+"ok": true
+},
+"paragraftecken": {
+"ok": true
+},
+"parametern": {
+"ok": true
+},
+"part": {
+"ok": true
+},
+"partiet": {
+"ok": true
+},
+"partireklamen": {
+"ok": true
+},
+"passar": {
+"ok": true
+},
+"passerat": {
+"ok": true
+},
+"paus": {
+"ok": true
+},
+"pediatrik": {
+"ok": true
+},
+"pekar": {
+"ok": true
+},
+"per": {
+"ok": true
+},
+"pip": {
+"ok": true
+},
+"pip-paket": {
+"ok": true
+},
+"plats": {
+"ok": true
+},
+"platshållare": {
+"ok": true
+},
+"plockas": {
+"ok": true
+},
+"port": {
+"ok": true
+},
+"position": {
+"ok": true
+},
+"post": {
+"ok": true
+},
+"poster": {
+"ok": true
+},
+"pratminus": {
+"ok": true
+},
+"prefix": {
+"ok": true
+},
+"prepareFootnotes": {
+"ok": false
+},
+"produktionsbygge": {
+"ok": true
+},
+"professor": {
+"ok": true
+},
+"program": {
+"ok": true
+},
+"projektet": {
+"ok": true
+},
+"prompt": {
+"ok": true
+},
+"promptText": {
+"ok": false
+},
+"promptregler": {
+"ok": false
+},
+"prosa": {
+"ok": true
+},
+"provbyggd": {
+"ok": false
+},
+"proxar": {
+"ok": false
+},
+"pt": {
+"ok": false
+},
+"publicerad": {
+"ok": true
+},
+"publicering": {
+"ok": true
+},
+"publiceringssystem": {
+"ok": true
+},
+"publish": {
+"ok": false
+},
+"pull": {
+"ok": false
+},
+"punkt": {
+"ok": true
+},
+"punkten": {
+"ok": true
+},
+"punktlista": {
+"ok": true
+},
+"py": {
+"ok": false
+},
+"pypandoc_binary": {
+"ok": false
+},
+"pytest": {
+"ok": false
+},
+"python": {
+"ok": false
+},
+"python-docx": {
+"ok": false
+},
+"på": {
+"ok": true
+},
+"påslaget": {
+"ok": true
+},
+"påstod": {
+"ok": true
+},
+"påverkar": {
+"ok": true
+},
+"påverkas": {
+"ok": true
+},
+"q": {
+"ok": true
+},
+"qwen": {
+"ok": false
+},
+"r": {
+"ok": true
+},
+"rX": {
+"ok": false
+},
+"rad": {
+"ok": true
+},
+"radavstånd": {
+"ok": true
+},
+"radbrytning": {
+"ok": true
+},
+"radbrytningar": {
+"ok": true
+},
+"radbrytningen": {
+"ok": true
+},
+"radbörjan": {
+"ok": true
+},
+"rader": {
+"ok": true
+},
+"raderas": {
+"ok": true
+},
+"raka": {
+"ok": true
+},
+"rapport": {
+"ok": true
+},
+"rapporterade": {
+"ok": true
+},
+"reasoning": {
+"ok": false
+},
+"reasoning_content": {
+"ok": false
+},
+"recensent": {
+"ok": true
+},
+"recensionen": {
+"ok": true
+},
+"redaktion": {
+"ok": true
+},
+"redaktör": {
+"ok": true
+},
+"redan": {
+"ok": true
+},
+"redigera": {
+"ok": true
+},
+"redigerar": {
+"ok": true
+},
+"redigeras": {
+"ok": true
+},
+"redigering": {
+"ok": true
+},
+"referensdokument": {
+"ok": true
+},
+"regelfel": {
+"ok": true
+},
+"regeln": {
+"ok": true
+},
+"regeringsförklaringen": {
+"ok": true
+},
+"regler": {
+"ok": true
+},
+"release": {
+"ok": true
+},
+"relevant": {
+"ok": true
+},
+"reload": {
+"ok": false
+},
+"ren": {
+"ok": true
+},
+"rena": {
+"ok": true
+},
+"renderas": {
+"ok": true
+},
+"rendering": {
+"ok": true
+},
+"renderingen": {
+"ok": true
+},
+"rensar": {
+"ok": true
+},
+"rensas": {
+"ok": true
+},
+"repliker": {
+"ok": true
+},
+"replikstreck": {
+"ok": true
+},
+"repo-struktur": {
+"ok": false
+},
+"reportage": {
+"ok": true
+},
+"repot": {
+"ok": false
+},
+"requirements-dev": {
+"ok": false
+},
+"reserv": {
+"ok": true
+},
+"reservkopia": {
+"ok": true
+},
+"resonemang": {
+"ok": true
+},
+"resonemangsläge": {
+"ok": true
+},
+"resonera": {
+"ok": true
+},
+"resonerande": {
+"ok": true
+},
+"resources": {
+"ok": false
+},
+"respekterar": {
+"ok": true
+},
+"resten": {
+"ok": true
+},
+"restore": {
+"ok": false
+},
+"resultaten": {
+"ok": true
+},
+"riktig": {
+"ok": true
+},
+"riktiga": {
+"ok": true
+},
+"riktigt": {
+"ok": true
+},
+"risk": {
+"ok": true
+},
+"role": {
+"ok": false
+},
+"rollerna": {
+"ok": true
+},
+"root-rättigheter": {
+"ok": false
+},
+"rsync": {
+"ok": false
+},
+"rubrik": {
+"ok": true
+},
+"rubriken": {
+"ok": true
+},
+"rubriker": {
+"ok": true
+},
+"rubrikfält": {
+"ok": true
+},
+"rubriknivå": {
+"ok": true
+},
+"run": {
+"ok": false
+},
+"runtime": {
+"ok": false
+},
+"rwX": {
+"ok": false
+},
+"räknas": {
+"ok": true
+},
+"räkning": {
+"ok": true
+},
+"rätt": {
+"ok": true
+},
+"rättas": {
+"ok": true
+},
+"rättigheter": {
+"ok": true
+},
+"rättning": {
+"ok": true
+},
+"rättningar": {
+"ok": true
+},
+"rättningsförslag": {
+"ok": true
+},
+"rådgivning": {
+"ok": true
+},
+"råkar": {
+"ok": true
+},
+"röd": {
+"ok": true
+},
+"rör": {
+"ok": true
+},
+"rösta": {
+"ok": true
+},
+"s": {
+"ok": true
+},
+"sa": {
+"ok": true
+},
+"saknar": {
+"ok": true
+},
+"saknas": {
+"ok": true
+},
+"samlad": {
+"ok": true
+},
+"samlas": {
+"ok": true
+},
+"samma": {
+"ok": true
+},
+"sammansättning": {
+"ok": true
+},
+"sammansättningar": {
+"ok": true
+},
+"samt": {
+"ok": true
+},
+"samtal": {
+"ok": true
+},
+"samtalen": {
+"ok": true
+},
+"samtalet": {
+"ok": true
+},
+"sans": {
+"ok": true
+},
+"satt": {
+"ok": true
+},
+"sbom": {
+"ok": false
+},
+"scenbrytningar": {
+"ok": true
+},
+"scout": {
+"ok": true
+},
+"scripts": {
+"ok": true
+},
+"se": {
+"ok": true
+},
+"search": {
+"ok": false
+},
+"searchbar": {
+"ok": false
+},
+"sedan": {
+"ok": true
+},
+"sekund": {
+"ok": true
+},
+"sekunder": {
+"ok": true
+},
+"senare": {
+"ok": true
+},
+"senast": {
+"ok": true
+},
+"senaste": {
+"ok": true
+},
+"sensibilisering": {
+"ok": true
+},
+"separat": {
+"ok": true
+},
+"separata": {
+"ok": true
+},
+"sepia": {
+"ok": true
+},
+"ser": {
+"ok": true
+},
+"serialiseras": {
+"ok": false
+},
+"serif": {
+"ok": false
+},
+"server": {
+"ok": true
+},
+"servern": {
+"ok": true
+},
+"serverns": {
+"ok": true
+},
+"servrar": {
+"ok": true
+},
+"sessioner": {
+"ok": true
+},
+"settings": {
+"ok": false
+},
+"sh": {
+"ok": false,
+"sugg": [
+"ah",
+"h",
+"s",
+"sch",
+"sa",
+"se"
+],
+"t": 0.02
+},
+"shell": {
+"ok": false
+},
+"sida": {
+"ok": true
+},
+"sidan": {
+"ok": true
+},
+"sidbrytning": {
+"ok": true
+},
+"sidbrytningar": {
+"ok": true
+},
+"sidnummer": {
+"ok": true
+},
+"sifferfotnoterna": {
+"ok": true
+},
+"siffra": {
+"ok": true
+},
+"siffran": {
+"ok": true
+},
+"siffror": {
+"ok": true
+},
+"siffrorna": {
+"ok": true
+},
+"sig": {
+"ok": true
+},
+"simulerad": {
+"ok": true
+},
+"sin": {
+"ok": true
+},
+"sina": {
+"ok": true
+},
+"sist": {
+"ok": true
+},
+"sitter": {
+"ok": true
+},
+"sju": {
+"ok": true
+},
+"sjukhusvistelse": {
+"ok": true
+},
+"själv": {
+"ok": true
+},
+"själva": {
+"ok": true
+},
+"sk": {
+"ok": false
+},
+"ska": {
+"ok": true
+},
+"skal": {
+"ok": true
+},
+"skala": {
+"ok": true
+},
+"skanning": {
+"ok": true
+},
+"skapa": {
+"ok": true
+},
+"skapar": {
+"ok": true
+},
+"skapas": {
+"ok": true
+},
+"ske": {
+"ok": true
+},
+"skede": {
+"ok": true
+},
+"skelett": {
+"ok": true
+},
+"sker": {
+"ok": true
+},
+"skicka": {
+"ok": true
+},
+"skickades": {
+"ok": true
+},
+"skickar": {
+"ok": true
+},
+"skickas": {
+"ok": true
+},
+"skiljer": {
+"ok": true
+},
+"skrev": {
+"ok": true
+},
+"skriva": {
+"ok": true
+},
+"skrivande": {
+"ok": true
+},
+"skrivandet": {
+"ok": true
+},
+"skrivas": {
+"ok": true
+},
+"skrivbordsapp": {
+"ok": false
+},
+"skriver": {
+"ok": true
+},
+"skrivit": {
+"ok": true
+},
+"skrivmaskinsläge": {
+"ok": true
+},
+"skrivmål": {
+"ok": true
+},
+"skrivna": {
+"ok": true
+},
+"skrivning": {
+"ok": true
+},
+"skrivregler": {
+"ok": true
+},
+"skrivs": {
+"ok": true
+},
+"skrivväg": {
+"ok": true
+},
+"skulle": {
+"ok": true
+},
+"skyddar": {
+"ok": true
+},
+"skärmen": {
+"ok": true
+},
+"skärmläsare": {
+"ok": true
+},
+"skönlitteratur": {
+"ok": true
+},
+"skönlitterär": {
+"ok": true
+},
+"sluka": {
+"ok": true
+},
+"slutat": {
+"ok": true
+},
+"slängkyss": {
+"ok": true
+},
+"släpp": {
+"ok": true
+},
+"släppa": {
+"ok": true
+},
+"slår": {
+"ok": true
+},
+"slås": {
+"ok": true
+},
+"smala": {
+"ok": true
+},
+"smiter": {
+"ok": true
+},
+"små": {
+"ok": true
+},
+"snabb": {
+"ok": true
+},
+"snabbstatistik": {
+"ok": true
+},
+"snabbt": {
+"ok": true
+},
+"snabbval": {
+"ok": true
+},
+"snart": {
+"ok": true
+},
+"snäva": {
+"ok": true
+},
+"som": {
+"ok": true
+},
+"sommarstugeägare": {
+"ok": true
+},
+"sommmar": {
+"ok": false,
+"sugg": [
+"sommar"
+],
+"t": 0.14
+},
+"sorteras": {
+"ok": true
+},
+"source": {
+"ok": false
+},
+"source-licensen": {
+"ok": false
+},
+"spara": {
+"ok": true
+},
+"sparade": {
+"ok": true
+},
+"sparades": {
+"ok": true
+},
+"sparar": {
+"ok": true
+},
+"sparas": {
+"ok": true
+},
+"sparat": {
+"ok": true
+},
+"sparning": {
+"ok": false
+},
+"spdx": {
+"ok": false
+},
+"spdx-json": {
+"ok": false
+},
+"spell": {
+"ok": false
+},
+"sprang": {
+"ok": true
+},
+"sprider": {
+"ok": true
+},
+"springer": {
+"ok": true
+},
+"språk": {
+"ok": true
+},
+"språket": {
+"ok": true
+},
+"språkfel": {
+"ok": true
+},
+"språkfunktioner": {
+"ok": true
+},
+"språkteknik": {
+"ok": true
+},
+"spylls": {
+"ok": false
+},
+"spädbarn": {
+"ok": true
+},
+"spädbarnstiden": {
+"ok": true
+},
+"src": {
+"ok": false
+},
+"standard": {
+"ok": true
+},
+"standardlicenstexterna": {
+"ok": true
+},
+"standardvärden": {
+"ok": true
+},
+"stannade": {
+"ok": true
+},
+"stannar": {
+"ok": true
+},
+"starkare": {
+"ok": true
+},
+"start": {
+"ok": true
+},
+"starta": {
+"ok": true
+},
+"startar": {
+"ok": true
+},
+"statistik": {
+"ok": true
+},
+"stats": {
+"ok": true
+},
+"status": {
+"ok": true
+},
+"statusrad": {
+"ok": true
+},
+"statusraden": {
+"ok": true
+},
+"stavfel": {
+"ok": true
+},
+"stavning": {
+"ok": true
+},
+"stavningskontroll": {
+"ok": true
+},
+"stavningskontrollen": {
+"ok": true
+},
+"steg": {
+"ok": true
+},
+"stegvisa": {
+"ok": true
+},
+"stil": {
+"ok": true
+},
+"stilen": {
+"ok": true
+},
+"stjärnorna": {
+"ok": true
+},
+"stockhlom": {
+"ok": false,
+"sugg": [
+"Stockholm"
+],
+"t": 1.87
+},
+"stockholmare": {
+"ok": true
+},
+"stopp-knapp": {
+"ok": true
+},
+"stoppord": {
+"ok": true
+},
+"stora": {
+"ok": true
+},
+"storage": {
+"ok": false
+},
+"storlek": {
+"ok": true
+},
+"stramare": {
+"ok": true
+},
+"strax": {
+"ok": true
+},
+"stream_options": {
+"ok": false
+},
+"strikt": {
+"ok": true
+},
+"stripComments": {
+"ok": false
+},
+"strip_comments": {
+"ok": false
+},
+"strip_notes": {
+"ok": false
+},
+"struktur": {
+"ok": true
+},
+"stryker": {
+"ok": true
+},
+"strömmade": {
+"ok": true
+},
+"strömmande": {
+"ok": true
+},
+"strömning": {
+"ok": true
+},
+"studerat": {
+"ok": true
+},
+"studie": {
+"ok": true
+},
+"stycke": {
+"ok": true
+},
+"stycken": {
+"ok": true
+},
+"styckena": {
+"ok": true
+},
+"stycket": {
+"ok": true
+},
+"styr": {
+"ok": true
+},
+"styra": {
+"ok": true
+},
+"ställ": {
+"ok": true
+},
+"ställa": {
+"ok": true
+},
+"ställen": {
+"ok": true
+},
+"stället": {
+"ok": true
+},
+"stämma": {
+"ok": true
+},
+"stämmer": {
+"ok": true
+},
+"stänga": {
+"ok": true
+},
+"stänger": {
+"ok": true
+},
+"stängs": {
+"ok": true
+},
+"stärka": {
+"ok": true
+},
+"stå": {
+"ok": true
+},
+"står": {
+"ok": true
+},
+"stöd": {
+"ok": true
+},
+"större": {
+"ok": true
+},
+"substantiveringar": {
+"ok": true
+},
+"summeras": {
+"ok": true
+},
+"sup": {
+"ok": true
+},
+"sv": {
+"ok": false
+},
+"sv-SE": {
+"ok": false
+},
+"sv_SE": {
+"ok": false
+},
+"svaga": {
+"ok": true
+},
+"svar": {
+"ok": true
+},
+"svarar": {
+"ok": true
+},
+"svaren": {
+"ok": true
+},
+"svensk": {
+"ok": true
+},
+"svenska": {
+"ok": true
+},
+"svenskan": {
+"ok": true
+},
+"svenskt": {
+"ok": true
+},
+"svår": {
+"ok": true
+},
+"svårighetsgrad": {
+"ok": true
+},
+"svårighetsgraden": {
+"ok": true
+},
+"syft": {
+"ok": false
+},
+"symbol": {
+"ok": true
+},
+"synkas": {
+"ok": true
+},
+"synliga": {
+"ok": true
+},
+"synonym": {
+"ok": true
+},
+"synonymer": {
+"ok": true
+},
+"synonymlexikon": {
+"ok": true
+},
+"synonyms": {
+"ok": true
+},
+"syns": {
+"ok": true
+},
+"syntax": {
+"ok": true
+},
+"syntaxen": {
+"ok": true
+},
+"systeminstruktionen": {
+"ok": true
+},
+"systempaket": {
+"ok": true
+},
+"systemprompt": {
+"ok": true
+},
+"säger": {
+"ok": true
+},
+"säker": {
+"ok": true
+},
+"säkerhet": {
+"ok": true
+},
+"säkerhetshuvuden": {
+"ok": true
+},
+"säkerhetskopiera": {
+"ok": true
+},
+"säkerhetskopiering": {
+"ok": true
+},
+"säkerställer": {
+"ok": true
+},
+"säkerställt": {
+"ok": true
+},
+"säkert": {
+"ok": true
+},
+"säkrare": {
+"ok": true
+},
+"sällan": {
+"ok": true
+},
+"sätt": {
+"ok": true
+},
+"sätts": {
+"ok": true
+},
+"så": {
+"ok": true
+},
+"sådan": {
+"ok": true
+},
+"sådant": {
+"ok": true
+},
+"sårbarheter": {
+"ok": true
+},
+"sök": {
+"ok": true
+},
+"söka": {
+"ok": true
+},
+"söker": {
+"ok": true
+},
+"sökningen": {
+"ok": true
+},
+"sökningens": {
+"ok": true
+},
+"söks": {
+"ok": true
+},
+"sökväg": {
+"ok": true
+},
+"t": {
+"ok": true
+},
+"ta": {
+"ok": true
+},
+"tabeller": {
+"ok": true
+},
+"taggar": {
+"ok": true
+},
+"tags": {
+"ok": true
+},
+"tangentbordet": {
+"ok": true
+},
+"tangentbordsnavigering": {
+"ok": true
+},
+"tangentbordsstyrning": {
+"ok": true
+},
+"tangenttryck": {
+"ok": true
+},
+"tangenttryckning": {
+"ok": true
+},
+"tankstreck": {
+"ok": true
+},
+"tar": {
+"ok": true
+},
+"tas": {
+"ok": true
+},
+"tecken": {
+"ok": true
+},
+"teckenpanelen": {
+"ok": true
+},
+"teckenräkning": {
+"ok": true
+},
+"tecknen": {
+"ok": true
+},
+"telefonnummer": {
+"ok": true
+},
+"tema": {
+"ok": true
+},
+"teman": {
+"ok": true
+},
+"temat": {
+"ok": true
+},
+"temaval": {
+"ok": true
+},
+"temperature": {
+"ok": false
+},
+"templates": {
+"ok": false
+},
+"test": {
+"ok": true
+},
+"test_ai_openai": {
+"ok": false
+},
+"test_comments_never_exported": {
+"ok": false
+},
+"test_footnotes_exported": {
+"ok": false
+},
+"tester": {
+"ok": true
+},
+"tests": {
+"ok": true
+},
+"text": {
+"ok": true
+},
+"textbredd": {
+"ok": true
+},
+"texten": {
+"ok": true
+},
+"textens": {
+"ok": true
+},
+"texter": {
+"ok": true
+},
+"texterna": {
+"ok": true
+},
+"textkolumn": {
+"ok": true
+},
+"textordning": {
+"ok": true
+},
+"textstatistik": {
+"ok": true
+},
+"texttyp": {
+"ok": true
+},
+"texttyper": {
+"ok": true
+},
+"think": {
+"ok": false
+},
+"think_control": {
+"ok": false
+},
+"thinking": {
+"ok": false
+},
+"tid": {
+"ok": true
+},
+"tidigare": {
+"ok": true
+},
+"tidigt": {
+"ok": true
+},
+"tidningsartikel": {
+"ok": true
+},
+"tidningsartiklarna": {
+"ok": true
+},
+"tidsgräns": {
+"ok": true
+},
+"tidsstämpel": {
+"ok": true
+},
+"till": {
+"ok": true
+},
+"tillbaka": {
+"ok": true
+},
+"tillgänglighet": {
+"ok": true
+},
+"tillräckligt": {
+"ok": true
+},
+"tillsammans": {
+"ok": true
+},
+"tillåter": {
+"ok": true
+},
+"tion": {
+"ok": false
+},
+"tiptap": {
+"ok": false
+},
+"titel": {
+"ok": true
+},
+"title": {
+"ok": false
+},
+"tjänster": {
+"ok": true
+},
+"tmp": {
+"ok": false
+},
+"to": {
+"ok": false
+},
+"togs": {
+"ok": true
+},
+"tokens": {
+"ok": true
+},
+"tolka": {
+"ok": true
+},
+"tolkningsskala": {
+"ok": true
+},
+"tom": {
+"ok": true
+},
+"tomma": {
+"ok": true
+},
+"tonas": {
+"ok": true
+},
+"tools": {
+"ok": false
+},
+"traditionsenligt": {
+"ok": true
+},
+"trash": {
+"ok": false
+},
+"tre": {
+"ok": true
+},
+"tredje": {
+"ok": true
+},
+"troligen": {
+"ok": true
+},
+"trots": {
+"ok": true
+},
+"tryck": {
+"ok": true
+},
+"trycker": {
+"ok": true
+},
+"träff": {
+"ok": true
+},
+"träffar": {
+"ok": true
+},
+"träffen": {
+"ok": true
+},
+"träffsäkrare": {
+"ok": true
+},
+"tråkigare": {
+"ok": true
+},
+"ts": {
+"ok": false
+},
+"två": {
+"ok": true
+},
+"txt": {
+"ok": false
+},
+"tyder": {
+"ok": true
+},
+"tydlig": {
+"ok": true
+},
+"tydligt": {
+"ok": true
+},
+"type": {
+"ok": false
+},
+"typewriter-scrolling": {
+"ok": false
+},
+"typkontroll": {
+"ok": true
+},
+"typografi": {
+"ok": true
+},
+"typografifel": {
+"ok": true
+},
+"typografin": {
+"ok": true
+},
+"typografiska": {
+"ok": true
+},
+"typsnitt": {
+"ok": true
+},
+"tyvär": {
+"ok": false,
+"sugg": [
+"tvär",
+"tyvärr"
+],
+"t": 0.66
+},
+"tänk": {
+"ok": true
+},
+"u": {
+"ok": true
+},
+"under": {
+"ok": true
+},
+"underlag": {
+"ok": true
+},
+"understrukna": {
+"ok": true
+},
+"understryker": {
+"ok": true
+},
+"understrykning": {
+"ok": true
+},
+"understrykningar": {
+"ok": true
+},
+"undersökte": {
+"ok": true
+},
+"undvek": {
+"ok": true
+},
+"ungefär": {
+"ok": true
+},
+"unika": {
+"ok": true
+},
+"universitet": {
+"ok": true
+},
+"unsaved": {
+"ok": false
+},
+"up": {
+"ok": false
+},
+"updated": {
+"ok": false
+},
+"upp": {
+"ok": true
+},
+"uppdateras": {
+"ok": true
+},
+"uppdaterats": {
+"ok": true
+},
+"uppdatering": {
+"ok": true
+},
+"uppföljning": {
+"ok": true
+},
+"upphovsnotis": {
+"ok": true
+},
+"upphovsrättsnotisen": {
+"ok": true
+},
+"upphängda": {
+"ok": true
+},
+"upphöjd": {
+"ok": true
+},
+"upphöjda": {
+"ok": true
+},
+"upplysning": {
+"ok": true
+},
+"uppmärksamma": {
+"ok": true
+},
+"uppmätt": {
+"ok": true
+},
+"upprepningar": {
+"ok": true
+},
+"uppskattning": {
+"ok": true
+},
+"upptaget": {
+"ok": true
+},
+"ur": {
+"ok": true
+},
+"urklipp": {
+"ok": true
+},
+"user": {
+"ok": false
+},
+"ut": {
+"ok": true
+},
+"utan": {
+"ok": true
+},
+"utanför": {
+"ok": true
+},
+"utbredning": {
+"ok": true
+},
+"utforska": {
+"ok": true
+},
+"utgår": {
+"ok": true
+},
+"utifrån": {
+"ok": true
+},
+"utländska": {
+"ok": true
+},
+"utom": {
+"ok": true
+},
+"utskrift": {
+"ok": true
+},
+"uttryck": {
+"ok": true
+},
+"uttrycka": {
+"ok": true
+},
+"uttrycklig": {
+"ok": true
+},
+"uttryckligen": {
+"ok": true
+},
+"utvecklar": {
+"ok": true
+},
+"utvecklare": {
+"ok": true
+},
+"utvecklingsmiljön": {
+"ok": true
+},
+"utvärdera": {
+"ok": true
+},
+"utvärdering": {
+"ok": true
+},
+"uvicorn": {
+"ok": false
+},
+"vLLM": {
+"ok": false
+},
+"vad": {
+"ok": true
+},
+"val": {
+"ok": true
+},
+"vald": {
+"ok": true
+},
+"valet": {
+"ok": true
+},
+"valfri": {
+"ok": true
+},
+"valfritt": {
+"ok": true
+},
+"valt": {
+"ok": true
+},
+"vanlig": {
+"ok": true
+},
+"vanliga": {
+"ok": true
+},
+"vanligare": {
+"ok": true
+},
+"vanligaste": {
+"ok": true
+},
+"vanligt": {
+"ok": true
+},
+"var": {
+"ok": true
+},
+"vara": {
+"ok": true
+},
+"varandra": {
+"ok": true
+},
+"variabler": {
+"ok": true
+},
+"varit": {
+"ok": true
+},
+"varje": {
+"ok": true
+},
+"vecka": {
+"ok": true
+},
+"veckor": {
+"ok": true
+},
+"venv": {
+"ok": false
+},
+"verifiera": {
+"ok": true
+},
+"verkade": {
+"ok": true
+},
+"verkligen": {
+"ok": true
+},
+"verktitlar": {
+"ok": false
+},
+"verktygsfält": {
+"ok": true
+},
+"verktygsraden": {
+"ok": true
+},
+"verktygstipset": {
+"ok": true
+},
+"version": {
+"ok": true
+},
+"versionen": {
+"ok": true
+},
+"versioner": {
+"ok": true
+},
+"versionshistorik": {
+"ok": true
+},
+"vet": {
+"ok": true
+},
+"veta": {
+"ok": true
+},
+"vetenskap": {
+"ok": true
+},
+"vi": {
+"ok": true
+},
+"via": {
+"ok": true
+},
+"vid": {
+"ok": true
+},
+"vidare": {
+"ok": true
+},
+"vikten": {
+"ok": true
+},
+"viktig": {
+"ok": true
+},
+"viktigt": {
+"ok": true
+},
+"vilken": {
+"ok": true
+},
+"vilket": {
+"ok": true
+},
+"vill": {
+"ok": true
+},
+"vinkel": {
+"ok": true
+},
+"visa": {
+"ok": true
+},
+"visar": {
+"ok": true
+},
+"visas": {
+"ok": true
+},
+"viss": {
+"ok": true
+},
+"vissa": {
+"ok": true
+},
+"volym": {
+"ok": true
+},
+"vy": {
+"ok": true
+},
+"vyer": {
+"ok": true
+},
+"väl": {
+"ok": true
+},
+"välj": {
+"ok": true
+},
+"välja": {
+"ok": true
+},
+"väljas": {
+"ok": true
+},
+"väljer": {
+"ok": true
+},
+"väljs": {
+"ok": true
+},
+"väntar": {
+"ok": true
+},
+"värddatorn": {
+"ok": true
+},
+"värde": {
+"ok": true
+},
+"värdefull": {
+"ok": true
+},
+"värden": {
+"ok": true
+},
+"värdnamn": {
+"ok": true
+},
+"värt": {
+"ok": true
+},
+"växla": {
+"ok": true
+},
+"växlar": {
+"ok": true
+},
+"vågat": {
+"ok": true
+},
+"vågig": {
+"ok": true
+},
+"w": {
+"ok": true
+},
+"webbläsare": {
+"ok": true
+},
+"webbläsaren": {
+"ok": true
+},
+"webbläsarens": {
+"ok": true
+},
+"webbplats": {
+"ok": true
+},
+"withFootnotes": {
+"ok": false
+},
+"word-work": {
+"ok": false
+},
+"wordwork": {
+"ok": false
+},
+"yml": {
+"ok": false
+},
+"zip": {
+"ok": false
+},
+"zip-fil": {
+"ok": true
+},
+"½": {
+"ok": false
+},
+"Äldre": {
+"ok": true
+},
+"Ändra": {
+"ok": true
+},
+"Ändrar": {
+"ok": true
+},
+"Ändringar": {
+"ok": true
+},
+"Ändringarna": {
+"ok": true
+},
+"Är": {
+"ok": true
+},
+"Även": {
+"ok": true
+},
+"ÅLGÅNG": {
+"ok": false,
+"sugg": [
+"MÅLGÅNG",
+"ÅRGÅNG",
+"ÅTGÅNG",
+"KÅLGÅNG",
+"Å-GÅNG",
+"GALLGÅNG"
+],
+"t": 1.48
+},
+"Ålgång": {
+"ok": false,
+"sugg": [
+"Å-gång",
+"Målgång",
+"Årgång",
+"Åtgång",
+"Kålgång",
+"Gallgång"
+],
+"t": 0.98
+},
+"Ångra": {
+"ok": true
+},
+"Ångra-steg": {
+"ok": true
+},
+"Återställ": {
+"ok": true
+},
+"Åtgärd": {
+"ok": true
+},
+"Öppna": {
+"ok": true
+},
+"Överst": {
+"ok": true
+},
+"Övriga": {
+"ok": true
+},
+"äger": {
+"ok": true
+},
+"än": {
+"ok": true
+},
+"ändelsemönster": {
+"ok": true
+},
+"ändra": {
+"ok": true
+},
+"ändrade": {
+"ok": true
+},
+"ändras": {
+"ok": true
+},
+"ändrats": {
+"ok": true
+},
+"ändringar": {
+"ok": true
+},
+"ändringen": {
+"ok": true
+},
+"ändå": {
+"ok": true
+},
+"ännu": {
+"ok": true
+},
+"är": {
+"ok": true
+},
+"äta": {
+"ok": true
+},
+"även": {
+"ok": true
+},
+"ålder": {
+"ok": true
+},
+"ålgång": {
+"ok": false,
+"sugg": [
+"målgång",
+"årgång",
+"åtgång",
+"kålgång",
+"gallgång",
+"gång"
+],
+"t": 0.41
+},
+"ålgången": {
+"ok": false,
+"sugg": [
+"målgången",
+"årgången",
+"åtgången",
+"kålgången",
+"gallgången",
+"välgången"
+],
+"t": 0.62
+},
+"ångrar": {
+"ok": true
+},
+"åt": {
+"ok": true
+},
+"återställ": {
+"ok": true
+},
+"återställa": {
+"ok": true
+},
+"återställd": {
+"ok": true
+},
+"återställning": {
+"ok": true
+},
+"återställs": {
+"ok": true
+},
+"åtkomst": {
+"ok": true
+},
+"ögonblicksbild": {
+"ok": true
+},
+"ögonblicksbilder": {
+"ok": true
+},
+"öppen": {
+"ok": true
+},
+"öppet": {
+"ok": true
+},
+"öppna": {
+"ok": true
+},
+"öppnar": {
+"ok": true
+},
+"öppnas": {
+"ok": true
+},
+"över": {
+"ok": true
+},
+"överlappa": {
+"ok": true
+},
+"överst": {
+"ok": true
+},
+"övertygad": {
+"ok": true
+},
+"övriga": {
+"ok": true
+}
+},
+"stems": {
+"uppmärksamma": [
+"uppmärksamma"
+],
+"typografi": [
+"typografi"
+],
+"Fraser": [
+"fras"
+],
+"Klickbara": [
+"klickbar"
+],
+"Instruktionerna": [
+"instruktion"
+],
+"filtrera": [
+"filtrera"
+],
+"tillåter": [
+"tillåta"
+],
+"Skanning": [
+"skanning"
+],
+"skrivmaskinsläge": [],
+"sök": [
+"söka"
+],
+"recensent": [
+"recensent"
+],
+"understryker": [
+"understryker"
+],
+"datorns": [
+"dator"
+],
+"avgränsningslinje": [],
+"nedan": [
+"nedan"
+],
+"Var": [
+"var"
+],
+"ner": [
+"ner"
+],
+"Dra": [
+"dra"
+],
+"meta": [
+"meta"
+],
+"replikstreck": [],
+"Resultat": [
+"resultat"
+],
+"hej": [
+"heja"
+],
+"orörda": [
+"orörd"
+],
+"förbjuder": [
+"förbjuda"
+],
+"säkerställer": [
+"säkerställa"
+],
+"sju": [
+"sju",
+"sjua"
+],
+"upphovsnotis": [],
+"konvertera": [
+"konvertera"
+],
+"forskarna": [
+"forska"
+],
+"luft": [
+"luft"
+],
+"husen": [
+"hus"
+],
+"komplettering": [
+"komplettering"
+],
+"bildruta": [
+"bildruta"
+],
+"väl": [
+"väl"
+],
+"utskrift": [
+"utskrift"
+],
+"Ctrl": [
+"ctrl"
+],
+"flik": [
+"flik"
+],
+"inga": [
+"inga"
+],
+"öppnar": [
+"öppna"
+],
+"direkt": [
+"direkt"
+],
+"växlar": [
+"växla"
+],
+"from": [
+"from"
+],
+"gäller": [
+"gälla"
+],
+"vi": [
+"vi"
+],
+"varje": [
+"varje"
+],
+"källtext": [],
+"Sa": [
+"s"
+],
+"låsning": [
+"låsning"
+],
+"Statusraden": [],
+"andra": [
+"andra",
+"andrum"
+],
+"allergiskt": [
+"allergisk"
+],
+"Citat": [
+"citat"
+],
+"Status": [
+"status"
+],
+"dubbelt": [
+"dubbel"
+],
+"Spara": [
+"spara"
+],
+"O": [
+"o",
+"ackord",
+"afton",
+"banderoll",
+"drottning",
+"glasögon",
+"hotell",
+"jour",
+"komponent",
+"kostym",
+"marodör",
+"morgon",
+"novell",
+"oljepump",
+"overall",
+"period",
+"pistol",
+"porträtt",
+"produkt",
+"program",
+"soldat",
+"säsong",
+"volontär"
+],
+"kopia": [
+"kopia"
+],
+"filen": [
+"fil"
+],
+"kortkommandon": [
+"kortkommando"
+],
+"regelfel": [],
+"långt": [
+"lång"
+],
+"Studien": [
+"studie"
+],
+"vikten": [
+"vikt"
+],
+"husets": [
+"hus"
+],
+"synonymlexikon": [],
+"godtar": [
+"godta"
+],
+"skrivas": [
+"skriva"
+],
+"källor": [
+"källa"
+],
+"värdnamn": [],
+"vågat": [
+"vågad"
+],
+"starta": [
+"starta"
+],
+"svarar": [
+"svara"
+],
+"mono": [
+"mono"
+],
+"faktiskt": [
+"faktiskt",
+"faktisk"
+],
+"fisk": [
+"fisk"
+],
+"uppdatering": [
+"uppdatering"
+],
+"Rätta": [
+"rätta"
+],
+"sparat": [
+"spara"
+],
+"förklarar": [
+"förklara"
+],
+"sida": [
+"sida"
+],
+"skrivs": [
+"skriva"
+],
+"import": [
+"import"
+],
+"produktionsbygge": [],
+"lagring": [
+"lagring"
+],
+"automatiska": [
+"automat"
+],
+"kladda": [
+"kladda"
+],
+"bredd": [
+"bredd"
+],
+"ålder": [
+"ålder"
+],
+"kommentarer": [
+"kommentar"
+],
+"kommenteras": [
+"kommentera"
+],
+"kravet": [
+"krav"
+],
+"tidningsartikel": [
+"tidningsartikel"
+],
+"synonymer": [
+"synonym"
+],
+"påstod": [
+"påstå"
+],
+"variabler": [
+"variabel"
+],
+"ibland": [
+"ibland"
+],
+"volym": [
+"volym"
+],
+"väljer": [
+"väljer"
+],
+"exporteras": [
+"exportera"
+],
+"markerade": [
+"markerad",
+"markera"
+],
+"skala": [
+"skala"
+],
+"ändrade": [
+"ändra"
+],
+"lästid": [
+"lästid"
+],
+"själv": [
+"själv"
+],
+"igenom": [
+"igenom"
+],
+"kallad": [
+"kalla"
+],
+"publiceringssystem": [],
+"Windows": [
+"Windows"
+],
+"du": [
+"du"
+],
+"tangentbordet": [
+"tangentbord"
+],
+"saknas": [
+"sakna"
+],
+"tillsammans": [
+"tillsamman"
+],
+"Scout": [
+"scout"
+],
+"vald": [
+"valde"
+],
+"når": [
+"nå"
+],
+"strax": [
+"strax"
+],
+"webbplats": [
+"webbplats"
+],
+"intetsägande": [
+"intetsägande"
+],
+"de": [
+"d"
+],
+"dag": [
+"dag"
+],
+"systeminstruktionen": [],
+"scripts": [
+"script"
+],
+"kontakt": [
+"kontakt"
+],
+"mallar": [
+"malla",
+"mall"
+],
+"krönikan": [
+"krönika"
+],
+"kontrollera": [
+"kontrollera"
+],
+"plockas": [
+"plocka"
+],
+"några": [
+"några"
+],
+"missades": [
+"missa"
+],
+"föräldrarna": [
+"förälder"
+],
+"delats": [
+"dela"
+],
+"skickades": [
+"skicka"
+],
+"Uppskattad": [
+"uppskatta"
+],
+"kapitelnavigering": [],
+"kopplat": [
+"koppla"
+],
+"flyttas": [
+"flytta"
+],
+"övertygad": [
+"övertygad",
+"övertyga"
+],
+"resonera": [
+"resonera"
+],
+"olika": [
+"olik"
+],
+"vara": [
+"vara"
+],
+"Högerklicksmeny": [],
+"stängs": [
+"stänga"
+],
+"telefonnummer": [
+"telefonnummer"
+],
+"ersätt": [
+"ersätt"
+],
+"Användare": [
+"använda"
+],
+"växla": [
+"växla"
+],
+"tangentbordsnavigering": [],
+"Ta": [
+"tum"
+],
+"slår": [
+"slå"
+],
+"Lagras": [
+"lagra"
+],
+"För": [
+"för"
+],
+"medan": [
+"medan"
+],
+"post": [
+"post"
+],
+"Felsökning": [
+"felsökning"
+],
+"block": [
+"block"
+],
+"modellens": [
+"modell"
+],
+"aktuella": [
+"aktuell"
+],
+"reserv": [
+"reserv"
+],
+"vad": [
+"vad"
+],
+"Återställ": [
+"återställa"
+],
+"kursivera": [
+"kursivera"
+],
+"besvarade": [
+"besvara"
+],
+"används": [
+"använda"
+],
+"textbredd": [],
+"Valbart": [
+"valbar"
+],
+"vanligaste": [
+"vanlig"
+],
+"Förstudie": [
+"förstudie"
+],
+"gälla": [
+"gälla",
+"gäll"
+],
+"visas": [
+"visas",
+"visum",
+"vis"
+],
+"sidnummer": [
+"sidnummer"
+],
+"standard": [
+"standard"
+],
+"Dessutom": [
+"dessutom"
+],
+"Fritt": [
+"fri"
+],
+"fler": [
+"flera"
+],
+"filer": [
+"fila"
+],
+"Skydd": [
+"skydd"
+],
+"automatisk": [
+"automat"
+],
+"redigerar": [
+"redigera"
+],
+"Inklistrad": [
+"inklistrad"
+],
+"Lägger": [
+"lägger"
+],
+"Går": [
+"gå"
+],
+"Citattecken": [
+"citattecken"
+],
+"Ej": [
+"ej"
+],
+"skelett": [
+"skelett"
+],
+"än": [
+"än"
+],
+"Byte": [
+"byte"
+],
+"fotbollsmatchens": [
+"fotbollsmatch"
+],
+"backup": [
+"backup"
+],
+"Modellval": [],
+"tabeller": [
+"tabell"
+],
+"Resonemang": [
+"resonemang"
+],
+"Stängs": [
+"stänga"
+],
+"kvällstidningsjournalist": [],
+"räknas": [
+"räkna"
+],
+"Adress": [
+"adress"
+],
+"fyra": [
+"fyra"
+],
+"mitten": [
+"mitt"
+],
+"Enkla": [
+"enkel"
+],
+"symbol": [
+"symbol"
+],
+"atomärt": [
+"atomär"
+],
+"REST": [
+"rest"
+],
+"Drift": [
+"drift"
+],
+"Analys": [
+"analys"
+],
+"essä": [
+"essä"
+],
+"något": [
+"något"
+],
+"online": [
+"online"
+],
+"sluka": [
+"sluka"
+],
+"snabbstatistik": [],
+"Lokal": [
+"lokal"
+],
+"byte": [
+"byte"
+],
+"enda": [
+"enda"
+],
+"kapitelbrytning": [],
+"Definitioner": [
+"definition"
+],
+"här": [
+"här"
+],
+"länkadresser": [],
+"statusraden": [],
+"namngivna": [
+"namngiven"
+],
+"skyddar": [
+"skydda"
+],
+"Export": [
+"export"
+],
+"välja": [
+"välja"
+],
+"behöver": [
+"behöva"
+],
+"springer": [
+"springer"
+],
+"förlorat": [
+"förlorad",
+"förlora"
+],
+"upplysning": [
+"upplysning"
+],
+"ofullständigt": [
+"ofullständig"
+],
+"scenbrytningar": [],
+"Reglerna": [
+"regel"
+],
+"installerats": [
+"installera"
+],
+"adressen": [
+"adress"
+],
+"Kod": [
+"kod"
+],
+"på": [
+"på"
+],
+"riktiga": [
+"riktig"
+],
+"dialog": [
+"dialog"
+],
+"tolkningsskala": [],
+"Kortkommando": [
+"kortkommando"
+],
+"Citatlista": [],
+"hänvisning": [
+"hänvisning"
+],
+"sup": [
+"sup"
+],
+"utvärdera": [
+"utvärdera"
+],
+"krönikörer": [
+"krönikör"
+],
+"mindre": [
+"mindre"
+],
+"ställa": [
+"ställa"
+],
+"förbi": [
+"förbi"
+],
+"kan": [
+"kana"
+],
+"krav": [
+"krav"
+],
+"då": [
+"då"
+],
+"PLAN": [
+"plan"
+],
+"utvecklingsmiljön": [],
+"erbjuds": [
+"erbjuda"
+],
+"barnens": [
+"barn"
+],
+"kulturjournalist": [
+"kulturjournalist"
+],
+"kulturjournalisterna": [
+"kulturjournalist"
+],
+"sommarstugeägare": [
+"sommarstugeägare"
+],
+"järnvägsstationen": [
+"järnvägsstation"
+],
+"regeringsförklaringen": [
+"regeringsförklaring"
+],
+"ordbehandlare": [
+"ordbehandlare"
+],
+"ordbehandlaren": [
+"ordbehandlare"
+],
+"Stockholm": [
+"Stockholm"
+],
+"stockholmare": [
+"stockholmare"
+],
+"Göteborg": [
+"Göteborg"
+],
+"hus": [
+"hus"
+],
+"bilarna": [
+"bil"
+],
+"sprang": [
+"sprang"
+],
+"gick": [
+"gå"
+],
+"gått": [
+"gå"
+],
+"skrivit": [
+"skriva"
+],
+"skrev": [
+"skrev",
+"skriva"
+],
+"skriva": [
+"skriva"
+],
+"barnen": [
+"barn"
+],
+"hejsan": [
+"hejsan"
+],
+"sjukhusvistelse": [
+"sjukhusvistelse"
+],
+"tidningsartiklarna": [
+"tidningsartikel"
+],
+"recensionen": [
+"recension"
+],
+"stavningskontroll": [
+"stavningskontroll"
+],
+"stavningskontrollen": [
+"stavningskontroll"
+],
+"felstavat": [
+"felstavad",
+"felstava"
+],
+"allergi": [
+"allergi"
+],
+"allergier": [
+"allergi"
+],
+"eksem": [
+"eksem"
+],
+"eksemet": [
+"eksem"
+],
+"barnallergi": [],
+"mjölkallergi": [],
+"Matallergier": [],
+"Huvudstaden": [
+"huvudstad"
+],
+"NATO": [
+"NATO-",
+"Nato"
+],
+"EU-kommissionen": [],
+"e-post": [
+"e-post"
+]
+}
+}

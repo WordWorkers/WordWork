@@ -1,0 +1,26 @@
+Word Work
+Copyright 2026 Mikke Schirén
+
+Licensierad under Apache License, Version 2.0 (se LICENSE).
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Word Work innehåller eller använder komponenter från tredje part med egna
+licenser. Den fullständiga förteckningen med licenstexter finns i
+THIRD_PARTY_LICENSES.md och LICENSES/ (i Docker-imagen: /app/licenses/).
+
+Särskilt:
+
+- Pandoc, Copyright (C) 2006-2024 John MacFarlane, GNU GPL version 2 eller
+  senare. Körs som ett separat program och följer med i Docker-imagen
+  (via pypandoc_binary). Källkoden finns på https://github.com/jgm/pandoc
+  (taggen för versionen som anges i THIRD_PARTY_NOTICES.txt).
+
+- Den stora svenska ordlistan (sv_SE.aff, sv_SE.dic),
+  Copyright © 2003-19 Göran Andersson, GNU LGPL version 3.
+
+- Synlex/th_sv_SE.dat, Copyright (c) Viggo Kann KTH 2009, konverterad till
+  OpenOffice.org-format av Niklas Johansson. Ändrad för Word Work:
+  omkodad från ISO-8859-1 till UTF-8.
+
+- Typsnitten Literata, Source Sans 3 och IBM Plex Mono,
+  SIL Open Font License 1.1.

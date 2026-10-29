@@ -1,0 +1,47 @@
+name: CI
+
+# Fast checks on every push: formatting, lints, all tests (with the real
+# Pandoc 3.9 the app bundles) and the frontend typecheck. The installable
+# apps are built by build.yml.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: System packages (WebKitGTK for the Tauri crate)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libsoup-3.0-dev libgtk-3-dev librsvg2-dev libxdo-dev libssl-dev libayatana-appindicator3-dev libdbus-1-dev
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci --no-audit --no-fund
+        working-directory: frontend
+      - run: npm run typecheck
+        working-directory: frontend
+      - run: npm run build
+        working-directory: frontend
+      - name: Pandoc sidecar (pinned 3.9, checksum-verified)
+        run: scripts/fetch-pandoc.sh x86_64-unknown-linux-gnu
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo test --workspace
+        env:
+          WW_PANDOC: src-tauri/binaries/ww-pandoc-x86_64-unknown-linux-gnu

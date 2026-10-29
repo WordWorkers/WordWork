@@ -1,0 +1,8 @@
+/target
+node_modules/
+/frontend/dist
+/src-tauri/binaries/ww-pandoc-*
+/src-tauri/binaries/pandoc-*
+/src-tauri/gen
+.DS_Store
+/.phase0

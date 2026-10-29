@@ -1,0 +1,244 @@
+{
+ "files": {
+  ".chats/Ålgång – krönika/c1.json": "{\n \"id\": \"c1\",\n \"created\": \"<ISO>\",\n \"updated\": \"<ISO>\",\n \"model\": \"qwen3:8b\",\n \"messages\": [\n  {\n   \"role\": \"user\",\n   \"content\": \"Granska\",\n   \"label\": \"Granska språket\"\n  },\n  {\n   \"role\": \"assistant\",\n   \"content\": \"Svar\",\n   \"thinking\": \"hmm\",\n   \"meta\": \"qwen · 3 s\"\n  },\n  {\n   \"role\": \"user\",\n   \"content\": \"Följdfråga\"\n  },\n  {\n   \"role\": \"assistant\",\n   \"meta\": \"Avbrutet\"\n  }\n ]\n}\n",
+  ".history/Ålgång – krönika/<V0>.md": "---\ntitle: Ålgång\nauthor: Mikke\n---\n\n# Ålgång\n\nÅlarna vandrar – ”som alltid”. Mer text.\n",
+  ".history/Ålgång – krönika/<V1>.md": "Ny text utan frontmatter.\n",
+  ".history/Ålgång – krönika/<V2>.md": "Tredje versionen.\n",
+  ".history/Ålgång – krönika/<V3>.md": "---\ntitle: Ålgång\nauthor: Mikke\n---\n\n# Ålgång\n\nÅlarna vandrar – ”som alltid”. Mer text.\n",
+  ".history/Ålgång – krönika/index.json": "[\n {\n  \"id\": \"<V0>\",\n  \"created\": \"<ISO>\",\n  \"kind\": \"manual\",\n  \"label\": \"\",\n  \"words\": 7\n },\n {\n  \"id\": \"<V1>\",\n  \"created\": \"<ISO>\",\n  \"kind\": \"named\",\n  \"label\": \"Ny etikett, samma text\",\n  \"words\": 4\n },\n {\n  \"id\": \"<V2>\",\n  \"created\": \"<ISO>\",\n  \"kind\": \"manual\",\n  \"label\": \"\",\n  \"words\": 2\n },\n {\n  \"id\": \"<V3>\",\n  \"created\": \"<ISO>\",\n  \"kind\": \"restore\",\n  \"label\": \"\",\n  \"words\": 7\n }\n]",
+  ".trash/<STAMP>-Namnlös 2.md": "Hej",
+  ".trash/<STAMP>-Ålgång.chat-c2.json": "{\n \"id\": \"c2\",\n \"created\": \"<ISO>\",\n \"updated\": \"<ISO>\",\n \"model\": \"\",\n \"messages\": [\n  {\n   \"role\": \"user\",\n   \"content\": \"  Ett   långt\\nsamtal  \"\n  }\n ]\n}\n",
+  ".wordwork/settings.json": "{\n \"theme\": \"sepia\",\n \"size\": 21,\n \"lineHeight\": 1.7,\n \"aiThink\": false,\n \"defaultGenre\": \"\",\n \"list\": [\n  1,\n  2\n ]\n}\n",
+  "Utkast (återställd).md": "",
+  "Utkast.md": "Nytt utkast",
+  "Ålgång – krönika.md": "---\ntitle: Ålgång\nauthor: Mikke\n---\n\n# Ålgång\n\nÅlarna vandrar – ”som alltid”. Mer text.\n"
+ },
+ "state": {
+  "calls": [
+   [
+    "create",
+    {
+     "id": "Ålgång",
+     "name": "Ålgång",
+     "words": 5
+    }
+   ],
+   [
+    "create",
+    {
+     "id": "Namnlös",
+     "name": "Namnlös",
+     "words": 0
+    }
+   ],
+   [
+    "create",
+    {
+     "id": "Namnlös 2",
+     "name": "Namnlös 2",
+     "words": 1
+    }
+   ],
+   [
+    "save",
+    null
+   ],
+   [
+    "save",
+    null
+   ],
+   [
+    "snapshot",
+    {
+     "created": "<ISO>",
+     "id": "<V1>",
+     "kind": "named",
+     "label": "Till redaktör",
+     "words": 4
+    }
+   ],
+   [
+    "snapshot",
+    {
+     "created": "<ISO>",
+     "id": "<V1>",
+     "kind": "named",
+     "label": "Ny etikett, samma text",
+     "words": 4
+    }
+   ],
+   [
+    "save",
+    null
+   ],
+   [
+    "restore",
+    null
+   ],
+   [
+    "chat",
+    {
+     "created": "<ISO>",
+     "id": "c1",
+     "messages": 2,
+     "model": "qwen3:8b",
+     "title": "Granska språket",
+     "updated": "<ISO>"
+    }
+   ],
+   [
+    "append",
+    {
+     "created": "<ISO>",
+     "id": "c1",
+     "messages": 4,
+     "model": "qwen3:8b",
+     "title": "Granska språket",
+     "updated": "<ISO>"
+    }
+   ],
+   [
+    "chat",
+    {
+     "created": "<ISO>",
+     "id": "c2",
+     "messages": 1,
+     "model": "",
+     "title": "Ett långt samtal",
+     "updated": "<ISO>"
+    }
+   ],
+   [
+    "chat_delete",
+    null
+   ],
+   [
+    "rename",
+    {
+     "id": "Ålgång – krönika",
+     "name": "Ålgång – krönika",
+     "words": 7
+    }
+   ],
+   [
+    "settings",
+    null
+   ],
+   [
+    "rename",
+    {
+     "id": "Utkast",
+     "name": "Utkast",
+     "words": 0
+    }
+   ],
+   [
+    "delete",
+    null
+   ],
+   [
+    "create",
+    {
+     "id": "Utkast",
+     "name": "Utkast",
+     "words": 2
+    }
+   ],
+   [
+    "restore_trash",
+    {
+     "kind": "document",
+     "name": "Utkast (återställd)"
+    }
+   ],
+   [
+    "delete",
+    null
+   ]
+  ],
+  "chats": {
+   "Utkast": [],
+   "Utkast (återställd)": [],
+   "Ålgång – krönika": [
+    {
+     "created": "<ISO>",
+     "id": "c1",
+     "messages": 4,
+     "model": "qwen3:8b",
+     "title": "Granska språket",
+     "updated": "<ISO>"
+    }
+   ]
+  },
+  "history": {
+   "Utkast": [],
+   "Utkast (återställd)": [],
+   "Ålgång – krönika": [
+    {
+     "created": "<ISO>",
+     "id": "<V3>",
+     "kind": "restore",
+     "label": "",
+     "words": 7
+    },
+    {
+     "created": "<ISO>",
+     "id": "<V2>",
+     "kind": "manual",
+     "label": "",
+     "words": 2
+    },
+    {
+     "created": "<ISO>",
+     "id": "<V1>",
+     "kind": "named",
+     "label": "Ny etikett, samma text",
+     "words": 4
+    },
+    {
+     "created": "<ISO>",
+     "id": "<V0>",
+     "kind": "manual",
+     "label": "",
+     "words": 7
+    }
+   ]
+  },
+  "list": [
+   {
+    "id": "Utkast",
+    "name": "Utkast",
+    "words": 2
+   },
+   {
+    "id": "Utkast (återställd)",
+    "name": "Utkast (återställd)",
+    "words": 0
+   },
+   {
+    "id": "Ålgång – krönika",
+    "name": "Ålgång – krönika",
+    "words": 7
+   }
+  ],
+  "trash": [
+   {
+    "deleted": "<ISO>",
+    "id": "<STAMP>-Ålgång.chat-c2.json",
+    "kind": "chat",
+    "messages": 1,
+    "name": "Ålgång",
+    "title": "Ett långt samtal"
+   },
+   {
+    "chats": 0,
+    "deleted": "<ISO>",
+    "history": false,
+    "id": "<STAMP>-Namnlös 2.md",
+    "kind": "document",
+    "name": "Namnlös 2",
+    "words": 1
+   }
+  ]
+ }
+}
