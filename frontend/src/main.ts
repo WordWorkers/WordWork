@@ -11,7 +11,7 @@ import { diffWords } from "diff";
 import { api, ApiError, invokeRoute, type Version } from "./api";
 import { AIPanel } from "./ai";
 import { renderCharPanel } from "./chars";
-import { closeMenu, openContextMenu } from "./contextmenu";
+import { closeMenu, openContextMenu, openSourceContextMenu } from "./contextmenu";
 import { diffChars } from "diff";
 import { fixTypography, QUOTE_STYLES, type QuoteStyle } from "./typography";
 import { DocEditor, type FootnoteAt, type ViewMode } from "./editor";
@@ -164,6 +164,13 @@ class App {
           removeComment: (from, to) => this.editor.removeComment(from, to),
           footnote: (pos) => void this.editFootnote(pos),
           removeFootnote: (pos) => this.editor.removeFootnote(pos),
+        }),
+      onSourceContextMenu: (event, offset) =>
+        openSourceContextMenu(event, offset, {
+          spell: this.spell,
+          source: this.editor.source,
+          replace: (from, to, text) => this.editor.replaceRange(from, to, text),
+          openChars: () => this.toggleChars(true),
         }),
     });
     this.editor.typewriter = this.settings.typewriter;

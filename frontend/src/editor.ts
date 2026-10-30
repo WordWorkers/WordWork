@@ -98,6 +98,8 @@ export interface EditorOptions {
   onActivity: () => void;
   onSelection?: () => void;
   onContextMenu?: (event: MouseEvent, view: EditorView) => boolean;
+  /** Right-click in the Markdown view; `offset` is the character under the pointer. */
+  onSourceContextMenu?: (event: MouseEvent, offset: number) => boolean;
   /** Click on commented text (to show the comment). */
   onCommentClick?: (comment: CommentRange, rect: DOMRect) => void;
   /** Click on a footnote number. */
@@ -141,6 +143,12 @@ export class DocEditor {
     this.sourceEl.setAttribute("aria-label", "Markdown-källtext");
     this.host.append(this.wysiwygEl, this.sourceEl);
 
+    this.sourceEl.addEventListener("contextmenu", (event) => {
+      // Shift+right-click: the system menu, as in the Write view.
+      if (event.shiftKey || !this.opts.onSourceContextMenu) return;
+      const offset = sourceOffsetAt(this.sourceEl, event.clientX, event.clientY);
+      if (offset !== null && this.opts.onSourceContextMenu(event, offset)) event.preventDefault();
+    });
     this.sourceEl.addEventListener("input", () => {
       this.markdown = this.sourceEl.value;
       this.autoGrow();
@@ -449,8 +457,21 @@ export class DocEditor {
     ta.dispatchEvent(new Event("input", { bubbles: true }));
   }
 
-  /** Replaces text in a range (used by corrections and synonyms). */
+  /** The Markdown view's text field (for its right-click menu). */
+  get source(): HTMLTextAreaElement {
+    return this.sourceEl;
+  }
+
+  /**
+   * Replaces text in a range (used by corrections and synonyms). Positions are
+   * ProseMirror positions in the Write view and character offsets in the
+   * Markdown view.
+   */
   replaceRange(from: number, to: number, text: string): void {
+    if (this.mode === "markdown") {
+      this.replaceSource(from, to, text);
+      return;
+    }
     if (!this.editor) return;
     const view = this.editor.view;
     view.dispatch(view.state.tr.insertText(text, from, to));
@@ -700,6 +721,46 @@ export function splitFrontmatter(md: string): { frontmatter: string; body: strin
   const m = FRONTMATTER_RE.exec(md);
   if (!m) return { frontmatter: "", body: md };
   return { frontmatter: m[0], body: md.slice(m[0].length) };
+}
+
+/**
+ * The character offset in a text field under a screen point, or null. A text
+ * field has no API for this, so an exact, transparent copy is laid over it
+ * for a moment and asked with caretRangeFromPoint / caretPositionFromPoint.
+ */
+function sourceOffsetAt(ta: HTMLTextAreaElement, x: number, y: number): number | null {
+  const cs = getComputedStyle(ta);
+  const rect = ta.getBoundingClientRect();
+  const mirror = document.createElement("div");
+  for (const p of ["font", "letterSpacing", "lineHeight", "padding", "border", "boxSizing", "tabSize", "wordSpacing", "textIndent"] as const) {
+    mirror.style[p] = cs[p];
+  }
+  Object.assign(mirror.style, {
+    position: "fixed",
+    left: `${rect.left}px`,
+    top: `${rect.top - ta.scrollTop}px`,
+    width: `${rect.width}px`,
+    whiteSpace: "pre-wrap",
+    overflowWrap: "break-word",
+    borderColor: "transparent",
+    color: "transparent",
+    opacity: "0",
+    zIndex: "2147483647",
+  });
+  const text = document.createTextNode(ta.value + "\u200b");
+  mirror.append(text);
+  document.body.append(mirror);
+  try {
+    const doc = document as Document & {
+      caretPositionFromPoint?: (x: number, y: number) => { offsetNode: Node; offset: number } | null;
+    };
+    const pos = doc.caretPositionFromPoint?.(x, y);
+    if (pos) return pos.offsetNode === text ? Math.min(pos.offset, ta.value.length) : null;
+    const range = document.caretRangeFromPoint?.(x, y);
+    return range && range.startContainer === text ? Math.min(range.startOffset, ta.value.length) : null;
+  } finally {
+    mirror.remove();
+  }
 }
 
 /** Height (px) from the text field's top edge to a character, measured with an invisible copy. */
