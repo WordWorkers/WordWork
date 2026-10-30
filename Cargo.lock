@@ -5967,7 +5967,7 @@ dependencies = [
 
 [[package]]
 name = "word-work"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "keyring",
  "log",
@@ -6037,7 +6037,7 @@ dependencies = [
 
 [[package]]
 name = "ww-core"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "chrono",
  "dunce",
