@@ -1,28 +1,10 @@
 name: Build
-
-# Installable apps for every platform:
-#   macOS Apple Silicon (.dmg)  macOS Intel (.dmg)  Windows (.exe installer, .msi)
-#   Linux (.deb, .rpm, .AppImage)
-#
-# Every push to main and every pull request uploads the files as workflow
-# artifacts. Pushing a tag like v2.0.0 also creates a *draft* GitHub release
-# with all files and a SHA256SUMS file – review it and press Publish.
-#
-# macOS builds are ad-hoc signed until Apple secrets are added (see
-# docs/INSTALL.md). With the secrets APPLE_CERTIFICATE,
-# APPLE_CERTIFICATE_PASSWORD, APPLE_SIGNING_IDENTITY, APPLE_ID, APPLE_PASSWORD
-# and APPLE_TEAM_ID set, the same job signs with the Developer ID and
-# notarizes – nothing else to change.
-
 on:
   push:
-    branches: [main]
     tags: ["v*"]
   pull_request:
   workflow_dispatch:
 
-# Third-party actions are pinned by commit (Dependabot keeps them current);
-# the token can only read unless a job asks for more.
 permissions:
   contents: read
 
@@ -43,7 +25,6 @@ jobs:
             target: aarch64-apple-darwin
             bundles: app,dmg
           - name: macOS (Intel)
-            # Cross-compiled on the Apple Silicon runner (Intel runners are being retired).
             os: macos-15
             target: x86_64-apple-darwin
             bundles: app,dmg
@@ -52,8 +33,7 @@ jobs:
             target: x86_64-pc-windows-msvc
             bundles: nsis,msi
           - name: Linux
-            # Oldest supported Ubuntu → the .deb/.AppImage run on more distributions.
-            os: ubuntu-22.04
+            os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             bundles: deb,rpm,appimage
     defaults:
