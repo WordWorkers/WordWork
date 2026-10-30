@@ -1,6 +1,6 @@
-//! File storage of documents (Markdown) and version history. Ported from
-//! `storage.py`; the on-disk format is identical so the Docker version's data
-//! folder can be opened as-is.
+//! File storage of documents (Markdown) and version history. The on-disk
+//! format is the Docker version's, so its data folder can be opened as-is –
+//! hence the Python-compatible JSON and time formats below.
 //!
 //! ```text
 //! <data>/<name>.md                     current documents

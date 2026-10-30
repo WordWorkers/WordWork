@@ -1,8 +1,8 @@
-import { invoke, isTauri } from "@tauri-apps/api/core";
+import { invoke } from "@tauri-apps/api/core";
 /**
- * Kopiera texten för ett publiceringssystem (WordPress m.fl.): HTML med enbart
- * struktur (rubriker, stycken, fet, kursiv, citat, listor, länkar) och samma text
- * som ren text, för system som inte tar emot HTML.
+ * Copy the text for a publishing system (WordPress etc.): HTML with structure only
+ * (headings, paragraphs, bold, italic, quotes, lists, links) and the same text
+ * as plain text, for systems that don't accept HTML.
  */
 import DOMPurify from "dompurify";
 import { marked } from "marked";
@@ -16,13 +16,13 @@ const TAGS = ["h1", "h2", "h3", "h4", "h5", "h6", "p", "br", "strong", "em", "bl
 export function publishContent(markdown: string, withTitle: boolean): { html: string; text: string } {
   let body = stripComments(stripNotes(splitFrontmatter(markdown).body));
   if (!withTitle) body = body.replace(/^\s*#[ \t]+[^\n]*\n*/, "");
-  // Fotnoter: upphöjda siffror i texten och en numrerad lista sist.
+  // Footnotes: superscript numbers in the text and a numbered list at the end.
   body = footnotesForPublishing(body);
   const raw = marked.parse(body, { async: false, gfm: true, breaks: false }) as string;
   const html = DOMPurify.sanitize(raw, { ALLOWED_TAGS: TAGS, ALLOWED_ATTR: ["href"] }).trim();
   const root = document.createElement("div");
   root.innerHTML = html;
-  // I ren text blir fotnotssiffrorna upphöjda tecken (¹ ² ³).
+  // In plain text the footnote numbers become superscript characters (¹ ² ³).
   for (const sup of Array.from(root.querySelectorAll("sup"))) {
     const n = Number(sup.textContent);
     sup.replaceWith(Number.isFinite(n) && n > 0 ? superscript(n) : (sup.textContent ?? ""));
@@ -51,36 +51,11 @@ function toText(el: Element): string {
   return blocks.filter(Boolean).join("\n\n");
 }
 
-/** Lägger både HTML och ren text i urklipp. */
+/**
+ * Puts both HTML and plain text on the clipboard. Done in Rust: the WebView
+ * only allows clipboard writes right after a click, not after a menu choice
+ * or a keyboard shortcut handled by the menu.
+ */
 export async function copyRich(html: string, text: string): Promise<void> {
-  // Mac app: via Rust – the WebView only allows clipboard writes right after a
-  // click, not after a menu choice or a keyboard shortcut handled by the menu.
-  if (isTauri()) {
-    await invoke("clipboard_write_html", { html, text });
-    return;
-  }
-  if (navigator.clipboard && "write" in navigator.clipboard && typeof ClipboardItem !== "undefined") {
-    await navigator.clipboard.write([
-      new ClipboardItem({
-        "text/html": new Blob([html], { type: "text/html" }),
-        "text/plain": new Blob([text], { type: "text/plain" }),
-      }),
-    ]);
-    return;
-  }
-  // Reserv: markera en osynlig kopia och kopiera den.
-  const div = document.createElement("div");
-  div.contentEditable = "true";
-  div.innerHTML = html;
-  Object.assign(div.style, { position: "fixed", left: "-9999px", top: "0" });
-  document.body.append(div);
-  const range = document.createRange();
-  range.selectNodeContents(div);
-  const sel = getSelection();
-  sel?.removeAllRanges();
-  sel?.addRange(range);
-  const ok = document.execCommand("copy");
-  sel?.removeAllRanges();
-  div.remove();
-  if (!ok) throw new Error("Webbläsaren tillät inte kopiering");
+  await invoke("clipboard_write_html", { html, text });
 }

@@ -1,14 +1,14 @@
 /**
- * Editorn: två vyer över samma Markdown-text.
+ * The editor: two views of the same Markdown text.
  *
- *  - "write":    WYSIWYG-lik vy (TipTap/ProseMirror). Endast formatering som
- *                Markdown kan uttrycka finns i schemat – inga typsnitt, färger,
- *                understrykning osv. Inklistrad formatering som inte är Markdown
- *                rensas bort automatiskt av schemat.
- *  - "markdown": källtexten i ett textfält.
+ *  - "write":    WYSIWYG-like view (TipTap/ProseMirror). Only formatting that
+ *                Markdown can express exists in the schema – no fonts, colours,
+ *                underline etc. Pasted formatting that is not Markdown is
+ *                stripped automatically by the schema.
+ *  - "markdown": the source text in a text field.
  *
- * Markdown-strängen är alltid sanningen. Den skrivs bara om från WYSIWYG-vyn
- * när användaren faktiskt redigerar där.
+ * The Markdown string is always the source of truth. It is only rewritten from
+ * the WYSIWYG view when the user actually edits there.
  */
 import { Editor, Extension } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
@@ -38,7 +38,7 @@ import {
 
 export type ViewMode = "write" | "markdown";
 
-/** Markerar stycket där markören står (för fokusläge med dimning). */
+/** Marks the paragraph containing the cursor (for focus mode with dimming). */
 const CurrentBlock = Extension.create({
   name: "currentBlock",
   addProseMirrorPlugins() {
@@ -62,8 +62,8 @@ const CurrentBlock = Extension.create({
 });
 
 /**
- * Platshållartext när dokumentet är tomt. (TipTaps Placeholder går igenom hela
- * dokumentet vid varje tangenttryckning – märkbart i långa manus.)
+ * Placeholder text when the document is empty. (TipTap's Placeholder walks the whole
+ * document on every keystroke – noticeable in long manuscripts.)
  */
 const EmptyPlaceholder = Extension.create({
   name: "emptyPlaceholder",
@@ -93,20 +93,20 @@ export interface EditorOptions {
   host: HTMLElement;
   spell: SpellService;
   typography: () => TypographyOptions;
-  /** Texten har ändrats. Markdown serialiseras först när den behövs (getMarkdown). */
+  /** The text has changed. Markdown is only serialized when needed (getMarkdown). */
   onChange: () => void;
   onActivity: () => void;
   onSelection?: () => void;
   onContextMenu?: (event: MouseEvent, view: EditorView) => boolean;
-  /** Klick på kommenterad text (för att visa kommentaren). */
+  /** Click on commented text (to show the comment). */
   onCommentClick?: (comment: CommentRange, rect: DOMRect) => void;
-  /** Klick på en fotnotssiffra. */
+  /** Click on a footnote number. */
   onFootnoteClick?: (footnote: FootnoteAt, rect: DOMRect) => void;
 }
 
 export interface FootnoteAt {
   pos: number;
-  /** Fotnotens nummer i texten (1, 2, 3 …). */
+  /** The footnote's number in the text (1, 2, 3 …). */
   number: number;
   text: string;
 }
@@ -121,12 +121,12 @@ export class DocEditor {
   private changeTimer: number | undefined;
   mode: ViewMode = "write";
   typewriter = false;
-  /** Aktiv sökning (gäller båda vyerna). */
+  /** Active search (applies to both views). */
   private searchRe: RegExp | null = null;
   private longSentenceLimit = 0;
   private srcMatches: Range[] = [];
   private srcCurrent = -1;
-  /** Fotnotsdefinitioner utan hänvisning – sparas orörda sist i texten. */
+  /** Footnote definitions without a reference – saved untouched at the end of the text. */
   private orphanFootnotes: { id: string; text: string }[] = [];
 
   constructor(private opts: EditorOptions) {
@@ -150,7 +150,7 @@ export class DocEditor {
     window.addEventListener("resize", () => this.autoGrow());
   }
 
-  /** Läser in ett nytt dokument (nollställer ångra-historiken). */
+  /** Loads a new document (resets the undo history). */
   load(markdown: string): void {
     this.markdown = markdown;
     this.wysiwygDirty = false;
@@ -159,7 +159,7 @@ export class DocEditor {
 
   getMarkdown(): string {
     if (this.wysiwygDirty && this.editor) {
-      // Frontmatter visas inte i Skriv-vyn och sätts tillbaka orört.
+      // Frontmatter is not shown in the Write view and is put back untouched.
       const editor = this.editor;
       this.markdown =
         splitFrontmatter(this.markdown).frontmatter +
@@ -171,7 +171,7 @@ export class DocEditor {
 
   setMode(mode: ViewMode): void {
     if (mode === this.mode) return;
-    this.getMarkdown(); // ta med ev. ändringar från WYSIWYG
+    this.getMarkdown(); // include any changes from WYSIWYG
     this.mode = mode;
     this.render();
     this.focus();
@@ -182,7 +182,7 @@ export class DocEditor {
     else this.sourceEl.focus();
   }
 
-  /** Löptext utan Markdown-syntax (stycken åtskilda av tomrad). Egna anteckningar räknas inte. */
+  /** Body text without Markdown syntax (paragraphs separated by a blank line). Private notes are not counted. */
   getPlainText(): string {
     if (this.editor) {
       const blocks: string[] = [];
@@ -197,12 +197,12 @@ export class DocEditor {
     return stripMarkdown(stripComments(stripNotes(stripFootnotes(splitFrontmatter(this.markdown).body))));
   }
 
-  /** Frontmatter (tom sträng om den saknas). */
+  /** Frontmatter (empty string if missing). */
   getFrontmatter(): string {
     return splitFrontmatter(this.getMarkdown()).frontmatter;
   }
 
-  /** Byter frontmatter utan att röra texten (metadatapanelen). */
+  /** Replaces the frontmatter without touching the text (metadata panel). */
   setFrontmatter(frontmatter: string): void {
     const md = this.getMarkdown();
     const { frontmatter: old, body } = splitFrontmatter(md);
@@ -219,10 +219,10 @@ export class DocEditor {
     this.emitChange();
   }
 
-  // ---------------- kommentarer ----------------
+  // ---------------- comments ----------------
   /**
-   * Det som ska kommenteras: kommentaren vid markören, annars markeringen (inom
-   * ett stycke). I Markdown-vyn: markeringen i källtexten.
+   * What to comment on: the comment at the cursor, otherwise the selection (within
+   * one paragraph). In the Markdown view: the selection in the source text.
    */
   commentTarget(): { from: number; to: number; text: string; quote: string } | null {
     if (this.mode === "write" && this.editor) {
@@ -241,7 +241,7 @@ export class DocEditor {
     return { from, to, text: "", quote };
   }
 
-  /** Lägger till eller ändrar en kommentar på intervallet (från commentTarget). */
+  /** Adds or changes a comment on the range (from commentTarget). */
   setComment(from: number, to: number, text: string): void {
     const clean = cleanComment(text);
     if (!clean) return;
@@ -257,7 +257,7 @@ export class DocEditor {
     this.replaceSource(from, to, `{==${quote}==}{>>${clean}<<}`);
   }
 
-  /** Befintlig kommentar vid en position i Skriv-vyn. */
+  /** Existing comment at a position in the Write view. */
   commentAtPos(pos: number): CommentRange | null {
     return this.editor ? commentAt(this.editor.state, pos) : null;
   }
@@ -269,13 +269,13 @@ export class DocEditor {
     view.focus();
   }
 
-  // ---------------- fotnoter ----------------
-  /** Fotnoterna i Skriv-vyn i ordning. */
+  // ---------------- footnotes ----------------
+  /** The footnotes in the Write view, in order. */
   footnotes(): FootnoteAt[] {
     const out: FootnoteAt[] = [];
     this.editor?.state.doc.descendants((node, pos) => {
       if (node.type.name === "footnote") out.push({ pos, number: out.length + 1, text: node.attrs.text as string });
-      return node.isBlock; // gå inte in i textnoder
+      return node.isBlock; // don't descend into text nodes
     });
     return out;
   }
@@ -284,7 +284,7 @@ export class DocEditor {
     return this.footnotes().find((f) => f.pos === pos) ?? null;
   }
 
-  /** Kan en fotnot infogas där markören står? */
+  /** Can a footnote be inserted at the cursor? */
   canInsertFootnote(): boolean {
     if (this.mode !== "write") return true;
     if (!this.editor) return false;
@@ -292,13 +292,13 @@ export class DocEditor {
     return $from.parent.type.name !== "note" && $from.parent.type.name !== "codeBlock" && $from.parent.isTextblock;
   }
 
-  /** Var en ny fotnot ska hamna (läses innan dialogen öppnas, som kan flytta fokus). */
+  /** Where a new footnote goes (read before the dialog opens, which may move focus). */
   footnoteInsertPoint(): number {
     if (this.mode === "write" && this.editor) return this.editor.state.selection.to;
     return this.sourceEl.selectionEnd ?? this.sourceEl.value.length;
   }
 
-  /** Infogar en fotnot vid `at` (från footnoteInsertPoint), annars efter markeringen. */
+  /** Inserts a footnote at `at` (from footnoteInsertPoint), otherwise after the selection. */
   insertFootnote(text: string, at?: number): void {
     const clean = cleanFootnote(text);
     if (!clean) return;
@@ -312,7 +312,7 @@ export class DocEditor {
       view.focus();
       return;
     }
-    // Markdown-vyn: hänvisning vid markören, definition sist.
+    // Markdown view: reference at the cursor, definition at the end.
     const ta = this.sourceEl;
     const used = new Set([...ta.value.matchAll(/\[\^(\d+)\]/g)].map((m) => Number(m[1])));
     let n = 1;
@@ -346,7 +346,7 @@ export class DocEditor {
     view.focus();
   }
 
-  /** Gör aktuellt stycke till en egen anteckning (eller tillbaka). */
+  /** Turns the current paragraph into a private note (or back). */
   toggleNote(): boolean {
     if (!this.editor) return false;
     const { $from } = this.editor.state.selection;
@@ -356,34 +356,34 @@ export class DocEditor {
       : this.editor.chain().focus().setNode("note").run();
   }
 
-  /** Markera meningar som är längre än gränsen (0 = av). */
+  /** Highlight sentences longer than the limit (0 = off). */
   markLongSentences(limit: number): void {
     this.longSentenceLimit = limit;
     if (this.editor) setLongSentences(this.editor.view, limit);
   }
 
-  /** Markerad text i aktuell vy (för att fylla i sökfältet). */
+  /** Selected text in the current view (to fill in the search field). */
   getSelectedForSearch(): string {
     if (this.mode === "write") return this.getSelectionText();
     const ta = this.sourceEl;
     return ta.value.slice(ta.selectionStart ?? 0, ta.selectionEnd ?? 0);
   }
 
-  /** Markerad text i Skriv-vyn (tom sträng om inget är markerat). */
+  /** Selected text in the Write view (empty string if nothing is selected). */
   getSelectionText(): string {
     if (!this.editor) return "";
     const { from, to, empty } = this.editor.state.selection;
     return empty ? "" : this.editor.state.doc.textBetween(from, to, "\n\n", " ");
   }
 
-  /** Markerar alla förekomster av ett ord och scrollar till den första. */
+  /** Highlights all occurrences of a word and scrolls to the first. */
   highlight(word: string | null): void {
     if (!this.editor) return;
     const first = setHighlight(this.editor.view, word);
     if (first !== null) this.scrollToPos(first);
   }
 
-  /** Letar upp en textbit (t.ex. en mening) och markerar den. */
+  /** Finds a piece of text (e.g. a sentence) and selects it. */
   selectText(text: string): boolean {
     if (!this.editor) return false;
     const needle = text.slice(0, 80);
@@ -409,9 +409,9 @@ export class DocEditor {
   }
 
   /**
-   * Scrollar till en position. Stycken utanför skärmen har bara uppskattad höjd
-   * (content-visibility), så vi scrollar först elementet in i bild och justerar
-   * sedan när det renderats.
+   * Scrolls to a position. Off-screen paragraphs only have an estimated height
+   * (content-visibility), so we first scroll the element into view and then
+   * adjust once it has rendered.
    */
   private scrollToPos(pos: number): void {
     if (!this.editor) return;
@@ -429,11 +429,11 @@ export class DocEditor {
       };
       requestAnimationFrame(adjust);
     } catch {
-      /* positionen kan saknas precis när editorn byggs om */
+      /* the position may be missing just as the editor is rebuilt */
     }
   }
 
-  /** Infogar text där markören står (i båda vyerna). */
+  /** Inserts text at the cursor (in both views). */
   insertText(text: string): void {
     if (this.mode === "write" && this.editor) {
       const view = this.editor.view;
@@ -449,7 +449,7 @@ export class DocEditor {
     ta.dispatchEvent(new Event("input", { bubbles: true }));
   }
 
-  /** Byter ut text i ett intervall (används av rättningar och synonymer). */
+  /** Replaces text in a range (used by corrections and synonyms). */
   replaceRange(from: number, to: number, text: string): void {
     if (!this.editor) return;
     const view = this.editor.view;
@@ -475,7 +475,7 @@ export class DocEditor {
     if (this.mode === "write" && this.editor && this.longSentenceLimit) setLongSentences(this.editor.view, this.longSentenceLimit);
   }
 
-  // ---------------- sök och ersätt ----------------
+  // ---------------- search and replace ----------------
   setSearch(q: SearchQuery | null): SearchStatus {
     this.searchRe = buildRegExp(q);
     return this.applySearch();
@@ -494,7 +494,7 @@ export class DocEditor {
     return { count: this.srcMatches.length, current: this.srcMatches.length ? this.srcCurrent : -1 };
   }
 
-  /** Antal träffar efter att texten ändrats. */
+  /** Number of matches after the text changed. */
   searchStatus(): SearchStatus {
     if (this.mode === "write" && this.editor) return pmStatus(this.editor.view);
     if (!this.searchRe) return { count: 0, current: -1 };
@@ -506,8 +506,8 @@ export class DocEditor {
   }
 
   /**
-   * Nästa (+1) eller föregående (-1) träff, eller visa aktuell (0). I Markdown-vyn
-   * markeras träffen i källtexten (som då får fokus); 0 gör där ingenting.
+   * Next (+1) or previous (-1) match, or show the current one (0). In the Markdown
+   * view the match is selected in the source text (which then gets focus); 0 does nothing there.
    */
   searchStep(dir: 1 | 0 | -1): SearchStatus {
     if (this.mode === "write" && this.editor) {
@@ -549,7 +549,7 @@ export class DocEditor {
     return n;
   }
 
-  /** Ersätter i källtexten så att webbläsarens Ångra fungerar. */
+  /** Replaces in the source text so that the WebView's Undo works. */
   private replaceSource(from: number, to: number, text: string): void {
     const ta = this.sourceEl;
     ta.focus();
@@ -564,7 +564,7 @@ export class DocEditor {
     const ta = this.sourceEl;
     ta.focus({ preventScroll: true });
     ta.setSelectionRange(m.from, m.to);
-    // Textfältet är lika högt som texten, så sidan måste scrollas till träffen.
+    // The text field is as tall as the text, so the page must scroll to the match.
     const top = ta.getBoundingClientRect().top + window.scrollY + caretOffset(ta, m.from);
     window.scrollTo({ top: Math.max(0, top - window.innerHeight * 0.4) });
   }
@@ -578,7 +578,7 @@ export class DocEditor {
       element: this.wysiwygEl,
       extensions: [
         StarterKit.configure({
-          underline: false, // finns inte i Markdown
+          underline: false, // not in Markdown
           link: { openOnClick: false, autolink: true },
         }),
         Markdown.configure({ indentation: { style: "space", size: 2 } }),
@@ -596,8 +596,8 @@ export class DocEditor {
       content: body,
       contentType: "markdown",
       editorProps: {
-        // Egen stavningskontroll i Skriv-vyn; webbläsarens används i Markdown-vyn.
-        // "long" slår på renderingsoptimering för långa manus (se .prose.long i CSS).
+        // Own spell checking in the Write view; the WebView's is used in the Markdown view.
+        // "long" enables rendering optimization for long manuscripts (see .prose.long in CSS).
         attributes: (state) => ({
           class: state.doc.childCount > 300 ? "prose long" : "prose",
           "aria-label": "Text",
@@ -617,7 +617,7 @@ export class DocEditor {
           if (!c) return false;
           const target = (event.target as Element).closest?.(".ww-comment");
           if (target) this.opts.onCommentClick(c, target.getBoundingClientRect());
-          return false; // markören placeras som vanligt
+          return false; // the cursor is placed as usual
         },
         handleDOMEvents: {
           contextmenu: (view, event) => {
@@ -658,7 +658,7 @@ export class DocEditor {
       const delta = coords.top - target;
       if (Math.abs(delta) > 4) window.scrollBy({ top: delta, behavior: "smooth" });
     } catch {
-      /* positionen kan saknas precis när editorn byggs om */
+      /* the position may be missing just as the editor is rebuilt */
     }
   }
 
@@ -670,11 +670,11 @@ export class DocEditor {
   }
 }
 
-/** En enda avslutande radbrytning – stabila filer och diffar. */
+/** A single trailing newline – stable files and diffs. */
 function normalize(md: string): string {
-  // Tomma rader i slutet av ett citat ("> " utan text) är bara skräp från Enter.
-  // Tomma stycken skrivs av serialiseraren som "&nbsp;" – Markdown har inga tomma
-  // stycken, så de tas bort i stället för att hamna som skräp i filen.
+  // Empty lines at the end of a quote ("> " without text) are just junk from Enter.
+  // Empty paragraphs are written by the serializer as "&nbsp;" – Markdown has no empty
+  // paragraphs, so they are removed instead of ending up as junk in the file.
   const cleaned = md.replace(/^(?:&nbsp;|\u00a0)[ \t]*$/gm, "").replace(/\n{3,}/g, "\n\n");
   const trimmed = cleaned.replace(/\s+$/, "").replace(/(?:\n>[ \t]*)+$/, "").replace(/\s+$/, "");
   return trimmed ? `${trimmed}\n` : "";
@@ -690,9 +690,9 @@ export function stripMarkdown(md: string): string {
 }
 
 /**
- * YAML-frontmatter i början av filen (--- … --- eller --- … ...), inklusive
- * tomraderna efter. Den redigeras inte i Skriv-vyn utan bevaras exakt.
- * Som i Pandoc får raden efter inledande --- inte vara tom (då är det en avgränsningslinje).
+ * YAML frontmatter at the start of the file (--- … --- or --- … ...), including
+ * the blank lines after it. It is not edited in the Write view but preserved exactly.
+ * As in Pandoc, the line after the opening --- must not be empty (then it is a horizontal rule).
  */
 const FRONTMATTER_RE = /^\uFEFF?---[ \t]*\r?\n(?![ \t]*\r?\n)(?:[\s\S]*?\r?\n)?(?:---|\.\.\.)[ \t]*(?:\r?\n|$)(?:[ \t]*\r?\n)*/;
 
@@ -702,7 +702,7 @@ export function splitFrontmatter(md: string): { frontmatter: string; body: strin
   return { frontmatter: m[0], body: md.slice(m[0].length) };
 }
 
-/** Höjd (px) från textfältets överkant till ett tecken, mätt med en osynlig kopia. */
+/** Height (px) from the text field's top edge to a character, measured with an invisible copy. */
 function caretOffset(ta: HTMLTextAreaElement, index: number): number {
   const cs = getComputedStyle(ta);
   const mirror = document.createElement("div");

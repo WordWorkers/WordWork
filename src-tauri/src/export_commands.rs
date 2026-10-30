@@ -1,7 +1,6 @@
-//! Phase 3: export, import and backup. The browser version downloaded files;
-//! the app asks where to save them with the native Save dialog instead (and
-//! remembers the folder). Imports arrive as raw bytes from the file picker or a
-//! drop on the window.
+//! Export, import and backup. Exports and backups ask where to save with the
+//! native Save dialog (which remembers the folder). Imports arrive as raw
+//! bytes from the file picker or a drop on the window.
 
 use std::path::PathBuf;
 

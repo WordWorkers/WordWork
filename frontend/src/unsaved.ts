@@ -1,13 +1,13 @@
 /**
- * Reservkopia i webbläsaren av text som inte har kunnat sparas på servern
- * (t.ex. medan containern startar om). Tas bort så snart servern har sparat.
+ * Backup copy in localStorage of text that could not be saved to disk (e.g. if
+ * the data folder is unreachable). Removed as soon as saving succeeds.
  */
 const PREFIX = "ww.unsaved:";
 
 export interface Unsaved {
   name: string;
   content: string;
-  /** Serverns ändringstid som texten bygger på. */
+  /** The file's modification time on disk that the text is based on. */
   base: number | null;
   time: number;
 }
@@ -17,7 +17,7 @@ export function keepLocal(u: Omit<Unsaved, "time">): boolean {
     localStorage.setItem(PREFIX + u.name, JSON.stringify({ ...u, time: Date.now() }));
     return true;
   } catch {
-    return false; // privat läge eller fullt
+    return false; // private mode or full
   }
 }
 
@@ -36,11 +36,11 @@ export function dropLocal(name: string): void {
   try {
     localStorage.removeItem(PREFIX + name);
   } catch {
-    /* ignorera */
+    /* ignore */
   }
 }
 
-/** Dokument som har en reservkopia. */
+/** Documents that have a backup copy. */
 export function localNames(): string[] {
   try {
     return Object.keys(localStorage)

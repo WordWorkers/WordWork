@@ -1,11 +1,11 @@
 /**
- * Sök och ersätt.
+ * Search and replace.
  *
- * Skriv-vyn: ett ProseMirror-tillägg markerar alla träffar och den aktuella.
- * Träffar söks inom varje stycke (inte över styckegränser), i den synliga texten
- * – Markdown-tecken som ** eller # påverkar alltså inte sökningen.
+ * Write view: a ProseMirror plugin highlights all matches and the current one.
+ * Matches are searched within each paragraph (not across paragraph boundaries), in
+ * the visible text – so Markdown characters like ** or # don't affect the search.
  *
- * Markdown-vyn: samma sökning i källtexten.
+ * Markdown view: the same search in the source text.
  */
 import { Extension } from "@tiptap/core";
 import { Plugin, PluginKey, TextSelection, type EditorState, type Transaction } from "@tiptap/pm/state";
@@ -20,7 +20,7 @@ export interface SearchQuery {
 
 export interface SearchStatus {
   count: number;
-  /** Index för aktuell träff (0-baserat), -1 om ingen. */
+  /** Index of the current match (0-based), -1 if none. */
   current: number;
 }
 
@@ -42,7 +42,7 @@ export function buildRegExp(q: SearchQuery | null): RegExp | null {
   return new RegExp(src, q.caseSensitive ? "gu" : "giu");
 }
 
-/** Träffar i en vanlig sträng (Markdown-vyn). */
+/** Matches in a plain string (Markdown view). */
 export function findInText(text: string, re: RegExp | null): Range[] {
   if (!re) return [];
   const out: Range[] = [];
@@ -56,8 +56,8 @@ export function findInText(text: string, re: RegExp | null): Range[] {
 }
 
 function findInBlock(node: PMNode, pos: number, re: RegExp, out: Range[]): void {
-  // Varje tecken i texten motsvarar en position; övriga inline-noder (t.ex.
-  // radbrytningar) tar en position och ersätts med ett tecken som aldrig matchar.
+  // Each character in the text corresponds to a position; other inline nodes (e.g.
+  // line breaks) take one position and are replaced with a character that never matches.
   let text = "";
   node.forEach((child) => {
     text += child.isText ? child.text! : "\ufffc";
@@ -65,7 +65,7 @@ function findInBlock(node: PMNode, pos: number, re: RegExp, out: Range[]): void 
   for (const r of findInText(text, re)) out.push({ from: pos + 1 + r.from, to: pos + 1 + r.to });
 }
 
-/** Träffar i dokumentet, som ProseMirror-positioner. */
+/** Matches in the document, as ProseMirror positions. */
 function findInDoc(state: EditorState, re: RegExp | null): Range[] {
   if (!re) return [];
   const out: Range[] = [];
@@ -80,17 +80,17 @@ function findInDoc(state: EditorState, re: RegExp | null): Range[] {
 
 interface Update {
   matches: Range[];
-  /** Stycken som sökts om (positioner i det nya dokumentet). */
+  /** Paragraphs that were searched again (positions in the new document). */
   blocks: Range[];
   fresh: Range[];
 }
 
 /**
- * Efter en ändring: flytta gamla träffar och sök bara om i de stycken som
- * ändrats – annars blir varje tangenttryck långsamt i långa manus.
+ * After a change: map old matches and only search again in the paragraphs that
+ * changed – otherwise every keystroke gets slow in long manuscripts.
  */
 function updateMatches(tr: Transaction, state: EditorState, re: RegExp, old: Range[]): Update | null {
-  if (old.length >= MAX_MATCHES) return null; // gör om allt
+  if (old.length >= MAX_MATCHES) return null; // redo everything
   const size = state.doc.content.size;
   const blocks: Range[] = [];
   const fresh: Range[] = [];
@@ -98,7 +98,7 @@ function updateMatches(tr: Transaction, state: EditorState, re: RegExp, old: Ran
     const rest = tr.mapping.slice(i + 1);
     map.forEach((_os, _oe, ns, ne) => {
       const from = Math.max(0, Math.min(rest.map(ns, -1), size));
-      // Även en ren borttagning (from === to) ska söka om stycket den skedde i.
+      // Even a pure deletion (from === to) must re-search the paragraph it happened in.
       const to = Math.min(size, Math.max(from + 1, Math.min(rest.map(ne, 1), size)));
       state.doc.nodesBetween(from, to, (node, pos) => {
         if (!node.isTextblock) return true;
@@ -126,9 +126,9 @@ interface PluginState {
   re: RegExp | null;
   matches: Range[];
   current: number;
-  /** Alla träffar (flyttas med vid ändringar i stället för att byggas om). */
+  /** All matches (mapped through changes instead of being rebuilt). */
   base: DecorationSet;
-  /** base + markering av aktuell träff. */
+  /** base + highlight of the current match. */
   decorations: DecorationSet;
 }
 
@@ -150,7 +150,7 @@ function fromScratch(state: EditorState, re: RegExp | null, pos: number): Plugin
   return { re, matches, current, base, decorations: withCurrent(state, base, matches, current) };
 }
 
-/** Index för första träffen vid eller efter positionen. */
+/** Index of the first match at or after the position. */
 function nearest(matches: Range[], pos: number): number {
   if (!matches.length) return -1;
   const i = matches.findIndex((m) => m.to > pos);
@@ -210,7 +210,7 @@ export function pmStatus(view: EditorView): SearchStatus {
   return status(pmState(view));
 }
 
-/** Går till nästa (+1) eller föregående (-1) träff, eller visar aktuell (0), och markerar den. */
+/** Goes to the next (+1) or previous (-1) match, or shows the current one (0), and selects it. */
 export function pmStep(view: EditorView, dir: 1 | 0 | -1): Range | null {
   const s = pmState(view);
   if (!s.matches.length) return null;
@@ -228,7 +228,7 @@ export function pmCurrent(view: EditorView): Range | null {
   return s.matches[s.current] ?? null;
 }
 
-/** Ersätter aktuell träff. Returnerar nästa träff (att visa), om någon. */
+/** Replaces the current match. Returns the next match (to show), if any. */
 export function pmReplace(view: EditorView, text: string): Range | null {
   const s = pmState(view);
   const m = s.matches[s.current];
@@ -238,7 +238,7 @@ export function pmReplace(view: EditorView, text: string): Range | null {
   return after.matches[after.current] ?? null;
 }
 
-/** Ersätter alla träffar i ett enda steg (ett Ångra återställer allt). */
+/** Replaces all matches in a single step (one Undo restores everything). */
 export function pmReplaceAll(view: EditorView, text: string): number {
   const { matches } = pmState(view);
   if (!matches.length) return 0;

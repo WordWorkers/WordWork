@@ -1,6 +1,6 @@
-//! Phase 1: documents, history, chats, trash, settings and the data folder.
-//! One command per old HTTP route (see PLAN.md §3); arguments use the same
-//! snake_case names as the old JSON bodies, results the same JSON shapes.
+//! Documents, history, chats, trash, settings and the data folder. The
+//! frontend reaches each command through its route in `ipc-routes.ts`;
+//! arguments are snake_case.
 
 use std::sync::Arc;
 
@@ -223,7 +223,7 @@ pub async fn data_dir_choose(app: AppHandle, state: State<'_, AppState>) -> Resu
     Ok(Some(data_dir_get(state)))
 }
 
-/// Shows the data folder in Finder.
+/// Shows the data folder in Finder / Explorer / the file manager.
 #[tauri::command(rename_all = "snake_case")]
 pub fn data_dir_reveal(state: State<'_, AppState>) -> Result<()> {
     let root = state.data().storage.root().to_path_buf();

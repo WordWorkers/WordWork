@@ -1,6 +1,6 @@
-//! Phase 4: the AI assistant. Same JSON as the old `/api/ai/*` routes; the
-//! answer streams over a Tauri `Channel` instead of NDJSON, and *Stoppa* calls
-//! `ai_cancel`. The API key stays in Rust (Keychain) and never reaches the UI.
+//! The AI assistant: status, models, settings and the chat. The answer streams
+//! over a Tauri `Channel`; *Stoppa* calls `ai_cancel`. The API key stays in
+//! Rust (the system keyring) and never reaches the UI.
 
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};

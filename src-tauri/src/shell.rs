@@ -1,6 +1,6 @@
-//! Phase 5: the Mac shell around the editor – Swedish menu bar, safe close
-//! and quit (the text is always saved first), full screen, external links in
-//! the default browser and rich text on the clipboard.
+//! The desktop shell around the editor: Swedish menu bar, safe close and quit
+//! (the text is always saved first), full screen, external links in the
+//! default browser, the navigation guard and rich text on the clipboard.
 
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;

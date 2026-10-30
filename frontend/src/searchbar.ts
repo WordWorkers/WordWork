@@ -1,4 +1,4 @@
-/** Sökfältet (⌘F) med ersätt (⌘⌥F). */
+/** The search bar (⌘F) with replace (⌘⌥F). */
 import type { DocEditor } from "./editor";
 import type { SearchStatus } from "./search";
 import { h, isMac, isMod, modKey, toast } from "./ui";
@@ -77,7 +77,7 @@ export class SearchBar {
     return !this.el.hidden;
   }
 
-  /** Öppnar sökfältet. Markerad text (en rad) fylls i. */
+  /** Opens the search bar. Selected text (one line) is filled in. */
   open(focusReplace = false): void {
     const sel = this.editor.getSelectedForSearch();
     if (sel && !sel.includes("\n") && sel.length <= 120) this.find.value = sel;
@@ -96,19 +96,19 @@ export class SearchBar {
     this.afterClose();
   }
 
-  /** Anropas när texten eller vyn har ändrats. */
+  /** Called when the text or the view has changed. */
   refresh(): void {
     if (!this.isOpen) return;
     this.status = this.editor.searchStatus();
     this.render();
   }
 
-  /** Ny sökning (vyn kan ha bytts). */
+  /** New search (the view may have changed). */
   rerun(): void {
     if (this.isOpen) this.run(false);
   }
 
-  /** Nästa/föregående träff även när fokus står i texten (⌘G / ⇧⌘G). */
+  /** Next/previous match even when focus is in the text (⌘G / ⇧⌘G). */
   step(dir: 1 | -1): void {
     if (!this.find.value) {
       this.find.focus();
@@ -133,8 +133,8 @@ export class SearchBar {
       caseSensitive: this.caseBtn.getAttribute("aria-pressed") === "true",
       wholeWord: this.wordBtn.getAttribute("aria-pressed") === "true",
     });
-    // Visa första träffen medan man skriver (bara i Skriv-vyn – i Markdown-vyn
-    // skulle källtexten ta fokus från sökfältet).
+    // Show the first match while typing (only in the Write view – in the Markdown
+    // view the source text would take focus from the search field).
     if (reveal && this.status.count && this.editor.mode === "write") this.status = this.editor.searchStep(0);
     this.render();
   }
@@ -151,7 +151,7 @@ export class SearchBar {
     const n = this.editor.replaceAll(this.replace.value);
     this.status = this.editor.searchStatus();
     this.render();
-    if (this.editor.mode === "write") this.find.focus(); // knapparna blir inaktiva
+    if (this.editor.mode === "write") this.find.focus(); // the buttons become inactive
     toast(`Ersatte ${n.toLocaleString("sv-SE")} ${n === 1 ? "träff" : "träffar"} – ${isMac ? "⌘" : "Ctrl+"}Z ångrar`);
   }
 

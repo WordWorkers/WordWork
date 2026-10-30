@@ -1,7 +1,6 @@
 //! One question to the assistant: validate, build the messages, stream the
 //! answer, and save question + answer in the document's conversation – also
 //! when the user presses *Stoppa* (the answer is then marked "Avbrutet").
-//! Ported from the `/api/ai/chat` route.
 
 use serde::Deserialize;
 use serde_json::{json, Value};

@@ -1,5 +1,4 @@
-//! Phase 2: spelling, the personal dictionary and synonyms. Same arguments
-//! and JSON as the old `/api/spell/*` and `/api/synonyms` routes.
+//! Spelling, the personal dictionary and synonyms.
 
 use std::sync::Arc;
 use std::time::{Duration, Instant};

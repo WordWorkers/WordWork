@@ -1,9 +1,9 @@
 /**
- * Inställningar (utseende m.m.). Typsnitt gäller alltid hela dokumentet (temaval).
+ * Settings (appearance etc.). Fonts always apply to the whole document (theme choice).
  *
- * Inställningarna sparas på servern i datamappen (.wordwork/settings.json), så att de följer
- * med mellan webbläsare och vid ominstallation. En kopia i webbläsaren gör att rätt
- * tema visas direkt vid start, innan servern har svarat.
+ * Settings are saved by the Rust side in the data folder (.wordwork/settings.json), so they
+ * survive reinstallation. A copy in localStorage makes the right theme show immediately
+ * at startup, before Rust has answered.
  */
 
 import { api } from "./api";
@@ -21,14 +21,14 @@ export interface Settings {
   focusParagraph: boolean;
   typewriter: boolean;
   spellcheck: boolean;
-  dailyGoal: number; // ord per dag, 0 = av
+  dailyGoal: number; // words per day, 0 = off
   autoTypography: boolean;
   quoteStyle: QuoteStyle;
-  aiModel: string; // tom = serverns standardmodell
+  aiModel: string; // empty = the AI server's default model
   aiThink: boolean;
   markLongSentences: boolean;
   longSentenceWords: number;
-  defaultGenre: string; // texttyp för nya dokument, tom = ingen
+  defaultGenre: string; // text type for new documents, empty = none
 }
 
 export const FONTS: Record<Font, { label: string; stack: string }> = {
@@ -71,11 +71,11 @@ const DEFAULTS: Settings = {
 };
 
 const KEY = "ww.settings";
-// Äldre versioner sparade AI-valen separat i webbläsaren.
+// Older versions saved the AI choices separately in localStorage.
 const LEGACY_AI_MODEL = "ww.aiModel";
 const LEGACY_AI_THINK = "ww.aiThink";
 
-/** Behåller bara kända nycklar med rätt typ – en trasig eller gammal fil ska inte förstöra något. */
+/** Keeps only known keys with the right type – a broken or old file must not break anything. */
 function sanitize(raw: unknown): Partial<Settings> {
   const out: Record<string, unknown> = {};
   if (!raw || typeof raw !== "object") return out;
@@ -93,7 +93,7 @@ function local(key: string): string | null {
   try {
     return localStorage.getItem(key);
   } catch {
-    return null; // privat läge e.d.
+    return null; // private mode or similar
   }
 }
 
@@ -101,17 +101,17 @@ function cache(s: Settings): void {
   try {
     localStorage.setItem(KEY, JSON.stringify(s));
   } catch {
-    /* ignorera */
+    /* ignore */
   }
 }
 
-/** Snabb start från webbläsarens kopia. Rätt värden hämtas sedan med syncSettings(). */
+/** Quick start from the localStorage copy. The correct values are then fetched with syncSettings(). */
 export function loadSettings(): Settings {
   const s: Settings = { ...DEFAULTS };
   try {
     Object.assign(s, sanitize(JSON.parse(local(KEY) ?? "null")));
   } catch {
-    /* ignorera */
+    /* ignore */
   }
   const model = local(LEGACY_AI_MODEL);
   const think = local(LEGACY_AI_THINK);
@@ -121,9 +121,9 @@ export function loadSettings(): Settings {
 }
 
 /**
- * Hämtar inställningarna från servern och skriver in dem i `s`. Första gången
- * (inget sparat på servern) flyttas webbläsarens inställningar dit i stället.
- * Returnerar true om något ändrades.
+ * Fetches the settings from Rust and writes them into `s`. The first time
+ * (nothing saved yet) the localStorage settings are moved there instead.
+ * Returns true if anything changed.
  */
 export async function syncSettings(s: Settings): Promise<boolean> {
   const r = await api.settings();
@@ -133,7 +133,7 @@ export async function syncSettings(s: Settings): Promise<boolean> {
       localStorage.removeItem(LEGACY_AI_MODEL);
       localStorage.removeItem(LEGACY_AI_THINK);
     } catch {
-      /* ignorera */
+      /* ignore */
     }
     return false;
   }
@@ -147,40 +147,31 @@ export async function syncSettings(s: Settings): Promise<boolean> {
 let timer: number | undefined;
 let pending: Settings | null = null;
 
-function push(): void {
+/** Saves pending settings now; resolves when they are on disk. */
+export async function flushSettings(): Promise<void> {
   window.clearTimeout(timer);
   timer = undefined;
   if (!pending) return;
   const s = pending;
   pending = null;
-  api.saveSettings(s).catch(() => {
-    pending ??= s; // försök igen vid nästa ändring
-  });
+  try {
+    await api.saveSettings(s);
+  } catch {
+    pending ??= s; // retry on the next change
+  }
 }
 
-/** Sparar direkt i webbläsaren och strax efteråt på servern (samlar snabba ändringar). */
+function push(): void {
+  void flushSettings();
+}
+
+/** Saves to localStorage immediately and to disk via Rust shortly after (batches rapid changes). */
 export function saveSettings(s: Settings): void {
   cache(s);
   pending = { ...s };
   window.clearTimeout(timer);
   timer = window.setTimeout(push, 400);
 }
-
-// Spara det som väntar om fliken stängs.
-window.addEventListener("pagehide", () => {
-  if (!pending) return;
-  try {
-    void fetch("/api/settings", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(pending),
-      keepalive: true,
-    });
-    pending = null;
-  } catch {
-    /* ignorera */
-  }
-});
 
 export function applySettings(s: Settings): void {
   const root = document.documentElement;

@@ -1,10 +1,10 @@
 /**
- * Enkla fält i YAML-frontmatter (nyckel: värde på en rad).
+ * Simple fields in YAML frontmatter (key: value on one line).
  *
- * Bara de fält som metadatapanelen hanterar skrivs om – allt annat i
- * frontmattern (kommentarer, listor, andra nycklar) lämnas exakt som det är.
- * Blockfält (`ai: |` med indragna rader) hanteras som flerradig text; listor
- * och objekt redigeras i Markdown-vyn.
+ * Only the fields the metadata panel handles are rewritten – everything else in
+ * the frontmatter (comments, lists, other keys) is left exactly as it is.
+ * Block fields (`ai: |` with indented lines) are handled as multi-line text; lists
+ * and objects are edited in the Markdown view.
  */
 
 export const META_FIELDS = ["title", "lead", "author", "client", "deadline", "length", "genre", "ai"] as const;
@@ -13,7 +13,7 @@ export type MetaKey = (typeof META_FIELDS)[number];
 export interface MetaField {
   key: string;
   value: string;
-  /** Värdet går inte att redigera som en rad (lista, block e.d.). */
+  /** The value cannot be edited as one line (list, block etc.). */
   complex: boolean;
 }
 
@@ -28,11 +28,11 @@ function unquote(v: string): string {
     }
   }
   if (v.length >= 2 && v.startsWith("'") && v.endsWith("'")) return v.slice(1, -1).replace(/''/g, "'");
-  // Kommentar sist på raden (" # …") hör inte till värdet.
+  // A comment at the end of the line (" # …") is not part of the value.
   return v.replace(/\s+#.*$/, "");
 }
 
-/** Citerar värdet om YAML annars skulle tolka det fel. */
+/** Quotes the value if YAML would otherwise misinterpret it. */
 export function quoteYaml(v: string): string {
   if (v === "") return '""';
   const plain =
@@ -45,8 +45,8 @@ export function quoteYaml(v: string): string {
 
 interface Parsed {
   open: string; // "---\n"
-  lines: string[]; // raderna mellan avgränsarna
-  close: string; // "---\n" eller "...\n" + tomrader
+  lines: string[]; // the lines between the delimiters
+  close: string; // "---\n" or "...\n" + blank lines
 }
 
 function parse(frontmatter: string): Parsed | null {
@@ -56,14 +56,14 @@ function parse(frontmatter: string): Parsed | null {
   return { open: m[1], lines: body ? body.split(/\r?\n/) : [], close: m[3] };
 }
 
-/** Antal rader efter `i` som hör till fältets värde (indragna rader eller listrader). */
+/** Number of lines after `i` that belong to the field's value (indented lines or list lines). */
 function continuation(lines: string[], i: number): number {
   let n = 0;
   while (i + 1 + n < lines.length && (/^[ \t]+\S|^-\s/.test(lines[i + 1 + n]) || (lines[i + 1 + n].trim() === "" && /^[ \t]+\S/.test(lines[i + 2 + n] ?? "")))) n++;
   return n;
 }
 
-/** Värdet i ett blockfält (`|` eller `>`): raderna utan indrag. */
+/** The value of a block field (`|` or `>`): the lines without indentation. */
 function blockValue(indicator: string, lines: string[]): string {
   const indent = Math.min(...lines.filter((l) => l.trim()).map((l) => /^[ \t]*/.exec(l)![0].length));
   const text = lines.map((l) => l.slice(Number.isFinite(indent) ? indent : 0)).join("\n");
@@ -71,7 +71,7 @@ function blockValue(indicator: string, lines: string[]): string {
   return folded.replace(/\s+$/, "");
 }
 
-/** Fälten på högsta nivån, i den ordning de står. Blockfält (`|`, `>`) läses som flerradig text. */
+/** The top-level fields, in order. Block fields (`|`, `>`) are read as multi-line text. */
 export function readMeta(frontmatter: string): MetaField[] {
   const p = parse(frontmatter);
   if (!p) return [];
@@ -98,9 +98,9 @@ export function metaValue(frontmatter: string, key: string): string {
 }
 
 /**
- * Sätter (eller tar bort, om värdet är tomt) ett fält och returnerar den nya
- * frontmattern. Finns ingen frontmatter skapas en. Med `multiline` sparas text
- * med radbrytningar som ett blockfält (`key: |`); annars blir det en rad.
+ * Sets (or removes, if the value is empty) a field and returns the new
+ * frontmatter. If there is no frontmatter, one is created. With `multiline`, text
+ * with line breaks is saved as a block field (`key: |`); otherwise it becomes one line.
  */
 export function writeMeta(frontmatter: string, key: string, value: string, multiline = false): string {
   value = multiline
@@ -114,18 +114,18 @@ export function writeMeta(frontmatter: string, key: string, value: string, multi
   if (idx >= 0) {
     const raw = KEY_RE.exec(p.lines[idx])?.[2] ?? "";
     const n = continuation(p.lines, idx);
-    // En lista eller ett objekt skrivs inte över – redigeras i Markdown-vyn.
+    // A list or an object is not overwritten – edited in the Markdown view.
     if ((!raw && n > 0) || /^[[{]/.test(raw)) return frontmatter;
     p.lines.splice(idx, 1 + n, ...(value ? lines : []));
   } else if (value) {
     p.lines.push(...lines);
   }
-  if (!p.lines.some((l) => l.trim())) return ""; // tom frontmatter tas bort
+  if (!p.lines.some((l) => l.trim())) return ""; // empty frontmatter is removed
   return `${p.open}${p.lines.join("\n")}\n${p.close}`;
 }
 
 /* ------------------------------------------------------------------ */
-/* Längdmål och deadline                                               */
+/* Length goal and deadline                                           */
 /* ------------------------------------------------------------------ */
 
 export type LengthUnit = "tecken" | "ord";
@@ -135,7 +135,7 @@ export interface LengthTarget {
   unit: LengthUnit;
 }
 
-/** "4500 tecken", "4 500 tkn", "800 ord" → mål. Ett tal utan enhet tolkas som tecken. */
+/** "4500 tecken", "4 500 tkn", "800 ord" → goal. A number without a unit is read as characters. */
 export function parseLength(v: string): LengthTarget | null {
   const m = /^\s*(\d[\d\s ]*)\s*(tecken|tkn|ord|t)?\.?\s*$/i.exec(v);
   if (!m) return null;
@@ -148,7 +148,7 @@ export function formatLength(t: LengthTarget): string {
   return `${t.amount} ${t.unit}`;
 }
 
-/** "2026-10-09" (ev. med tid) → datum, annars null. */
+/** "2026-10-09" (optionally with time) → date, otherwise null. */
 export function parseDeadline(v: string): Date | null {
   const m = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}))?/.exec(v.trim());
   if (!m) return null;

@@ -1,18 +1,18 @@
 /**
- * Egna anteckningar i texten – för dig själv, aldrig i export.
+ * Private notes in the text – for yourself, never in export.
  *
- * I filen är en anteckning en HTML-kommentar på egen rad:
+ * In the file a note is an HTML comment on its own line:
  *
  *     <!-- Kolla siffran med kommunen -->
  *
- * Kommentarer syns inte när Markdown visas någon annanstans (GitHub, Obsidian
- * m.fl.), och Word Work tar bort dem vid export och kopiering. I Skriv-vyn visas
- * de som gula lappar som går att redigera.
+ * Comments are not visible when the Markdown is shown elsewhere (GitHub, Obsidian
+ * etc.), and Word Work removes them on export and copy. In the Write view they are
+ * shown as editable yellow sticky notes.
  */
 import { Node } from "@tiptap/core";
 import { TextSelection } from "@tiptap/pm/state";
 
-/** En kommentar som står ensam på en eller flera rader. */
+/** A comment standing alone on one or more lines. */
 const NOTE_BLOCK = /^<!--([\s\S]*?)-->[ \t]*(?:\n+|$)/;
 
 export const Note = Node.create({
@@ -59,7 +59,7 @@ export const Note = Node.create({
 
   addKeyboardShortcuts() {
     return {
-      // Enter sist i en anteckning ger ett vanligt stycke efter den.
+      // Enter at the end of a note gives a regular paragraph after it.
       Enter: ({ editor }) => {
         const { state } = editor;
         const { $from, empty } = state.selection;
@@ -70,7 +70,7 @@ export const Note = Node.create({
         editor.view.dispatch(tr);
         return true;
       },
-      // Backsteg i en tom anteckning gör den till ett vanligt stycke.
+      // Backspace in an empty note turns it into a regular paragraph.
       Backspace: ({ editor }) => {
         const { $from, empty } = editor.state.selection;
         if ($from.parent.type.name !== "note" || !empty || $from.parent.content.size > 0) return false;
@@ -80,7 +80,7 @@ export const Note = Node.create({
   },
 });
 
-/** Tar bort anteckningar (HTML-kommentarer) ur Markdown, utom i kod. */
+/** Removes notes (HTML comments) from Markdown, except in code. */
 export function stripNotes(md: string): string {
   const out: string[] = [];
   let fence = false;
@@ -115,7 +115,7 @@ export function stripNotes(md: string): string {
         inNote = true;
       }
     }
-    // En rad som bara bestod av en anteckning försvinner helt.
+    // A line that consisted only of a note disappears entirely.
     if (kept.trim()) out.push(kept.replace(/[ \t]+$/, ""));
     else if (!wasInNote && !line.includes("<!--")) out.push(line);
   }

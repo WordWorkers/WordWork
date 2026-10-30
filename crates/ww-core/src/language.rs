@@ -1,6 +1,5 @@
 //! Language tools: Hunspell spelling (via `spellbook`), the personal
 //! dictionary, base forms for synonyms and the Synlex thesaurus (MyThes).
-//! Ported from `language.py`.
 //!
 //! `spellbook` has no stemming API, so base forms are found with a small
 //! suffix stripper that reads the `SFX` rules from the same `.aff` file
