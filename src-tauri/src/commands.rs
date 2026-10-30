@@ -47,6 +47,10 @@ pub async fn health(state: State<'_, AppState>) -> Result<Health> {
 /// Phase 0: prints a smoke-test line from the WebView; `DONE` quits the app.
 #[tauri::command]
 pub fn spike_report(app: tauri::AppHandle, line: String) {
+    // Development only: release builds ignore it (the WebView can't quit the app).
+    if !cfg!(debug_assertions) {
+        return;
+    }
     println!("[spike] {line}");
     if line == "DONE" {
         app.exit(0);

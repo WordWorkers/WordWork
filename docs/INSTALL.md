@@ -125,7 +125,7 @@ development packages. Then:
 git clone <repository> && cd word-work-rust
 (cd frontend && npm ci)
 scripts/fetch-pandoc.sh                        # Pandoc for this computer
-npx @tauri-apps/cli@2.12.4 build               # installers in target/release/bundle/
+frontend/node_modules/.bin/tauri build      # installers in target/release/bundle/
 ```
 
 A self-built app is trusted by your own computer – no warnings.

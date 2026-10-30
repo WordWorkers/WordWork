@@ -255,3 +255,37 @@ fn non_ascii_page_title() {
     let html = String::from_utf8(p.export("Ålgång", "# x\n", "html", "standard", 0).unwrap().0).unwrap();
     assert!(html.contains("<title>Ålgång</title>"));
 }
+
+/// Security: an image reference to a local file (or a URL) must never be read
+/// and embedded in an export – Pandoc runs with `--sandbox`.
+#[test]
+fn export_never_embeds_local_files() {
+    let Some(p) = pandoc() else { return };
+    let dir = tempfile::tempdir().unwrap();
+    let secret = dir.path().join("secret.txt");
+    std::fs::write(&secret, "TOPSECRET-4711").unwrap();
+    let png = dir.path().join("pic.png");
+    // A valid 1×1 PNG, so not even real images are picked up.
+    std::fs::write(
+        &png,
+        b"\x89PNG\r\n\x1a\n\0\0\0\rIHDR\0\0\0\x01\0\0\0\x01\x08\x06\0\0\0\x1f\x15\xc4\x89\0\0\0\rIDATx\x9cc\xf8\x0f\0\0\x01\x01\0\x05\x18\xd8N\0\0\0\0IEND\xaeB`\x82",
+    )
+    .unwrap();
+    let md =
+        format!("Text\n\n![]({})\n\n![](file://{})\n\n![]({})\n", secret.display(), secret.display(), png.display());
+    for key in ["docx", "odt", "rtf", "html"] {
+        let (data, _) = p.export("Test", &md, key, "standard", 0).unwrap();
+        let hay = String::from_utf8_lossy(&data);
+        assert!(!hay.contains("TOPSECRET"), "{key}: secret embedded");
+        assert!(!hay.contains("pngblip"), "{key}: image embedded");
+        if key == "docx" || key == "odt" {
+            let z = zip::ZipArchive::new(std::io::Cursor::new(&data)).unwrap();
+            let media: Vec<String> = z
+                .file_names()
+                .filter_map(|n| n.ok().map(|n| n.into_owned()))
+                .filter(|n| n.contains("media/") || n.starts_with("Pictures/"))
+                .collect();
+            assert!(media.is_empty(), "{key}: embedded {media:?}");
+        }
+    }
+}

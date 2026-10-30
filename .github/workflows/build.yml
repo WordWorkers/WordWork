@@ -21,12 +21,14 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Third-party actions are pinned by commit (Dependabot keeps them current);
+# the token can only read unless a job asks for more.
+permissions:
+  contents: read
+
 concurrency:
   group: build-${{ github.ref }}
   cancel-in-progress: true
-
-env:
-  TAURI_CLI: "@tauri-apps/cli@2.12.4"
 
 jobs:
   build:
@@ -58,7 +60,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: System packages (Linux)
         if: runner.os == 'Linux'
@@ -67,14 +69,15 @@ jobs:
           sudo apt-get install -y libwebkit2gtk-4.1-dev libsoup-3.0-dev libgtk-3-dev librsvg2-dev \
             libxdo-dev libssl-dev libayatana-appindicator3-dev libdbus-1-dev patchelf file
 
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
         with:
+          toolchain: stable
           targets: ${{ matrix.target }}
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
         with:
           key: ${{ matrix.target }}
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: npm
@@ -107,7 +110,8 @@ jobs:
           fi
 
       - name: Build
-        run: npx --yes "$TAURI_CLI" build --ci --target ${{ matrix.target }} --bundles ${{ matrix.bundles }}
+        # The Tauri CLI comes from frontend/package-lock.json (exact version, checksummed).
+        run: frontend/node_modules/.bin/tauri build --ci --target ${{ matrix.target }} --bundles ${{ matrix.bundles }}
 
       - name: Collect installers
         run: |
@@ -136,7 +140,7 @@ jobs:
           codesign -dv "$app" 2>&1 | grep -E "Signature|Authority|TeamIdentifier" || true
           for bin in "$app"/Contents/MacOS/*; do echo "$(basename "$bin"): $(lipo -archs "$bin")"; done
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: word-work-${{ matrix.target }}
           path: dist/*
@@ -150,8 +154,8 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           path: dist
           merge-multiple: true
@@ -162,7 +166,7 @@ jobs:
           cd dist
           sha256sum * > SHA256SUMS
           cat SHA256SUMS
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           draft: true
           name: Word Work ${{ github.ref_name }}

@@ -10,6 +10,11 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Third-party actions are pinned by commit (Dependabot keeps them current);
+# the token can only read unless a job asks for more.
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -18,16 +23,17 @@ jobs:
   checks:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: System packages (WebKitGTK for the Tauri crate)
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libsoup-3.0-dev libgtk-3-dev librsvg2-dev libxdo-dev libssl-dev libayatana-appindicator3-dev libdbus-1-dev
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
         with:
+          toolchain: stable
           components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@v2
-      - uses: actions/setup-node@v4
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: npm
@@ -45,3 +51,19 @@ jobs:
       - run: cargo test --workspace
         env:
           WW_PANDOC: src-tauri/binaries/ww-pandoc-x86_64-unknown-linux-gnu
+
+  audit:
+    # Known vulnerabilities in Rust crates (RustSec) and npm packages.
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+        with:
+          key: cargo-audit
+      - run: cargo install cargo-audit --locked
+      - run: cargo audit
+      - run: npm audit --omit=dev
+        working-directory: frontend

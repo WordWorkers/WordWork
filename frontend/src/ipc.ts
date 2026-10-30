@@ -284,6 +284,8 @@ export interface AiConfig {
   has_key: boolean;
   /** WW_AI_* environment variables override the settings (development). */
   from_env: boolean;
+  /** The address moved to another server, so the stored key was removed. */
+  key_removed?: boolean;
 }
 
 export const aiConfig = () => call<AiConfig>("ai_config_get");

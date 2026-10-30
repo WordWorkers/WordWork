@@ -26,6 +26,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_window_state::Builder::default().build())
+        .plugin(shell::navigation_guard())
         .menu(shell::build_menu)
         .on_menu_event(|app, event| shell::on_menu(app, event.id().as_ref()))
         .on_window_event(|window, event| {

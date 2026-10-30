@@ -47,6 +47,10 @@ Set the server under *Inställningar → AI-assistent* (Ollama or an
 OpenAI-compatible service, address, default model, API key). The key is kept
 in the macOS Keychain. For development the old variables still work and win
 over the settings: `WW_AI_API`, `WW_AI_URL`, `WW_AI_MODEL`, `WW_AI_KEY`.
+All `WW_*` variables (also `WW_DATA_DIR`, `WW_PANDOC`) work in debug builds
+only; a release build ignores them.
+The stored key is removed when the address moves to another server, and a key
+is never accepted for plain `http://` to a host outside the local network.
 `python3 tools/fake_ollama.py` starts a fake server (both APIs, key `hemlig`)
 for testing without a model.
 

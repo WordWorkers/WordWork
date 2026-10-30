@@ -2452,9 +2452,13 @@ class App {
       try {
         const c = await saveAiConfig({ api: api.value, url: url.value, model: model.value, key: newKey });
         show(c);
-        toast("AI-inställningarna sparades – AI-stödet startar om");
+        toast(
+          c.key_removed
+            ? "Ny server – den sparade API-nyckeln togs bort. Ange nyckeln igen om servern behöver en."
+            : "AI-inställningarna sparades – AI-stödet startar om",
+        );
         await this.flush();
-        window.setTimeout(() => location.reload(), 600);
+        window.setTimeout(() => location.reload(), c.key_removed ? 3500 : 600);
       } catch (e) {
         toast(errorText(e));
       }

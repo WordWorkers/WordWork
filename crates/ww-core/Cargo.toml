@@ -23,7 +23,7 @@ fancy-regex = "0.20"
 regex = "1"
 tempfile = "3"
 parking_lot = "0.12"
-zip = { version = "2", default-features = false, features = ["deflate"] }
+zip = { version = "9", default-features = false, features = ["deflate"] }
 encoding_rs = "0.8"
 dunce = "1"
 

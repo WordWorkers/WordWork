@@ -74,7 +74,7 @@ impl AppState {
         }
 
         let config_path = app.path().app_config_dir()?.join("config.json");
-        let snapshot_minutes = std::env::var("WW_SNAPSHOT_MINUTES").ok().and_then(|v| v.parse().ok()).unwrap_or(5.0);
+        let snapshot_minutes = dev_env("WW_SNAPSHOT_MINUTES").and_then(|v| v.parse().ok()).unwrap_or(5.0);
         let data_dir = initial_data_dir(app, &config_path);
         log::info!("data folder: {}", data_dir.display());
         let data = RwLock::new(Arc::new(DataCtx::open(&data_dir, snapshot_minutes)));
@@ -169,6 +169,17 @@ fn default_ai_url() -> String {
     "http://localhost:11434".into()
 }
 
+/// `WW_*` overrides for development and tests. Release builds ignore them, so
+/// nothing in the environment can point the app at another Pandoc, data folder
+/// or AI server (with the stored key).
+pub fn dev_env(name: &str) -> Option<String> {
+    if cfg!(debug_assertions) {
+        std::env::var(name).ok()
+    } else {
+        None
+    }
+}
+
 const KEYCHAIN_SERVICE: &str = "se.schiren.wordwork";
 const KEYCHAIN_ACCOUNT: &str = "ai-api-key";
 
@@ -178,7 +189,7 @@ fn keychain() -> Option<keyring::Entry> {
 
 /// The API key: `WW_AI_KEY` (dev) or the macOS Keychain.
 pub fn ai_key() -> String {
-    if let Ok(k) = std::env::var("WW_AI_KEY") {
+    if let Some(k) = dev_env("WW_AI_KEY") {
         if !k.trim().is_empty() {
             return k.trim().to_string();
         }
@@ -202,12 +213,12 @@ pub fn set_ai_key(key: &str) -> ww_core::Result<()> {
 
 /// Do the `WW_AI_*` variables decide the AI server (dev, tests)?
 pub fn ai_from_env() -> bool {
-    ["WW_AI_URL", "WW_AI_API", "WW_AI_MODEL"].iter().any(|k| std::env::var_os(k).is_some())
+    ["WW_AI_URL", "WW_AI_API", "WW_AI_MODEL"].iter().any(|k| dev_env(k).is_some())
 }
 
 /// Settings → client config. `WW_AI_*` variables win (as in the Docker version).
 pub fn ai_config(saved: &AiSettings) -> AiConfig {
-    let env = |k: &str| std::env::var(k).ok();
+    let env = dev_env;
     let api = match env("WW_AI_API").map(|v| v.trim().to_lowercase()).as_deref() {
         Some("openai") => ApiKind::Openai,
         Some("ollama") => ApiKind::Ollama,
@@ -227,7 +238,7 @@ pub fn read_config_file(path: &Path) -> AppConfig {
 
 /// `WW_DATA_DIR` (dev, tests) → remembered folder → `~/Documents/Word Work`.
 fn initial_data_dir(app: &AppHandle, config_path: &Path) -> PathBuf {
-    if let Some(dir) = std::env::var_os("WW_DATA_DIR").filter(|d| !d.is_empty()) {
+    if let Some(dir) = dev_env("WW_DATA_DIR").filter(|d| !d.is_empty()) {
         return PathBuf::from(dir);
     }
     if let Some(dir) = read_config_file(config_path).data_dir {
@@ -254,7 +265,7 @@ fn resource_dir(app: &AppHandle) -> PathBuf {
 /// The sidecar sits next to the app executable (`Contents/MacOS/ww-pandoc`, `/usr/bin/ww-pandoc`, or
 /// `target/<profile>/pandoc` in dev). `WW_PANDOC` overrides; PATH is the last resort.
 fn pandoc_path() -> PathBuf {
-    if let Ok(p) = std::env::var("WW_PANDOC") {
+    if let Some(p) = dev_env("WW_PANDOC") {
         return p.into();
     }
     if let Some(dir) = std::env::current_exe().ok().and_then(|e| e.parent().map(PathBuf::from)) {

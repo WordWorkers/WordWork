@@ -222,3 +222,61 @@ pub fn clipboard_write_html(app: AppHandle, html: String, text: String) -> Resul
     use tauri_plugin_clipboard_manager::ClipboardExt;
     app.clipboard().write_html(html, Some(text)).map_err(|e| Error::internal(e.to_string()))
 }
+
+/// Keeps the window on the app. The frontend already sends web links to the
+/// browser; this is the backstop in Rust for anything that slips through (a
+/// relative link, another scheme): web and mail links open in the browser,
+/// everything else is blocked – the editor is never replaced.
+pub fn navigation_guard<R: Runtime>() -> tauri::plugin::TauriPlugin<R> {
+    tauri::plugin::Builder::new("navigation-guard")
+        .on_navigation(|webview, url| {
+            if is_app_url(url) {
+                return true;
+            }
+            if matches!(url.scheme(), "http" | "https" | "mailto") {
+                use tauri_plugin_opener::OpenerExt;
+                let _ = webview.app_handle().opener().open_url(url.as_str(), None::<&str>);
+            }
+            false
+        })
+        .build()
+}
+
+/// The app's single page: `tauri://localhost/` (macOS, Linux),
+/// `http(s)://tauri.localhost/` (Windows), the Vite dev server in debug builds.
+/// Other paths on the same origin are not allowed either – the asset server
+/// answers them with the app again, which would reload it and lose unsaved text.
+fn is_app_url(url: &tauri::Url) -> bool {
+    let app_origin = match url.scheme() {
+        "tauri" => url.host_str() == Some("localhost"),
+        "http" | "https" => {
+            url.host_str() == Some("tauri.localhost")
+                || (cfg!(debug_assertions) && url.host_str() == Some("localhost") && url.port() == Some(5173))
+        }
+        "about" => return url.path() == "blank",
+        _ => false,
+    };
+    app_origin && matches!(url.path(), "" | "/" | "/index.html")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::is_app_url;
+
+    #[test]
+    fn app_urls() {
+        let ok = |s: &str| is_app_url(&s.parse().unwrap());
+        assert!(ok("tauri://localhost/"));
+        assert!(ok("tauri://localhost/index.html#x"));
+        assert!(ok("tauri://localhost"));
+        assert!(!ok("tauri://localhost/relative-page"));
+        assert!(ok("http://tauri.localhost/"));
+        assert!(ok("about:blank"));
+        assert!(!ok("tauri://evil/"));
+        assert!(!ok("https://example.com/"));
+        assert!(!ok("http://tauri.localhost.example.com/"));
+        assert!(!ok("file:///etc/passwd"));
+        assert!(!ok("data:text/html,<p>x"));
+        assert!(!ok("javascript:alert(1)"));
+    }
+}

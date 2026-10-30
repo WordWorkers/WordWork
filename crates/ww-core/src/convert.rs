@@ -22,6 +22,11 @@ pub const MD_IN: &str = "markdown-smart";
 pub const MD_OUT: &str = "gfm+yaml_metadata_block";
 pub const TIMEOUT: Duration = Duration::from_secs(60);
 pub const MAX_IMPORT_BYTES: usize = 25 * 1024 * 1024;
+/// Readers and writers may only read files named on the command line (the
+/// reference document, Lua filters). Without it, an image reference like
+/// `![](/Users/x/.ssh/id_ed25519)` or `![](https://…)` is read or fetched and
+/// embedded in an exported .docx/.odt/.rtf.
+const SANDBOX: &str = "--sandbox";
 
 #[derive(Debug, Clone, Copy, Serialize)]
 pub struct ExportFormat {
@@ -406,7 +411,7 @@ impl Pandoc {
             body = drop_duplicate_title(frontmatter, &body);
         }
         let mut args: Vec<String> =
-            ["-f", MD_IN, "-t", writer, "--wrap=none", "-M", "lang=sv-SE"].map(String::from).to_vec();
+            [SANDBOX, "-f", MD_IN, "-t", writer, "--wrap=none", "-M", "lang=sv-SE"].map(String::from).to_vec();
         if chapters > 2 {
             return Err(Error::bad_request("Kapitelnivån måste vara 1 eller 2."));
         }
@@ -456,7 +461,7 @@ impl Pandoc {
             None => decode_text(data),
             // The file goes in on stdin – no temporary files needed.
             Some(r) => {
-                let args: Vec<String> = ["-f", r, "-t", MD_OUT, "--standalone", "--wrap=none", "--lua-filter"]
+                let args: Vec<String> = [SANDBOX, "-f", r, "-t", MD_OUT, "--standalone", "--wrap=none", "--lua-filter"]
                     .map(String::from)
                     .into_iter()
                     .chain([self.filter("import.lua")])

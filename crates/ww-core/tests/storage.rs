@@ -342,8 +342,8 @@ fn backup_contains_everything() {
     let mut buf = std::io::Cursor::new(Vec::new());
     backup_zip(&s, &mut buf).unwrap();
     let zip = zip::ZipArchive::new(std::io::Cursor::new(buf.into_inner())).unwrap();
-    let names: Vec<&str> = zip.file_names().collect();
+    let names: Vec<String> = zip.file_names().map(|n| n.unwrap().into_owned()).collect();
     for want in ["Text.md", ".wordwork/settings.json", ".chats/Text/c1.json"] {
-        assert!(names.contains(&want), "{want} missing in {names:?}");
+        assert!(names.iter().any(|n| n == want), "{want} missing in {names:?}");
     }
 }
