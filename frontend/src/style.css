@@ -163,6 +163,9 @@ body.typing .chrome:focus-within {
 }
 
 .doc-title {
+  /* Right-aligned, next to the right-hand icons. */
+  margin-left: auto;
+  margin-right: 8px;
   font-weight: 500;
   color: var(--text);
   max-width: 40vw;
@@ -630,6 +633,7 @@ dialog.modal .spacer {
     order: -1;
     width: 100%;
     max-width: none;
+    margin: 0;
   }
   .page {
     padding-top: 22vh;
