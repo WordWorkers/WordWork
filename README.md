@@ -9,6 +9,10 @@ till Word. Det finns också en AI-assistent som kan granska texten, men den
 Word Work finns för **Mac, Windows och Linux**. Texterna sparas som vanliga
 filer på din egen dator.
 
+Appen är till 99% utvecklad med hjälp av Claude, modellen som använts är Opus 5.5.
+
+Open source, och bidrag är välkomna.
+
 ## Ladda ner och installera
 
 Hämta senaste versionen under **Releases** här på GitHub och välj rätt fil:
