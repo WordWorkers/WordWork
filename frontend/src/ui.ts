@@ -1,4 +1,4 @@
-/** Små DOM-hjälpare och dialoger. */
+/** Small DOM helpers and dialogs. */
 
 type Attrs = Record<string, string | boolean | number | EventListener | undefined>;
 type Child = Node | string | null | undefined | false;
@@ -78,8 +78,8 @@ export function prompt(title: string, value = "", okLabel = "OK"): Promise<strin
 }
 
 /**
- * Som prompt, men med ett flerradigt textfält. Enter sparar, Shift+Enter ger
- * ny rad (en tom rad börjar ett nytt stycke).
+ * Like prompt, but with a multi-line text field. Enter saves, Shift+Enter gives
+ * a new line (an empty line starts a new paragraph).
  */
 export function promptText(title: string, value = "", okLabel = "OK", hint = ""): Promise<string | null> {
   return modal((close) => {

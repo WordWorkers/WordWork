@@ -1,5 +1,5 @@
-//! Settings, AI conversations, trash and backup. Ported from `storage.py`;
-//! same files and JSON layout.
+//! Settings, AI conversations, trash and backup. Same files and JSON layout
+//! as the Docker version (see `storage.rs`).
 
 use std::fs;
 use std::io::Write;

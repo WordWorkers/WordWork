@@ -41,15 +41,15 @@ pub fn run() {
         .setup(|app| {
             let state = state::AppState::new(app.handle())?;
             app.manage(state);
-            // Phase 0: `WW_SPIKE=1 cargo tauri dev` runs the smoke test in the real
-            // WebView and prints the results to stdout (debug builds only).
+            // `WW_SMOKE=1 cargo tauri dev` runs the smoke test in the real WebView
+            // and prints the results to stdout (debug builds only).
             #[cfg(debug_assertions)]
-            if std::env::var_os("WW_SPIKE").is_some() {
+            if std::env::var_os("WW_SMOKE").is_some() {
                 let handle = app.handle().clone();
                 std::thread::spawn(move || {
                     std::thread::sleep(std::time::Duration::from_secs(4));
                     if let Some(w) = handle.get_webview_window("main") {
-                        let _ = w.eval("window.wwSpike && window.wwSpike(true)");
+                        let _ = w.eval("window.wwSmokeTest && window.wwSmokeTest(true)");
                     }
                 });
             }
@@ -76,7 +76,7 @@ pub fn run() {
             ai_commands::ai_cancel,
             ai_commands::ai_config_get,
             ai_commands::ai_config_set,
-            commands::spike_report,
+            commands::smoke_report,
             data_commands::doc_list,
             data_commands::doc_create,
             data_commands::doc_get,

@@ -1,4 +1,4 @@
-/** Panelen "Infoga tecken". */
+/** The "Infoga tecken" panel. */
 import { CHAR_GROUPS, charInfo, codePoint, recentChars, rememberChar, searchChars, type CharInfo } from "./typography";
 import { h } from "./ui";
 
@@ -9,7 +9,7 @@ export interface CharPanelDeps {
   fixAll: () => void;
 }
 
-/** Synlig form för osynliga tecken. */
+/** Visible form for invisible characters. */
 function display(c: string): string {
   if (c === " ") return "␣";
   if (c === " ") return "⎵";
@@ -80,7 +80,7 @@ export function renderCharPanel(deps: CharPanelDeps): void {
     oninput: () => render(search.value),
   }) as HTMLInputElement;
 
-  // Tangentbord: piltangenter flyttar, Enter infogar och stänger.
+  // Keyboard: arrow keys move, Enter inserts and closes.
   panel.onkeydown = (e: KeyboardEvent) => {
     const keys = [...body.querySelectorAll<HTMLButtonElement>(".k")];
     if (!keys.length) return;

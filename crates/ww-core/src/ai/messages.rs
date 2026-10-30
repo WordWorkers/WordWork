@@ -1,6 +1,6 @@
-//! Building the conversation sent to the model. Ported from `ai.py`
-//! (`parse_meta`, `text_guidance`, `build_messages`, `context_size`,
-//! `is_external`); the result is the same text the old app sent.
+//! Building the conversation sent to the model: metadata, guidance for the
+//! text type, the messages and the context size. The prompts give the same
+//! text as the Docker version.
 
 use std::net::IpAddr;
 use std::sync::LazyLock;

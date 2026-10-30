@@ -2,8 +2,8 @@
 //! frontend's `ApiError` handling keeps working unchanged.
 //!
 //! This file: health and the development smoke test. The rest is grouped by
-//! phase in `data_commands`, `language_commands`, `export_commands` and
-//! `ai_commands`.
+//! area in `data_commands`, `language_commands`, `export_commands`,
+//! `ai_commands` and `shell`.
 
 use serde::Serialize;
 use tauri::State;
@@ -44,14 +44,14 @@ pub async fn health(state: State<'_, AppState>) -> Result<Health> {
     })
 }
 
-/// Phase 0: prints a smoke-test line from the WebView; `DONE` quits the app.
+/// Prints a smoke-test line from the WebView; `DONE` quits the app.
 #[tauri::command]
-pub fn spike_report(app: tauri::AppHandle, line: String) {
+pub fn smoke_report(app: tauri::AppHandle, line: String) {
     // Development only: release builds ignore it (the WebView can't quit the app).
     if !cfg!(debug_assertions) {
         return;
     }
-    println!("[spike] {line}");
+    println!("[smoke] {line}");
     if line == "DONE" {
         app.exit(0);
     }

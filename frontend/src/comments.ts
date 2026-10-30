@@ -1,28 +1,28 @@
 /**
- * Kommentarer på markerad text – för dig själv, aldrig i export.
+ * Comments on selected text – for yourself, never in export.
  *
- * Sparas i Markdown-texten med CriticMarkup:
+ * Stored in the Markdown text with CriticMarkup:
  *
  *     Hon sa att {==hon aldrig varit där==}{>>Sa hon verkligen så?<<} och gick.
  *
- * I Skriv-vyn är det ett märke (mark) på den markerade texten, med kommentaren
- * som attribut. Kommentarer tas bort vid export och kopiering (stripComments),
- * och kommentarstexten räknas inte i ord eller tecken.
+ * In the Write view it is a mark on the selected text, with the comment as an
+ * attribute. Comments are removed on export and copy (stripComments), and the
+ * comment text is not counted in words or characters.
  */
 import { Mark, mergeAttributes } from "@tiptap/core";
 import type { EditorState } from "@tiptap/pm/state";
 
 const COMMENT_INLINE = /^\{==([\s\S]+?)==\}\{>>([\s\S]*?)<<\}/;
 
-/** Kommentarstexten får inte innehålla CriticMarkups slutmarkering eller radbrytningar. */
+/** The comment text must not contain CriticMarkup's end marker or line breaks. */
 export function cleanComment(text: string): string {
   return text.replace(/\s+/g, " ").replace(/<<\}/g, "<< }").replace(/==\}/g, "== }").trim();
 }
 
 export const Comment = Mark.create({
   name: "comment",
-  inclusive: false, // text som skrivs direkt efter hör inte till kommentaren
-  excludes: "comment", // kommentarer överlappar inte
+  inclusive: false, // text typed directly after does not belong to the comment
+  excludes: "comment", // comments do not overlap
 
   addAttributes() {
     return {
@@ -71,18 +71,18 @@ export interface CommentRange {
   from: number;
   to: number;
   text: string;
-  /** Den kommenterade texten. */
+  /** The commented text. */
   quote: string;
 }
 
-/** Kommentaren vid en position (hela det sammanhängande märket), om någon. */
+/** The comment at a position (the whole contiguous mark), if any. */
 export function commentAt(state: EditorState, pos: number): CommentRange | null {
   const $pos = state.doc.resolve(pos);
   const parent = $pos.parent;
   if (!parent.isTextblock) return null;
   const type = state.schema.marks.comment;
   const start = $pos.start();
-  // Sammanhängande bitar med samma kommentar i stycket.
+  // Contiguous pieces with the same comment in the paragraph.
   const runs: { from: number; to: number; text: string }[] = [];
   let offset = 0;
   parent.forEach((child) => {
@@ -99,7 +99,7 @@ export function commentAt(state: EditorState, pos: number): CommentRange | null 
   return { ...run, quote: state.doc.textBetween(run.from, run.to, " ") };
 }
 
-/** Alla kommentarer i Markdown-texten (för översikten). */
+/** All comments in the Markdown text (for the overview). */
 export function listComments(markdown: string): { quote: string; text: string }[] {
   const out: { quote: string; text: string }[] = [];
   for (const m of markdown.matchAll(/\{==([\s\S]+?)==\}\{>>([\s\S]*?)<<\}/g)) {
@@ -109,8 +109,8 @@ export function listComments(markdown: string): { quote: string; text: string }[
 }
 
 /**
- * Tar bort kommentarer ur Markdown: {==text==}{>>kommentar<<} blir text, och
- * fristående {>>kommentar<<} försvinner. Kodblock lämnas orörda.
+ * Removes comments from Markdown: {==text==}{>>comment<<} becomes text, and a
+ * standalone {>>comment<<} disappears. Code blocks are left untouched.
  */
 export function stripComments(md: string): string {
   return md

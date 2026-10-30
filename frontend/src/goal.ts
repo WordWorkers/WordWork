@@ -1,9 +1,9 @@
 /**
- * Dagens skrivmål: hur många ord som skrivits i dag, summerat över dokument.
+ * Today's writing goal: how many words have been written today, summed over documents.
  *
- * För varje dokument sparas ordantalet första gången det öppnas under dagen.
- * Skrivna ord = ökningen sedan dess (borttagna ord räknas inte som negativa
- * för andra dokument). Sparas lokalt i webbläsaren och nollställs vid midnatt.
+ * For each document the word count is saved the first time it is opened that day.
+ * Words written = the increase since then (removed words do not count as negative
+ * for other documents). Stored in localStorage and reset at midnight.
  */
 
 const KEY = "ww.goalProgress";
@@ -26,7 +26,7 @@ function load(): DayProgress {
       if (p.date === today() && p.docs) return p;
     }
   } catch {
-    /* ignorera */
+    /* ignore */
   }
   return { date: today(), docs: {} };
 }
@@ -35,11 +35,11 @@ function save(p: DayProgress): void {
   try {
     localStorage.setItem(KEY, JSON.stringify(p));
   } catch {
-    /* ignorera */
+    /* ignore */
   }
 }
 
-/** Registrerar dokumentets aktuella ordantal och returnerar dagens skrivna ord. */
+/** Records the document's current word count and returns today's words written. */
 export function trackWords(doc: string, words: number): number {
   const p = load();
   const entry = p.docs[doc];
@@ -49,7 +49,7 @@ export function trackWords(doc: string, words: number): number {
   return writtenToday(p);
 }
 
-/** Ett dokument har bytt namn – flytta dagens räkning. */
+/** A document was renamed – move today's count. */
 export function renameTracked(oldName: string, newName: string): void {
   const p = load();
   if (p.docs[oldName]) {

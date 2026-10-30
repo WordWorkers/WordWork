@@ -1,6 +1,6 @@
 /**
- * Högerklicksmeny i Skriv-vyn: rättningsförslag, egen ordlista och synonymer.
- * Ingenting ändras i texten förrän användaren själv väljer ett alternativ.
+ * Right-click menu in the Write view: correction suggestions, custom dictionary and synonyms.
+ * Nothing in the text changes until the user picks an option.
  */
 import type { EditorView } from "@tiptap/pm/view";
 import { TextSelection } from "@tiptap/pm/state";
@@ -14,10 +14,10 @@ interface MenuDeps {
   replace: (from: number, to: number, text: string) => void;
   openChars: () => void;
   toggleNote: () => void;
-  /** Lägg till eller ändra en kommentar på intervallet. */
+  /** Add or change a comment on the range. */
   comment: (from: number, to: number) => void;
   removeComment: (from: number, to: number) => void;
-  /** Ändra fotnoten på positionen, eller (null) infoga en ny vid markören. */
+  /** Change the footnote at the position, or (null) insert a new one at the cursor. */
   footnote: (pos: number | null) => void;
   removeFootnote: (pos: number) => void;
 }
@@ -38,7 +38,7 @@ document.addEventListener("keydown", (e) => {
 window.addEventListener("blur", closeMenu);
 window.addEventListener("resize", closeMenu);
 
-/** Behåll versal begynnelsebokstav om originalet hade det. */
+/** Keep an initial capital letter if the original had one. */
 function matchCase(original: string, replacement: string): string {
   if (original.length > 1 && original === original.toUpperCase()) return replacement.toUpperCase();
   if (original[0] === original[0].toUpperCase() && original[0] !== original[0].toLowerCase()) {
@@ -50,7 +50,7 @@ function matchCase(original: string, replacement: string): string {
 export function openContextMenu(event: MouseEvent, view: EditorView, deps: MenuDeps): boolean {
   const hit = view.posAtCoords({ left: event.clientX, top: event.clientY });
   if (!hit) return false;
-  // Högerklick på en fotnotssiffra: bara fotnotsval.
+  // Right-click on a footnote number: footnote options only.
   const fnEl = (event.target as Element).closest?.(".ww-footnote");
   if (fnEl) {
     const pos = view.posAtDOM(fnEl, 0);
@@ -73,7 +73,7 @@ export function openContextMenu(event: MouseEvent, view: EditorView, deps: MenuD
       return true;
     }
   }
-  // En egen markering som klicket ligger i (för "Kommentera …"), innan menyn ändrar den.
+  // A user selection the click is inside (for "Kommentera …"), before the menu changes it.
   const sel = view.state.selection;
   const selRange =
     !sel.empty && hit.pos >= sel.from && hit.pos <= sel.to && sel.$from.sameParent(sel.$to)
@@ -81,7 +81,7 @@ export function openContextMenu(event: MouseEvent, view: EditorView, deps: MenuD
       : null;
   const range = wordAt(view.state, hit.pos);
   if (!range) {
-    // Inget ord under markören: visa bara "Infoga tecken".
+    // No word under the pointer: show only "Infoga tecken".
     view.dispatch(view.state.tr.setSelection(TextSelection.create(view.state.doc, hit.pos)));
     closeMenu();
     const menu = h("div", { class: "context-menu", role: "menu" });
@@ -98,8 +98,8 @@ export function openContextMenu(event: MouseEvent, view: EditorView, deps: MenuD
   }
 
   const phrase = phraseCandidate(view, hit.pos, range, deps.spell);
-  // Markera ordet så det syns vad menyn gäller – men behåll en egen markering
-  // som användaren gjort för att lägga till en fras.
+  // Select the word so it is clear what the menu applies to – but keep a
+  // selection the user made in order to add a phrase.
   if (!phrase?.fromSelection) {
     view.dispatch(
       view.state.tr.setSelection(TextSelection.create(view.state.doc, range.from, range.to)),
@@ -135,9 +135,9 @@ export function openContextMenu(event: MouseEvent, view: EditorView, deps: MenuD
 const MAX_PHRASE_WORDS = 6;
 
 /**
- * En fras att föreslå för den egna ordlistan:
- *  - den egna markeringen, om klicket är i den och den är 2–6 ord, eller
- *  - en följd av understrukna ord runt det klickade ("open source").
+ * A phrase to suggest for the custom dictionary:
+ *  - the user's selection, if the click is inside it and it is 2–6 words, or
+ *  - a run of underlined words around the clicked one ("open source").
  */
 function phraseCandidate(
   view: EditorView,
@@ -186,7 +186,7 @@ function buildPhrase(menu: HTMLElement, phrase: string, deps: MenuDeps): void {
   );
 }
 
-/** "Infoga tecken …" – tecknet ska hamna där man högerklickade, inte ersätta ordet. */
+/** "Infoga tecken …" – the character goes where you right-clicked, without replacing the word. */
 function charsItem(deps: MenuDeps, view: EditorView, pos: number): HTMLButtonElement {
   return item("Infoga tecken …", () => {
     closeMenu();
@@ -196,7 +196,7 @@ function charsItem(deps: MenuDeps, view: EditorView, pos: number): HTMLButtonEle
   });
 }
 
-/** "Kommentera …", eller "Ändra kommentar …"/"Ta bort kommentar" på en befintlig kommentar. */
+/** "Kommentera …", or "Ändra kommentar …"/"Ta bort kommentar" on an existing comment. */
 function commentItems(
   deps: MenuDeps,
   view: EditorView,
@@ -225,7 +225,7 @@ function commentItems(
   ];
 }
 
-/** "Infoga fotnot …" – efter ordet (eller markeringen) man högerklickade på. */
+/** "Infoga fotnot …" – after the word (or selection) that was right-clicked. */
 function footnoteItem(deps: MenuDeps, view: EditorView, pos: number): HTMLElement {
   const $pos = view.state.doc.resolve(Math.min(pos, view.state.doc.content.size));
   if ($pos.parent.type.name === "note" || $pos.parent.type.name === "codeBlock") return h("span", { hidden: true });
@@ -236,7 +236,7 @@ function footnoteItem(deps: MenuDeps, view: EditorView, pos: number): HTMLElemen
   });
 }
 
-/** Gör stycket till en egen anteckning (eller tillbaka). */
+/** Turns the paragraph into a private note (or back). */
 function noteItem(deps: MenuDeps, view: EditorView, pos: number): HTMLButtonElement {
   const $pos = view.state.doc.resolve(Math.min(pos, view.state.doc.content.size));
   const inNote = $pos.parent.type.name === "note";

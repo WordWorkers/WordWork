@@ -1,7 +1,6 @@
-//! Import and export via Pandoc, run as a separate program (in the Mac app: a
-//! sidecar binary inside `Word Work.app/Contents/MacOS/`). Ported from
-//! `convert.py`: same Pandoc arguments, Lua filters and reference documents,
-//! so the files are the same as from the Docker version.
+//! Import and export via Pandoc, run as a separate program (the `ww-pandoc`
+//! sidecar next to the app executable). Same Pandoc arguments, Lua filters
+//! and reference documents as the Docker version, so the files are the same.
 
 use std::io::Write;
 use std::path::{Path, PathBuf};
@@ -150,7 +149,7 @@ pub struct ExportOptions {
     pub templates: Vec<TemplateInfo>,
 }
 
-/// What `/api/export/formats` returned.
+/// Formats and templates for the export dialog.
 pub fn export_options() -> ExportOptions {
     ExportOptions {
         formats: EXPORT_FORMATS

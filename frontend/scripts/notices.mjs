@@ -1,6 +1,5 @@
-// Skriver licenstexter för alla npm-paket som följer med i den byggda
-// webbappen (inte utvecklingsverktyg). Används vid bygget av Docker-imagen
-// och av tools/third_party.py.
+// Writes the licence texts of every npm package bundled in the built
+// frontend (not development tools), for the app's licence notices.
 //
 //   node scripts/notices.mjs [utfil]     (standard: skriver till stdout)
 import fs from "node:fs";

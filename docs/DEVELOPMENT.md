@@ -57,9 +57,9 @@ for testing without a model.
 ### Smoke test
 
 Open the devtools in the app window (right-click → Inspect) and run
-`await wwSpike()`, or start with `WW_SPIKE=1 cargo tauri dev` to print the
-results in the terminal. If the old backend happens to run on :8080 on a copy
-of the same data folder, it also compares the read endpoints with it.
+`await wwSmokeTest()`, or start with `WW_SMOKE=1 cargo tauri dev` to print the
+results in the terminal (`frontend/src/smoke.ts`). It creates and deletes test
+documents, so use a test data folder (`WW_DATA_DIR`).
 
 ## Building for all platforms (GitHub Actions)
 

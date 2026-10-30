@@ -50,7 +50,7 @@ pub struct AppState {
 pub struct AppConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     data_dir: Option<PathBuf>,
-    /// AI server (Inställningar → AI-assistent). The key is in the Keychain.
+    /// AI server (Inställningar → AI-assistent). The key is in the system keyring.
     #[serde(default)]
     pub ai: AiSettings,
     /// Folder of the last export/backup, offered first in the Save dialog.
@@ -187,7 +187,8 @@ fn keychain() -> Option<keyring::Entry> {
     keyring::Entry::new(KEYCHAIN_SERVICE, KEYCHAIN_ACCOUNT).ok()
 }
 
-/// The API key: `WW_AI_KEY` (dev) or the macOS Keychain.
+/// The API key: `WW_AI_KEY` (debug builds) or the system keyring (macOS
+/// Keychain, Windows Credential Manager, Secret Service on Linux).
 pub fn ai_key() -> String {
     if let Some(k) = dev_env("WW_AI_KEY") {
         if !k.trim().is_empty() {
@@ -197,7 +198,7 @@ pub fn ai_key() -> String {
     keychain().and_then(|e| e.get_password().ok()).unwrap_or_default()
 }
 
-/// Stores (or with `""` removes) the key in the Keychain.
+/// Stores (or with `""` removes) the key in the system keyring.
 pub fn set_ai_key(key: &str) -> ww_core::Result<()> {
     let entry = keychain().ok_or_else(|| ww_core::Error::internal("Nyckelringen kan inte nås."))?;
     let r = if key.is_empty() {
@@ -216,7 +217,7 @@ pub fn ai_from_env() -> bool {
     ["WW_AI_URL", "WW_AI_API", "WW_AI_MODEL"].iter().any(|k| dev_env(k).is_some())
 }
 
-/// Settings → client config. `WW_AI_*` variables win (as in the Docker version).
+/// Settings → client config. `WW_AI_*` variables win (debug builds).
 pub fn ai_config(saved: &AiSettings) -> AiConfig {
     let env = dev_env;
     let api = match env("WW_AI_API").map(|v| v.trim().to_lowercase()).as_deref() {

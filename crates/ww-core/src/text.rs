@@ -1,5 +1,5 @@
 //! Small text helpers shared by storage, export and AI: frontmatter, word
-//! count and document-name rules. Ported from `storage.py`.
+//! count and document-name rules.
 
 use std::sync::LazyLock;
 

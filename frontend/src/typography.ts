@@ -1,8 +1,8 @@
 /**
- * Typografi: specialtecken, automatiska ersättningar medan man skriver och
- * "rätta typografin" för befintlig text.
+ * Typography: special characters, automatic replacements while typing and
+ * "rätta typografin" for existing text.
  *
- * Allt blir vanliga Unicode-tecken – filen förblir ren Markdown.
+ * Everything becomes plain Unicode characters – the file stays pure Markdown.
  */
 import { Extension, InputRule } from "@tiptap/core";
 
@@ -20,13 +20,13 @@ export const QUOTE_STYLES: Record<QuoteStyle, string> = {
 };
 
 /* ------------------------------------------------------------------ */
-/* Tecken                                                              */
+/* Characters                                                          */
 /* ------------------------------------------------------------------ */
 
 export interface CharInfo {
   char: string;
   name: string;
-  /** Kort etikett under tecknet i panelen (t.ex. för osynliga tecken). */
+  /** Short label under the character in the panel (e.g. for invisible characters). */
   label?: string;
   keywords?: string;
 }
@@ -128,21 +128,21 @@ export function rememberChar(c: string): void {
     const r = [c, ...recentChars().filter((x) => x !== c)].slice(0, 8);
     localStorage.setItem(RECENT_KEY, JSON.stringify(r));
   } catch {
-    /* ignorera */
+    /* ignore */
   }
 }
 
 /* ------------------------------------------------------------------ */
-/* Regler                                                              */
+/* Rules                                                               */
 /* ------------------------------------------------------------------ */
 
 const DQ: Record<Exclude<QuoteStyle, "straight">, string> = { sv: "”", angle: "»" };
 const SQ: Record<Exclude<QuoteStyle, "straight">, string> = { sv: "’", angle: "›" };
 
 /**
- * Enkelt citattecken. Med svenska citattecken är apostrof och inre citat samma
- * tecken (’). Med vinkelcitat blir det › – utom efter en bokstav när inget inre
- * citat är öppet, då är det en apostrof (”Strindberg’s”).
+ * Single quotation mark. With Swedish quotes, the apostrophe and inner quotes are the
+ * same character (’). With angle quotes it becomes › – except after a letter when no
+ * inner quote is open, then it is an apostrophe (”Strindberg’s”).
  */
 function singleQuote(prev: string, style: Exclude<QuoteStyle, "straight">, before = ""): string {
   if (style === "sv") return "’";
@@ -153,13 +153,13 @@ function singleQuote(prev: string, style: Exclude<QuoteStyle, "straight">, befor
 
 interface Rule {
   name: string;
-  /** Matchar slutet av texten före markören (inklusive tecknet som just skrevs). */
+  /** Matches the end of the text before the cursor (including the character just typed). */
   find: RegExp;
   replace: (m: RegExpExecArray, style: QuoteStyle, before: string) => string | null;
-  quotes?: boolean; // regeln gäller citattecken (av när stilen är "straight")
+  quotes?: boolean; // the rule concerns quotation marks (off when the style is "straight")
 }
 
-// Blanksteg men inte radbrytning – TipTap kör reglerna även när man trycker Enter ("\n").
+// Whitespace but not line break – TipTap runs the rules even when Enter is pressed ("\n").
 const RANGE_SUFFIX = "[ \\t\\u00a0.,;:!?)]";
 
 export const RULES: Rule[] = [
@@ -172,14 +172,14 @@ export const RULES: Rule[] = [
   },
   { name: "ellips", find: /\.\.\.$/, replace: () => "…" },
   { name: "långt tankstreck", find: /–-$/, replace: () => "—" },
-  // Inte i början av ett stycke: där kan "---" vara en avgränsningslinje i Markdown.
+  // Not at the start of a paragraph: there "---" may be a horizontal rule in Markdown.
   { name: "tankstreck", find: /([^\n-])--$/, replace: (m) => `${m[1]}–` },
   { name: "pratminus", find: /([ \t\u00a0])-[ \u00a0]$/, replace: (m) => `${m[1]}– ` },
-  // Repliker i skönlitteratur: "-- " först i stycket blir "– ". ("- " blir punktlista
-  // och "---" avgränsningslinje, så de lämnas.)
+  // Dialogue in fiction: "-- " at the start of a paragraph becomes "– ". ("- " becomes a
+  // bullet list and "---" a horizontal rule, so they are left alone.)
   { name: "replikstreck", find: /^--[ \u00a0]$/, replace: () => "– " },
   {
-    // 12-15, 1998-2001 – men inte datum (2026-10-07) eller telefonnummer (08-123).
+    // 12-15, 1998-2001 – but not dates (2026-10-07) or phone numbers (08-123).
     name: "intervall",
     find: new RegExp(`(?<![\\d\\-–.,:/])([1-9]\\d{0,3})-(\\d{1,4})(${RANGE_SUFFIX})$`),
     replace: (m) => `${m[1]}–${m[2]}${m[3]}`,
@@ -191,7 +191,7 @@ export const RULES: Rule[] = [
   },
 ];
 
-/** TipTap-tillägg för ersättningar medan man skriver. Backsteg direkt efter ångrar. */
+/** TipTap extension for replacements while typing. Backspace right after undoes. */
 export function typographyExtension(options: () => TypographyOptions) {
   return Extension.create({
     name: "wwTypography",
@@ -217,7 +217,7 @@ export function typographyExtension(options: () => TypographyOptions) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Rätta typografin i befintlig text                                   */
+/* Fix typography in existing text                                     */
 /* ------------------------------------------------------------------ */
 
 export interface TypographyChange {
@@ -226,7 +226,7 @@ export interface TypographyChange {
   after: string;
 }
 
-/** Delar en rad i bitar som får ändras och bitar som skyddas (kod, länkadresser, URL:er). */
+/** Splits a line into pieces that may be changed and pieces that are protected (code, link targets, URLs). */
 function protectedSplit(line: string): { text: string; locked: boolean }[] {
   const re = /(`+)[^`]*?\1|\]\([^)]*\)|<https?:[^>]*>|https?:\/\/\S+/g;
   const parts: { text: string; locked: boolean }[] = [];
@@ -261,8 +261,8 @@ function fixSegment(s: string, style: QuoteStyle): string {
 }
 
 /**
- * Rättar typografin i en Markdown-text. Frontmatter, kodblock, kod i rader,
- * länkadresser och Markdown-syntax (listtecken, avgränsningslinjer) lämnas orörda.
+ * Fixes the typography in a Markdown text. Frontmatter, code blocks, inline code,
+ * link targets and Markdown syntax (list markers, horizontal rules) are left untouched.
  */
 export function fixTypography(md: string, style: QuoteStyle): { text: string; changes: TypographyChange[] } {
   const lines = md.split("\n");
@@ -279,9 +279,9 @@ export function fixTypography(md: string, style: QuoteStyle): { text: string; ch
       inFence = !inFence;
       continue;
     }
-    if (inFence || /^ {4}|\t/.test(line)) continue; // kodblock
-    if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(line)) continue; // avgränsningslinje
-    // Behåll listtecken, citatmarkering och rubriktecken i början av raden.
+    if (inFence || /^ {4}|\t/.test(line)) continue; // code block
+    if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(line)) continue; // horizontal rule
+    // Keep list markers, quote markers and heading markers at the start of the line.
     const lead = /^(\s*(?:>\s*)*(?:[-*+]\s+|\d+[.)]\s+|#{1,6}\s+)?)/.exec(line)![0];
     const rest = line.slice(lead.length);
     const fixed =

@@ -1,4 +1,4 @@
-//! AI assistant. Ported from `ai.py` / `ai_openai.py`.
+//! AI assistant: Ollama and OpenAI-compatible servers.
 //!
 //! Ground rule: the AI never writes in the document. This module has no access
 //! to the text except what the caller passes in, and its answers are shown in

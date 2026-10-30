@@ -1,5 +1,4 @@
-//! Ported from the old backend's tests/test_convert.py (plus the Phase 0
-//! Pandoc spike tests). Uses `WW_PANDOC` or `pandoc` on PATH; every test is
+//! Import/export through the real Pandoc. Uses `WW_PANDOC` or `pandoc` on PATH; every test is
 //! skipped with a message if neither exists.
 
 use std::io::Read;
@@ -250,7 +249,8 @@ fn comments_never_exported() {
 
 #[test]
 fn non_ascii_page_title() {
-    // Phase 0 finding: without LC_ALL, Pandoc garbles non-ASCII arguments.
+    // Without LC_ALL (apps started from Finder have no LANG), Pandoc garbles
+    // non-ASCII arguments.
     let Some(p) = pandoc() else { return };
     let html = String::from_utf8(p.export("Ålgång", "# x\n", "html", "standard", 0).unwrap().0).unwrap();
     assert!(html.contains("<title>Ålgång</title>"));

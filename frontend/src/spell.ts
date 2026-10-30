@@ -1,9 +1,9 @@
 /**
- * Stavningskontroll i Skriv-vyn.
+ * Spell checking in the Write view.
  *
- * Unika ord i dokumentet skickas till servern i omgångar; svaren cachas i
- * webbläsaren. Felstavade ord markeras med ProseMirror-dekorationer, så själva
- * texten (Markdown) påverkas aldrig.
+ * Unique words in the document are sent to Rust in batches; the answers are cached
+ * in the frontend. Misspelled words are marked with ProseMirror decorations, so the
+ * text itself (Markdown) is never affected.
  */
 import { Extension } from "@tiptap/core";
 import type { Node as PMNode } from "@tiptap/pm/model";
@@ -20,7 +20,7 @@ export interface WordRange {
   to: number;
 }
 
-/** Går igenom textnoder och anropar `fn` för varje ord (utom i kod). */
+/** Walks text nodes and calls `fn` for each word (except in code). */
 export function forEachWord(doc: PMNode, fn: (w: WordRange) => void): void {
   doc.descendants((node, pos, parent) => {
     if (node.type.name === "codeBlock") return false;
@@ -34,7 +34,7 @@ export function forEachWord(doc: PMNode, fn: (w: WordRange) => void): void {
   });
 }
 
-/** Ordet vid en viss position i dokumentet. */
+/** The word at a given position in the document. */
 export function wordAt(state: EditorState, pos: number): WordRange | null {
   const $pos = state.doc.resolve(pos);
   const parent = $pos.parent;
@@ -50,7 +50,7 @@ export function wordAt(state: EditorState, pos: number): WordRange | null {
   return null;
 }
 
-/** Intervall i dokumentet som täcks av en godkänd fras ur den egna ordlistan. */
+/** Ranges in the document covered by an accepted phrase from the custom dictionary. */
 export interface PhraseRange {
   from: number;
   to: number;
@@ -61,9 +61,9 @@ function escapeRe(s: string): string {
 }
 
 /**
- * Regex för en fras: orden i följd med blanksteg emellan, hela ord.
- * Efter sista ordet får ett bindestreck följa ("open source-licensen").
- * Gemener i listan godkänner även versal begynnelsebokstav, som för enskilda ord.
+ * Regex for a phrase: the words in sequence with whitespace between, whole words.
+ * A hyphen may follow the last word ("open source-licensen").
+ * Lowercase in the list also accepts an initial capital, as for single words.
  */
 export function phraseRegex(phrase: string): RegExp {
   const words = phrase.split(" ");
@@ -79,7 +79,7 @@ export function phraseRegex(phrase: string): RegExp {
   return new RegExp(`(?<![\\p{L}\\p{N}'’-])${parts.join("\\s+")}(?![\\p{L}\\p{N}]|['’]\\p{L})`, "gu");
 }
 
-/** Hittar alla förekomster av fraserna i varje textblock. */
+/** Finds all occurrences of the phrases in each text block. */
 export function findPhrases(doc: PMNode, phrases: RegExp[]): PhraseRange[] {
   if (!phrases.length) return [];
   const out: PhraseRange[] = [];
@@ -100,9 +100,9 @@ export function findPhrases(doc: PMNode, phrases: RegExp[]): PhraseRange[] {
 
 export class SpellService {
   enabled = true;
-  /** Fraser ur den egna ordlistan, t.ex. "open source". */
+  /** Phrases from the custom dictionary, e.g. "open source". */
   phrases: RegExp[] = [];
-  private known = new Map<string, boolean>(); // ord → korrekt?
+  private known = new Map<string, boolean>(); // word → correct?
   private ignored = new Set<string>();
   private queue = new Set<string>();
   private inFlight = false;
@@ -114,7 +114,7 @@ export class SpellService {
     return () => this.listeners.delete(fn);
   }
 
-  /** Ritar om understrykningar (t.ex. när kontrollen slås av/på). */
+  /** Redraws underlines (e.g. when checking is switched on/off). */
   changed(): void {
     for (const fn of this.listeners) fn();
   }
@@ -124,7 +124,7 @@ export class SpellService {
     return this.known.get(word) === false && !this.ignored.has(word);
   }
 
-  /** Köar ord som inte kontrollerats ännu. */
+  /** Queues words that have not been checked yet. */
   request(words: Iterable<string>): void {
     for (const w of words) {
       if (!this.known.has(w) && !/\d/.test(w) && w.length > 1) this.queue.add(w);
@@ -148,7 +148,7 @@ export class SpellService {
       }
       this.changed();
     } catch {
-      // Servern laddar kanske fortfarande ordlistan – försök igen om en stund.
+      // Rust may still be loading the dictionary – try again in a moment.
       window.setTimeout(() => void this.flush(), 3000);
       return;
     } finally {
@@ -162,14 +162,14 @@ export class SpellService {
     this.changed();
   }
 
-  /** Efter större ändringar i ordlistan: kontrollera alla ord på nytt. */
+  /** After larger changes to the dictionary: check all words again. */
   reload(entries: string[]): void {
     this.setDictionary(entries);
     this.known.clear();
     this.changed();
   }
 
-  /** Läser in fraserna ur den egna ordlistan (enskilda ord kontrolleras på servern). */
+  /** Loads the phrases from the custom dictionary (single words are checked in Rust). */
   setDictionary(entries: string[]): void {
     this.phrases = entries.filter((e) => e.includes(" ")).map(phraseRegex);
   }
@@ -179,7 +179,7 @@ export class SpellService {
       this.setDictionary((await api.dictionary()).words);
       this.changed();
     } catch {
-      /* servern startar kanske fortfarande */
+      /* the backend may still be starting up */
     }
   }
 
@@ -191,7 +191,7 @@ export class SpellService {
       return;
     }
     this.known.set(word, true);
-    // Ordlistan godkänner även versal begynnelsebokstav för gemena ord.
+    // The dictionary also accepts an initial capital for lowercase words.
     if (word === word.toLowerCase()) {
       const cap = word[0].toUpperCase() + word.slice(1);
       if (this.known.has(cap)) this.known.set(cap, true);
@@ -199,7 +199,7 @@ export class SpellService {
     this.changed();
   }
 
-  /** Efter att ett ord tagits bort ur ordlistan måste det kontrolleras igen. */
+  /** After a word has been removed from the dictionary it must be checked again. */
   forget(word: string, remaining?: string[]): void {
     if (remaining) this.setDictionary(remaining);
     if (word.includes(" ")) {
@@ -238,8 +238,8 @@ export function spellExtension(service: SpellService) {
           while (pi < phrases.length && phrases[pi].to <= from) pi++;
           const p = phrases[pi];
           if (p && p.from <= from && from < p.to) {
-            // Ordet ingår i en godkänd fras. Fortsätter det med bindestreck efter
-            // frasen ("source-licensen") kontrolleras resten som ett svenskt ord.
+            // The word is part of an accepted phrase. If it continues with a hyphen after
+            // the phrase ("source-licensen"), the rest is checked as a Swedish word.
             if (to <= p.to) return;
             const rest = word.slice(p.to - from);
             const m = /^[-'’]+/.exec(rest);
@@ -294,7 +294,7 @@ export function spellExtension(service: SpellService) {
   });
 }
 
-/* ---------- markering av ord (ordfrekvens) ---------- */
+/* ---------- word highlighting (word frequency) ---------- */
 
 const highlightKey = new PluginKey<{ word: string | null; decos: DecorationSet }>("highlight");
 

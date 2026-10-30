@@ -31,7 +31,7 @@ that the document points to. The fix is one Pandoc flag.
 |---|---|---|---|
 | 1 | `--sandbox` on every Pandoc import/export | `convert.rs` | `export_never_embeds_local_files` (fails without the flag); smoke-test imports |
 | 2 | Key removed when the address moves to another origin (UI says so); key refused for `http://` outside the local network | `ai_commands.rs` (`key_update`), `main.ts` | `key_follows_server`, `key_rules` |
-| 3 | `WW_*` variables read through `dev_env()`, `None` in release builds; `spike_report` is a no-op in release | `state.rs`, `commands.rs` | review |
+| 3 | `WW_*` variables read through `dev_env()`, `None` in release builds; `spike_report` (now `smoke_report`) is a no-op in release | `state.rs`, `commands.rs` | review |
 | 4 | `navigation-guard` plugin: only the app page itself (`tauri://localhost/`, `http(s)://tauri.localhost/`) may load. Web/mail links go to the browser, everything else is blocked, including other paths on the app origin, which would reload the app | `shell.rs`, `lib.rs` | `app_urls`; in the app: relative link and `file://` blocked, smoke test passes |
 | 5 | dompurify 3.4.17, zip 9.1; `cargo audit`: 0 vulnerabilities, `npm audit`: 0 | `package.json`, `ww-core/Cargo.toml` | audits |
 | 6 | Actions pinned by commit SHA; `permissions: contents: read`; Tauri CLI 2.12.4 is a locked devDependency; new `audit` CI job; Dependabot for actions, cargo and npm | `.github/` | YAML check |

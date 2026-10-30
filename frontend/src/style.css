@@ -1,4 +1,4 @@
-/* ---------- Teman ---------- */
+/* ---------- Themes ---------- */
 :root {
   --bg: #fbfaf7;
   --text: #26241f;
@@ -63,7 +63,7 @@
   }
 }
 
-/* ---------- Grund ---------- */
+/* ---------- Base ---------- */
 * {
   box-sizing: border-box;
 }
@@ -127,7 +127,7 @@ button.danger {
   color: #fff;
 }
 
-/* ---------- Ram (topp/botten) – tonas ut när man skriver ---------- */
+/* ---------- Frame (top/bottom) – fades out while typing ---------- */
 .chrome {
   position: fixed;
   left: 0;
@@ -203,7 +203,7 @@ body.typing .chrome:focus-within {
   color: #c0503c;
 }
 
-/* ---------- Sidan och texten ---------- */
+/* ---------- Page and text ---------- */
 .page {
   padding: 16vh 24px 30vh;
 }
@@ -229,7 +229,7 @@ body.typewriter .page {
   overflow-wrap: break-word;
 }
 
-/* All text i samma typsnitt – rubriker skiljer sig bara i storlek och vikt. */
+/* All text in the same font – headings differ only in size and weight. */
 .prose > * {
   margin: 0 0 1em;
   transition: opacity 0.35s ease;
@@ -299,7 +299,7 @@ body.typewriter .page {
 
 .prose code,
 .prose pre {
-  font-family: inherit; /* samma typsnitt överallt */
+  font-family: inherit; /* same font everywhere */
   background: color-mix(in srgb, var(--text) 6%, transparent);
   border-radius: 4px;
   padding: 0.05em 0.3em;
@@ -342,7 +342,7 @@ body.focus-paragraph .prose > :not(.is-current) {
   caret-color: var(--accent);
 }
 
-/* ---------- Lådor ---------- */
+/* ---------- Drawers ---------- */
 .drawer {
   position: fixed;
   top: 0;
@@ -441,7 +441,7 @@ h2 {
   color: var(--muted);
 }
 
-/* ---------- Inställningar (popover) ---------- */
+/* ---------- Settings (popover) ---------- */
 .popover {
   position: fixed;
   top: 50px;
@@ -457,7 +457,7 @@ h2 {
   display: none;
   flex-direction: column;
   gap: 12px;
-  /* Long panels (Inställningar in the Mac app) scroll instead of being cut off. */
+  /* Long panels (e.g. Inställningar) scroll instead of being cut off. */
   max-height: calc(100vh - 66px);
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -513,7 +513,7 @@ input[type="range"] {
   accent-color: var(--accent);
 }
 
-/* ---------- Dialoger ---------- */
+/* ---------- Dialogs ---------- */
 dialog.modal {
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -574,7 +574,7 @@ dialog.modal .spacer {
   background: var(--del);
 }
 
-/* ---------- Övrigt ---------- */
+/* ---------- Miscellaneous ---------- */
 .banner {
   position: fixed;
   top: 48px;
@@ -593,10 +593,6 @@ dialog.modal .spacer {
 
 .banner[hidden] {
   display: none;
-}
-
-.banner.update {
-  border-color: var(--accent);
 }
 
 #toast {
@@ -646,7 +642,7 @@ dialog.modal .spacer {
   }
 }
 
-/* ---------- Stavning & markeringar ---------- */
+/* ---------- Spelling & highlights ---------- */
 .prose .misspelled {
   text-decoration: underline wavy #c8553d;
   text-decoration-thickness: 1.5px;
@@ -660,7 +656,7 @@ dialog.modal .spacer {
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 28%, transparent);
 }
 
-/* ---------- Högerklicksmeny ---------- */
+/* ---------- Context menu ---------- */
 .context-menu {
   position: fixed;
   z-index: 50;
@@ -733,7 +729,7 @@ dialog.modal .spacer {
   border-color: var(--accent);
 }
 
-/* ---------- Analys ---------- */
+/* ---------- Analysis ---------- */
 .drawer.wide {
   width: min(400px, 92vw);
 }
@@ -938,7 +934,7 @@ button.link {
   padding: 6px 10px;
 }
 
-/* Flytta texten åt sidan när en låda är öppen och skärmen är bred nog. */
+/* Move the text aside when a drawer is open and the screen is wide enough. */
 @media (min-width: 1100px) {
   .page {
     transition: padding 0.25s ease;
@@ -1067,7 +1063,7 @@ dialog.modal .dict-add input[type="text"] {
   align-items: center;
 }
 
-/* ---------- AI-assistent ---------- */
+/* ---------- AI assistant ---------- */
 .drawer.ai.open {
   display: flex;
   flex-direction: column;
@@ -1305,9 +1301,9 @@ dialog.modal:has(.dict-modal) {
 }
 
 /*
- * Långa manus: låt webbläsaren hoppa över layout av stycken utanför skärmen.
- * Bara i långa dokument och aldrig för stycket man skriver i – annars kan
- * markören hamna fel vid snabbt skrivande i nyss skapade stycken.
+ * Long manuscripts: let the WebView skip layout of off-screen paragraphs.
+ * Only in long documents and never for the paragraph being typed in – otherwise
+ * the cursor can end up in the wrong place when typing fast in newly created paragraphs.
  */
 .prose.long > p:not(.is-current),
 .prose.long > blockquote:not(.is-current),
@@ -1317,7 +1313,7 @@ dialog.modal:has(.dict-modal) {
   contain-intrinsic-size: auto 4lh;
 }
 
-/* ---------- Skrivmål, kortkommandon ---------- */
+/* ---------- Writing goal, keyboard shortcuts ---------- */
 .status-goal {
   display: inline-flex;
   align-items: center;
@@ -1381,7 +1377,7 @@ kbd {
   background: var(--bg);
 }
 
-/* ---------- Infoga tecken ---------- */
+/* ---------- Insert character ---------- */
 .popover.chars {
   width: 410px;
   right: 120px;
@@ -1507,7 +1503,7 @@ dialog.modal:has(.typo-modal) {
   background: var(--del);
 }
 
-/* ---------- Sök och ersätt ---------- */
+/* ---------- Search and replace ---------- */
 .searchbar {
   position: fixed;
   top: 52px;
@@ -1576,7 +1572,7 @@ dialog.modal:has(.typo-modal) {
   color: #1d1a16;
 }
 
-/* ---------- Dokumentlådans fot, papperskorg, publicering ---------- */
+/* ---------- Document drawer footer, trash, publishing ---------- */
 .drawer-foot {
   display: flex;
   justify-content: space-between;
@@ -1620,7 +1616,7 @@ dialog.modal:has(.typo-modal) {
 }
 
 
-/* ---------- Ikoner i verktygsraden ---------- */
+/* ---------- Toolbar icons ---------- */
 .icon-btn {
   display: inline-flex;
   align-items: center;
@@ -1643,7 +1639,7 @@ dialog.modal:has(.typo-modal) {
   padding: 3px 7px;
 }
 
-/* ---------- Egna anteckningar ---------- */
+/* ---------- Private notes ---------- */
 .prose .note {
   position: relative;
   margin: 0.8em 0;
@@ -1666,7 +1662,7 @@ dialog.modal:has(.typo-modal) {
   opacity: 0.6;
 }
 
-/* ---------- Långa meningar ---------- */
+/* ---------- Long sentences ---------- */
 .prose .long-sentence {
   background: color-mix(in srgb, #c0503c 9%, transparent);
   box-shadow: inset 0 -2px 0 color-mix(in srgb, #c0503c 45%, transparent);
@@ -1679,7 +1675,7 @@ input.tiny {
   margin: 0 2px;
 }
 
-/* ---------- Längdmål och deadline i statusraden ---------- */
+/* ---------- Length goal and deadline in the status bar ---------- */
 .status-length.over {
   color: #b5642a;
 }
@@ -1696,7 +1692,7 @@ input.tiny {
   color: #c0503c;
 }
 
-/* ---------- Metadatapanelen ---------- */
+/* ---------- Metadata panel ---------- */
 .meta-form {
   display: grid;
   gap: 14px;
@@ -1791,7 +1787,7 @@ label.field.wide {
   padding: 0 2px;
 }
 
-/* ---------- Kommentarer ---------- */
+/* ---------- Comments ---------- */
 .prose .ww-comment {
   background: color-mix(in srgb, #f2c94c 26%, transparent);
   border-bottom: 2px solid #d9a92a;
@@ -1826,7 +1822,7 @@ label.field.wide {
   gap: 8px;
 }
 
-/* ---------- Fotnoter ---------- */
+/* ---------- Footnotes ---------- */
 .prose {
   counter-reset: ww-footnote;
 }
@@ -1935,7 +1931,7 @@ dialog.modal:has(.prompt-text) {
   resize: vertical;
 }
 
-/* Mac app: data folder in Inställningar */
+/* Data folder in Inställningar */
 .popover .data-dir-path {
   margin: 4px 0;
   overflow-wrap: anywhere;
@@ -1946,7 +1942,7 @@ dialog.modal:has(.prompt-text) {
   color: #c0503c;
 }
 
-/* Mac app: AI server in Inställningar */
+/* AI server in Inställningar */
 .popover label.wide-input input.text {
   grid-column: 2 / 4;
   min-width: 0;

@@ -20,6 +20,7 @@ import { SpellService } from "./spell";
 import { analyze, findQuotes, LIX_SCALE, lixLevel, nominalLevel, nominalStyle, quickStats, type TextStats } from "./stats";
 import {
   applySettings,
+  flushSettings,
   FONTS,
   loadSettings,
   saveSettings,
@@ -29,7 +30,7 @@ import {
   type Settings,
   type Theme,
 } from "./settings";
-import { confirm, formatDate, h, isMod, modKey, prompt, promptText, showModal, toast } from "./ui";
+import { confirm, formatDate, h, isMac, isMod, modKey, prompt, promptText, showModal, toast } from "./ui";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
 import { SearchBar } from "./searchbar";
@@ -51,9 +52,12 @@ import { listComments } from "./comments";
 import { dropLocal, keepLocal, localCopy, type Unsaved } from "./unsaved";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { aiConfig, chooseDataDir, dataDir, isTauri, revealDataDir, saveAiConfig } from "./ipc";
-import { downloadRoute } from "./ipc-routes"; // also registers wwSpike() in the app
+import { aiConfig, chooseDataDir, dataDir, revealDataDir, saveAiConfig } from "./ipc";
+import { downloadRoute } from "./ipc-routes";
+import "./smoke"; // registers wwSmokeTest() for development
 
+/** The platform's name for its file manager. */
+const REVEAL_LABEL = isMac ? "Visa i Finder" : /Win/.test(navigator.platform) ? "Visa i Utforskaren" : "Visa mappen";
 const AUTOSAVE_MS = 1500;
 const RETRY_MS = 5000;
 const PUBLISH_TITLE_KEY = "ww.publishTitle";
@@ -101,9 +105,9 @@ class App {
   private metaDrawer = h("aside", { class: "drawer right", "aria-label": "Metadata" });
   private statusLength = h("span", { class: "status-goal status-length", hidden: true });
   private statusDeadline = h("span", { class: "status-deadline", hidden: true });
-  /** Frontmatter för aktuellt dokument (uppdateras vid öppning, i metadatapanelen och i Markdown-vyn). */
+  /** Frontmatter of the current document (updated on open, in the metadata panel and in the Markdown view). */
   private frontmatter = "";
-  /** Texttyper från servern (för metadata och inställningar). */
+  /** Text types from Rust (for metadata and settings). */
   private genres: { key: string; label: string }[] = [];
   private charsPanel = h("div", {
     class: "popover chars",
@@ -128,8 +132,6 @@ class App {
   private analysisTimer: number | undefined;
   private settingsPanel = h("div", { class: "popover", role: "dialog", "aria-label": "Inställningar" });
   private banner = h("div", { class: "banner", role: "alert", hidden: true });
-  /** Visas när servern kör en nyare version än den som laddats i fliken. */
-  private updateNotice = h("div", { class: "banner update", role: "status", hidden: true });
 
   constructor(root: HTMLElement) {
     applySettings(this.settings);
@@ -256,7 +258,6 @@ class App {
     root.append(
       topbar,
       this.banner,
-      this.updateNotice,
       this.searchBar.el,
       h("main", { class: "page" }, host, this.footnoteList),
       statusbar,
@@ -270,12 +271,12 @@ class App {
     );
 
     this.bindGlobalEvents();
-    if (isTauri()) this.bindAppShell();
+    this.bindAppShell();
     this.bindDropImport();
     this.setView((localStorage.getItem(VIEW_KEY) as ViewMode) || "write", false);
   }
 
-  // ---------------- uppstart ----------------
+  // ---------------- startup ----------------
   async start(): Promise<void> {
     await this.loadServerSettings();
     if (!this.genres.length) this.genres = await api.genres().catch(() => []);
@@ -285,8 +286,6 @@ class App {
         if (h.problem) this.showProblem(h.problem);
       })
       .catch(() => undefined);
-    // The Mac app can't run an outdated page – no update banner there.
-    if (!isTauri()) this.watchVersion();
     void this.spell.loadDictionary();
     void this.ai.init().then((enabled) => {
       this.aiButton.hidden = !enabled;
@@ -307,12 +306,12 @@ class App {
     await this.open(name);
   }
 
-  /** Inställningarna sparas på servern; webbläsarens kopia användes bara för snabb start. */
+  /** Settings are saved by Rust; the localStorage copy is only used for a quick start. */
   private async loadServerSettings(): Promise<void> {
     try {
       if (!(await syncSettings(this.settings))) return;
     } catch {
-      return; // servern svarar inte – fortsätt med webbläsarens kopia
+      return; // no answer from Rust – continue with the localStorage copy
     }
     const s = this.settings;
     applySettings(s);
@@ -325,7 +324,7 @@ class App {
     if (this.settingsPanel.classList.contains("open")) this.renderSettings();
   }
 
-  // ---------------- dokument ----------------
+  // ---------------- documents ----------------
   async open(name: string): Promise<void> {
     await this.flush();
     const doc = await api.get(name);
@@ -347,7 +346,7 @@ class App {
     try {
       localStorage.setItem(LAST_DOC_KEY, doc.name);
     } catch {
-      /* ignorera */
+      /* ignore */
     }
     this.editor.focus();
   }
@@ -364,7 +363,7 @@ class App {
     }
   }
 
-  /** Innehåll i ett nytt dokument: texttypen från Inställningar, om en är vald. */
+  /** Content of a new document: the text type from Settings, if one is chosen. */
   private newDocContent(): string {
     const g = this.settings.defaultGenre;
     return g && this.genres.some((x) => x.key === g) ? writeMeta("", "genre", g) : "";
@@ -409,14 +408,14 @@ class App {
     this.renderDocs();
   }
 
-  // ---------------- sparning ----------------
+  // ---------------- saving ----------------
   private onChange(): void {
-    // Markdown serialiseras inte här (dyrt i långa manus) – först vid sparning.
+    // Markdown is not serialized here (expensive in long manuscripts) – only when saving.
     this.updateStats();
     this.searchBar.refresh();
     if (!this.current || this.saveState === "conflict") return;
     if (this.saveState === "error") {
-      // Servern svarar inte: håll reservkopian aktuell och vänta på nästa försök.
+      // Saving fails: keep the backup copy current and wait for the next attempt.
       keepLocal({ name: this.current.name, content: this.editor.getMarkdown(), base: this.current.modified });
       return;
     }
@@ -443,7 +442,7 @@ class App {
         this.lastSaved = content;
         dropLocal(cur.name);
         window.clearTimeout(this.retryTimer);
-        if (this.saveErrorShown) toast("Sparat igen – servern svarar");
+        if (this.saveErrorShown) toast("Sparat igen");
         this.saveErrorShown = false;
         this.setSaveState(this.editor.getMarkdown() === content ? "saved" : "dirty");
         if (snapshot) toast("Sparat – en version har lagts i historiken");
@@ -453,14 +452,14 @@ class App {
           this.setSaveState("conflict");
           this.showConflict();
         } else {
-          // Behåll texten i webbläsaren och försök igen tills servern svarar.
+          // Keep the text in localStorage and retry until saving succeeds.
           const kept = keepLocal({ name: cur.name, content: this.editor.getMarkdown(), base: cur.modified });
           this.setSaveState("error");
           const retryable = !(e instanceof ApiError) || e.status >= 500;
           if (!this.saveErrorShown) {
             toast(
               `Kunde inte spara: ${errorText(e)}.` +
-                (kept ? " Texten finns kvar i webbläsaren." : "") +
+                (kept ? " Texten finns kvar i appen." : "") +
                 (retryable ? " Försöker igen." : ""),
             );
             this.saveErrorShown = true;
@@ -477,11 +476,11 @@ class App {
 
   private async retrySave(): Promise<void> {
     if (this.saveState !== "error" || !this.current) return;
-    // Ändringstiden kan vara inaktuell om sparningen lyckades men svaret gick förlorat.
+    // The modification time may be stale if the save succeeded but the reply was lost.
     await this.save(false, false);
   }
 
-  /** Text som inte hann sparas (t.ex. för att containern startades om) erbjuds tillbaka. */
+  /** Text that could not be saved (e.g. the data folder was unreachable) is offered back. */
   private showRecover(local: Unsaved): void {
     const name = local.name;
     this.banner.replaceChildren(
@@ -506,7 +505,7 @@ class App {
             try {
               await api.snapshot(name, "Före återställning av osparad text");
             } catch {
-              /* ingen ändring att spara – gör inget */
+              /* no change to save – do nothing */
             }
             this.editor.load(local.content);
             this.updateStats();
@@ -521,8 +520,9 @@ class App {
     this.banner.hidden = false;
   }
 
-  /** Spara direkt om något är osparat (inför byte av dokument m.m.). */
+  /** Saves the open document and any pending settings (before closing, reloading, switching folder …). */
   private async flush(): Promise<void> {
+    await flushSettings();
     if (!this.current) return;
     if (this.saveState === "dirty" || this.saveState === "saving") await this.save();
   }
@@ -539,7 +539,7 @@ class App {
     this.statusSave.textContent = text[state];
     this.statusSave.dataset.state = state;
     this.statusSave.title =
-      state === "error" ? "Servern svarar inte. Texten finns kvar i webbläsaren och sparas när servern är tillbaka." : "";
+      state === "error" ? "Kunde inte spara. Texten finns kvar i appen och sparas så snart det går." : "";
   }
 
   private showConflict(): void {
@@ -570,49 +570,7 @@ class App {
     this.banner.hidden = false;
   }
 
-  /**
-   * En flik som var öppen när containern byggdes om kör fortfarande den gamla
-   * koden. Kontrollera versionen när fönstret får fokus och varje minut.
-   */
-  private versionWatched = false;
-  private watchVersion(): void {
-    if (this.versionWatched) return;
-    this.versionWatched = true;
-    let last = 0;
-    const check = async () => {
-      if (Date.now() - last < 10_000) return;
-      last = Date.now();
-      try {
-        const { version } = await api.health();
-        if (version && version !== __APP_VERSION__) this.showUpdate(version);
-      } catch {
-        /* servern startar om – försök igen senare */
-      }
-    };
-    window.setInterval(() => void check(), 60_000);
-    window.addEventListener("focus", () => void check());
-  }
-
-  private showUpdate(version: string): void {
-    if (!this.updateNotice.hidden) return;
-    this.updateNotice.replaceChildren(
-      h("span", {}, `Word Work har uppdaterats till ${version}. Ladda om sidan för att använda den nya versionen.`),
-      h(
-        "button",
-        {
-          class: "primary",
-          onclick: async () => {
-            await this.flush();
-            location.reload();
-          },
-        },
-        "Ladda om",
-      ),
-    );
-    this.updateNotice.hidden = false;
-  }
-
-  /** Allvarligt problem (t.ex. datamappen går inte att skriva i) – visas tills det åtgärdats. */
+  /** Serious problem (e.g. the data folder is not writable) – shown until it is fixed. */
   private showProblem(message: string): void {
     this.banner.replaceChildren(h("span", {}, message));
     this.banner.hidden = false;
@@ -622,7 +580,7 @@ class App {
     this.banner.hidden = true;
   }
 
-  // ---------------- vy & statistik ----------------
+  // ---------------- view & statistics ----------------
   private setView(mode: ViewMode, focus = true): void {
     this.editor.setMode(mode);
     this.frontmatter = this.editor.getFrontmatter();
@@ -635,7 +593,7 @@ class App {
     try {
       localStorage.setItem(VIEW_KEY, mode);
     } catch {
-      /* ignorera */
+      /* ignore */
     }
     if (focus) this.editor.focus();
   }
@@ -660,7 +618,7 @@ class App {
     this.renderFootnoteList();
   }
 
-  /** Längdmål och deadline från frontmattern, i statusraden. */
+  /** Length goal and deadline from the frontmatter, in the status bar. */
   private updateTargets(words: number, chars: number): void {
     const target = parseLength(metaValue(this.frontmatter, "length"));
     this.statusLength.hidden = !target;
@@ -713,7 +671,7 @@ class App {
       this.setMeta(key, value(), multi(key));
     };
 
-    // Texttyp
+    // Text type
     const genreNow = metaValue(fm, "genre").trim().toLowerCase();
     const genreSel = h("select", { "aria-label": "Texttyp" }) as HTMLSelectElement;
     genreSel.append(h("option", { value: "", selected: !genreNow }, "– Ingen –"));
@@ -757,7 +715,7 @@ class App {
       showDl();
     });
 
-    // Längdmål
+    // Length goal
     const target = parseLength(metaValue(fm, "length"));
     const amount = h("input", { type: "number", min: "0", step: "100", value: target ? String(target.amount) : "", "aria-label": "Längdmål" }) as HTMLInputElement;
     const unit = h("select", { "aria-label": "Enhet" }) as HTMLSelectElement;
@@ -866,19 +824,15 @@ class App {
       ["> + mellanslag", "Citat"],
       ["- + mellanslag", "Punktlista (1. för numrerad)"],
       ["Högerklick", "Stavningsförslag, egen ordlista och synonymer"],
-      ["Shift+högerklick", "Webbläsarens vanliga meny"],
+      ["Shift+högerklick", "Systemets vanliga meny"],
       ["F1", "Den här listan"],
       ["Esc", "Stäng paneler och dialoger"],
-      // Mac app only: from the menu bar.
-      ...(isTauri()
-        ? ([
-            [`${modKey}+N`, "Nytt dokument"],
-            [`${modKey}+Shift+O`, "Importera"],
-            [`${modKey}+,`, "Inställningar"],
-            [modKey === "⌘" ? "⌃⌘F" : "F11", "Helskärm"],
-            [`${modKey}+Q`, "Avsluta (texten sparas först)"],
-          ] as [string, string][])
-        : []),
+      // From the menu bar.
+      [`${modKey}+N`, "Nytt dokument"],
+      [`${modKey}+Shift+O`, "Importera"],
+      [`${modKey}+,`, "Inställningar"],
+      [modKey === "⌘" ? "⌃⌘F" : "F11", "Helskärm"],
+      [`${modKey}+Q`, "Avsluta (texten sparas först)"],
     ];
     void showModal((close) =>
       h(
@@ -899,8 +853,8 @@ class App {
     );
   }
 
-  // ---------------- lådor & paneler ----------------
-  /** Knapp som öppnar/stänger en låda, med aria-expanded/aria-controls. */
+  // ---------------- drawers & panels ----------------
+  /** Button that opens/closes a drawer, with aria-expanded/aria-controls. */
   private panelButton(drawer: HTMLElement, key: string, iconName: IconName, label: string, shortcut = ""): HTMLButtonElement {
     drawer.id ||= `panel-${key}`;
     return iconButton(
@@ -911,7 +865,7 @@ class App {
     );
   }
 
-  /** Håller aria-expanded i synk med vilka paneler som är öppna. */
+  /** Keeps aria-expanded in sync with which panels are open. */
   private syncExpanded(): void {
     for (const btn of document.querySelectorAll<HTMLElement>("[aria-controls]")) {
       const panel = document.getElementById(btn.getAttribute("aria-controls") ?? "");
@@ -931,7 +885,7 @@ class App {
       else if (drawer === this.aiDrawer) ready = this.ai.render().then(() => this.ai.focusInput());
       else if (drawer === this.metaDrawer) ready = this.renderMeta();
       else ready = this.renderHistory();
-      // Flytta fokus in i panelen så att den går att använda med tangentbordet.
+      // Move focus into the panel so it can be used with the keyboard.
       if (drawer !== this.aiDrawer) {
         void Promise.resolve(ready).then(() => {
           const target =
@@ -1022,10 +976,10 @@ class App {
             title: "Alla dokument, versioner, AI-samtal, papperskorgen och inställningar i en zip-fil",
             onclick: async () => {
               await this.flush();
-              await this.download("/api/backup", isTauri() ? "Sparade" : "Laddade ner");
+              await this.download("/api/backup", "Sparade");
             },
           },
-          isTauri() ? "Spara allt (zip) …" : "Ladda ner allt (zip)",
+          "Spara allt (zip) …",
         ),
       ),
     );
@@ -1096,7 +1050,7 @@ class App {
         body.textContent = content;
         return;
       }
-      // Grön = finns i nuvarande text men inte i versionen; röd = finns bara i versionen.
+      // Green = in the current text but not in the version; red = only in the version.
       for (const part of diffWords(content, current)) {
         const tag = part.added ? "ins" : part.removed ? "del" : "span";
         body.append(h(tag, {}, part.value));
@@ -1157,7 +1111,7 @@ class App {
     });
   }
 
-  // ---------------- analys ----------------
+  // ---------------- analysis ----------------
   private scheduleAnalysis(): void {
     if (!this.analysisDrawer.classList.contains("open")) return;
     window.clearTimeout(this.analysisTimer);
@@ -1171,7 +1125,7 @@ class App {
   }
 
   private renderAnalysis(): void {
-    // En markering räknas först när den är minst några ord (inte bara ett markerat ord).
+    // A selection only counts once it is at least a few words (not just one selected word).
     const sel = this.editor.getSelectionText();
     const selection = (sel.match(/\S+/g)?.length ?? 0) >= 3 ? sel : "";
     const text = selection || this.editor.getPlainText();
@@ -1182,7 +1136,7 @@ class App {
     const row = (label: string, value: string, hint = "") =>
       h("div", { class: "stat", title: hint }, h("span", {}, label), h("strong", {}, value));
 
-    // LIX-mätare
+    // LIX meter
     let lixBlock: HTMLElement;
     if (st.lix === null) {
       lixBlock = h("p", { class: "meta" }, "Skriv några meningar så räknas LIX ut.");
@@ -1260,7 +1214,7 @@ class App {
       );
     }
 
-    // Nominalstil
+    // Nominal style
     const nominal = nominalStyle(text);
     const nominalList = h("ol", { class: "freq nominal" });
     const maxNom = nominal.top[0]?.count ?? 1;
@@ -1288,7 +1242,7 @@ class App {
       );
     }
 
-    // Långa meningar i texten
+    // Long sentences in the text
     const longInput = h("input", {
       type: "number",
       min: "10",
@@ -1321,7 +1275,7 @@ class App {
       h("span", {}, " ord i texten"),
     );
 
-    // Kommentarer (alltid hela texten)
+    // Comments (always the whole text)
     const comments = listComments(this.editor.getMarkdown());
     const commentList = h("ol", { class: "quotes comments" });
     for (const c of comments) {
@@ -1345,7 +1299,7 @@ class App {
       );
     }
 
-    // Citat
+    // Quotes
     const quotes = findQuotes(text);
     const quoteList = h("ol", { class: "quotes" });
     for (const q of quotes) {
@@ -1487,10 +1441,10 @@ class App {
     this.analysisDrawer.scrollTop = scrollTop;
   }
 
-  // ---------------- kommentarer ----------------
+  // ---------------- comments ----------------
   private commentBubble: HTMLElement | null = null;
 
-  /** Lägg till eller ändra en kommentar – på intervallet, eller på markeringen/kommentaren vid markören. */
+  /** Add or change a comment – on the range, or on the selection/comment at the cursor. */
   private async editComment(from?: number, to?: number): Promise<void> {
     this.closeCommentBubble();
     let target: { from: number; to: number; text: string; quote: string } | null;
@@ -1552,11 +1506,11 @@ class App {
     this.commentBubble = null;
   }
 
-  // ---------------- fotnoter ----------------
+  // ---------------- footnotes ----------------
   private footnoteList = h("section", { class: "footnote-list", "aria-label": "Fotnoter", hidden: true });
   private footnoteKey = "";
 
-  /** Ny fotnot vid markören (pos = null) eller ändra fotnoten på positionen. */
+  /** New footnote at the cursor (pos = null) or change the footnote at the position. */
   private async editFootnote(pos: number | null): Promise<void> {
     this.closeCommentBubble();
     const existing = pos === null ? null : this.editor.footnoteAtPos(pos);
@@ -1572,7 +1526,7 @@ class App {
       "Enter sparar, Shift+Enter ger ny rad. *Kursiv* för verktitlar fungerar.",
     );
     if (text === null) return;
-    // Samma typografi som i texten: ”citat”, tankstreck och ellips.
+    // Same typography as in the text: ”quotes”, dashes and ellipses.
     if (text && this.settings.autoTypography) text = fixTypography(text, this.settings.quoteStyle).text;
     if (existing) {
       if (text) this.editor.setFootnoteText(existing.pos, text);
@@ -1615,7 +1569,7 @@ class App {
     this.commentBubble = bubble;
   }
 
-  /** Fotnoterna under texten i Skriv-vyn, som på en boksida. Klick visar fotnoten i texten. */
+  /** The footnotes below the text in the Write view, as on a book page. A click shows the footnote in the text. */
   private renderFootnoteList(): void {
     const notes = this.editor.mode === "write" ? this.editor.footnotes() : [];
     const key = JSON.stringify(notes.map((n) => n.text));
@@ -1641,7 +1595,7 @@ class App {
     this.footnoteList.replaceChildren(h("h2", {}, "Fotnoter"), h("ol", {}, ...items));
   }
 
-  /** Egen anteckning: gör om stycket i Skriv-vyn, infoga en kommentar i Markdown-vyn. */
+  /** Private note: convert the paragraph in the Write view, insert a comment in the Markdown view. */
   private toggleNote(): void {
     if (this.editor.mode === "write") this.editor.toggleNote();
     else this.editor.insertText("<!-- anteckning -->");
@@ -1966,7 +1920,7 @@ class App {
                   try {
                     localStorage.setItem(PUBLISH_TITLE_KEY, String((e.target as HTMLInputElement).checked));
                   } catch {
-                    /* ignorera */
+                    /* ignore */
                   }
                 },
               }),
@@ -1997,7 +1951,7 @@ class App {
                   localStorage.setItem("ww.exportTemplate", template);
                   localStorage.setItem("ww.exportChapters", chapters);
                 } catch {
-                  /* ignorera */
+                  /* ignore */
                 }
                 const tpl = opts.formats.find((x) => x.key === format)?.templates ? template : "standard";
                 const pages = opts.formats.find((x) => x.key === format)?.pages;
@@ -2005,7 +1959,7 @@ class App {
                 close();
               },
             },
-            isTauri() ? "Spara …" : "Ladda ner",
+            "Spara …",
           ),
         ),
       );
@@ -2020,7 +1974,7 @@ class App {
     }
   }
 
-  /** Kopierar texten som HTML och ren text för ett publiceringssystem. */
+  /** Copies the text as HTML and plain text for a publishing system. */
   private async copyForPublishing(withTitle = this.publishWithTitle()): Promise<boolean> {
     if (!this.current) return false;
     const { html, text } = publishContent(this.editor.getMarkdown(), withTitle);
@@ -2038,7 +1992,7 @@ class App {
     }
   }
 
-  // ---------------- papperskorgen ----------------
+  // ---------------- trash ----------------
   private async showTrash(): Promise<void> {
     await showModal((close) => {
       const list = h("ul", { class: "list trash-list" }, h("li", { class: "empty" }, "Hämtar …"));
@@ -2117,45 +2071,18 @@ class App {
     });
   }
 
+  /** Exports and backups: the native Save dialog, then a toast with the file name. */
   private async download(url: string, done = "Exporterade"): Promise<void> {
-    // Mac app: native Save dialog instead of a browser download.
-    const saveRoute = isTauri() ? downloadRoute(url) : null;
-    if (saveRoute) {
-      try {
-        const saved = await invokeRoute<{ file: string } | null>(saveRoute);
-        if (saved) toast(`${done} ${saved.file}`);
-      } catch (e) {
-        toast(`Kunde inte spara: ${errorText(e)}`);
-      }
-      return;
-    }
-    // Hämta först, så att fel kan visas i stället för en trasig nedladdning.
+    const saveRoute = downloadRoute(url);
+    if (!saveRoute) return;
     try {
-      const res = await fetch(url);
-      if (!res.ok) {
-        let msg = res.statusText;
-        try {
-          msg = (await res.json()).detail ?? msg;
-        } catch {
-          /* inget JSON */
-        }
-        throw new Error(msg);
-      }
-      const blob = await res.blob();
-      const cd = res.headers.get("content-disposition") ?? "";
-      const m = /filename\*=UTF-8''([^;]+)/i.exec(cd);
-      const plain = /filename="([^"]+)"/i.exec(cd);
-      const filename = m ? decodeURIComponent(m[1]) : (plain?.[1] ?? "dokument");
-      const a = h("a", { href: URL.createObjectURL(blob), download: filename });
-      document.body.append(a);
-      a.click();
-      a.remove();
-      window.setTimeout(() => URL.revokeObjectURL(a.href), 10_000);
-      toast(`${done} ${filename}`);
+      const saved = await invokeRoute<{ file: string } | null>(saveRoute);
+      if (saved) toast(`${done} ${saved.file}`);
     } catch (e) {
-      toast(`Kunde inte ladda ner: ${errorText(e)}`);
+      toast(`Kunde inte spara: ${errorText(e)}`);
     }
   }
+
 
   private chooseImport(): void {
     const input = h("input", {
@@ -2233,7 +2160,7 @@ class App {
     this.syncExpanded();
   }
 
-  /** Rättar typografin i hela texten – med förhandsvisning och en version i historiken först. */
+  /** Fixes the typography in the whole text – with a preview and a version in the history first. */
   private async showTypographyFix(): Promise<void> {
     if (!this.current) return;
     this.closeDrawers();
@@ -2281,7 +2208,7 @@ class App {
                 try {
                   await api.snapshot(name, "Före typografirättning");
                 } catch {
-                  /* versionen är en extra säkerhet – fortsätt ändå */
+                  /* the version is an extra safeguard – continue anyway */
                 }
                 if (this.current?.name !== name) return close();
                 this.editor.load(text);
@@ -2414,15 +2341,15 @@ class App {
         h("button", { class: "link", onclick: () => this.showDictionary() }, "Egen ordlista …"),
         h("button", { class: "link", onclick: () => this.showShortcuts() }, "Kortkommandon …"),
       ),
-      ...(isTauri() ? [this.aiSection(), this.dataDirSection()] : []),
+      this.aiSection(),
+      this.dataDirSection(),
       h("p", { class: "hint version" }, `Word Work ${__APP_VERSION__}`),
     );
   }
 
   /**
-   * Mac app: which AI server to use. Replaces WW_AI_API / WW_AI_URL /
-   * WW_AI_MODEL / WW_AI_KEY from the Docker version. The key goes to the
-   * Keychain and is never shown again.
+   * Which AI server to use. The key goes to the system keyring and is never
+   * shown again.
    */
   private aiSection(): HTMLElement {
     const api = h(
@@ -2488,7 +2415,7 @@ class App {
     );
   }
 
-  /** Mac app: where the texts are stored, with "Byt mapp …" and "Visa i Finder". */
+  /** Where the texts are stored, with "Byt mapp …" and "Visa i Finder" (or the platform's file manager). */
   private dataDirSection(): HTMLElement {
     const path = h("p", { class: "hint data-dir-path" }, "…");
     const show = (d: { path: string; problem: string | null }) => {
@@ -2524,21 +2451,16 @@ class App {
           },
           "Byt mapp …",
         ),
-        h("button", { class: "link", onclick: () => void revealDataDir().catch((e) => toast(errorText(e))) }, "Visa i Finder"),
+        h("button", { class: "link", onclick: () => void revealDataDir().catch((e) => toast(errorText(e))) }, REVEAL_LABEL),
       ),
     );
   }
 
   private toggleFullscreen(): void {
-    if (isTauri()) {
-      void invoke("toggle_fullscreen").catch((e) => toast(errorText(e)));
-      return;
-    }
-    if (document.fullscreenElement) void document.exitFullscreen();
-    else void document.documentElement.requestFullscreen().catch(() => toast("Helskärm stöds inte här"));
+    void invoke("toggle_fullscreen").catch((e) => toast(errorText(e)));
   }
 
-  // ---------------- Mac-appen ----------------
+  // ---------------- desktop app ----------------
 
   /**
    * The native menu bar, closing/quitting safely, and links. Menu items with
@@ -2619,7 +2541,7 @@ class App {
       .catch((e) => toast(errorText(e)));
   }
 
-  // ---------------- globala händelser ----------------
+  // ---------------- global events ----------------
   private bindGlobalEvents(): void {
     document.addEventListener("keydown", (e) => {
       if (isMod(e) && e.key.toLowerCase() === "s") {
@@ -2673,7 +2595,7 @@ class App {
       }
     });
 
-    // Gränssnittet tonas ut när man skriver och tillbaka när musen rör sig.
+    // The interface fades out while typing and back in when the mouse moves.
     let lastX = 0;
     let lastY = 0;
     document.addEventListener("mousemove", (e) => {
@@ -2706,7 +2628,7 @@ class App {
       }
       if (
         this.charsPanel.classList.contains("open") &&
-        t.isConnected && // ett klickat tecken kan redan ha ritats om
+        t.isConnected && // a clicked character may already have been redrawn
         !this.charsPanel.contains(t) &&
         !this.charsButton.contains(t) &&
         !(t as Element).closest?.(".context-menu, .prose, .source")
@@ -2714,7 +2636,7 @@ class App {
         this.charsPanel.classList.remove("open");
         this.syncExpanded();
       }
-      // Klick i texten stänger öppna lådor.
+      // A click in the text closes open drawers.
       if ((t as Element).closest?.(".page") && document.querySelector(".drawer.open")) {
         this.closeDrawers();
       }
@@ -2727,7 +2649,7 @@ class App {
     window.addEventListener("focus", () => void this.retrySave());
     window.addEventListener("beforeunload", (e) => {
       if (this.current && ["dirty", "saving", "error"].includes(this.saveState)) {
-        // Hinner sparningen inte klart finns texten kvar i webbläsaren.
+        // If saving doesn't finish in time, the text is kept in localStorage.
         keepLocal({ name: this.current.name, content: this.editor.getMarkdown(), base: this.current.modified });
       }
       if (this.saveState === "dirty" || this.saveState === "saving" || this.saveState === "error") {
@@ -2749,7 +2671,7 @@ app.start().catch((e) => {
   );
 });
 
-/** Fotnotstext (Markdown) som säker HTML: kursiv, fet, länkar, kod. */
+/** Footnote text (Markdown) as safe HTML: italic, bold, links, code. */
 function inlineMarkdown(md: string): string {
   const html = md
     .split(/\n\n+/)

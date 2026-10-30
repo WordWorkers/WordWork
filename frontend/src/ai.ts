@@ -1,13 +1,13 @@
 /**
- * AI-panelen. AI:n föreslår – den skriver aldrig i texten.
+ * The AI panel. The AI suggests – it never writes in the text.
  *
- * Det finns medvetet ingen "infoga"- eller "ersätt"-knapp: svaren visas bara här.
- * Citat i svaren som finns i texten blir klickbara och markerar stället i
- * texten, så att författaren själv kan ändra.
+ * There is deliberately no "insert" or "replace" button: answers are only shown here.
+ * Quotes in the answers that exist in the text become clickable and select that
+ * place in the text, so the author can make the change themselves.
  *
- * Samtalen sparas per dokument i datamappen (.chats/<dokument>/<id>.json). Det är
- * servern som sparar fråga och svar, så att inget försvinner om fliken stängs
- * mitt i ett svar.
+ * Conversations are saved per document in the data folder (.chats/<document>/<id>.json).
+ * The Rust side saves question and answer, so nothing is lost if the window is
+ * closed in the middle of an answer.
  */
 import DOMPurify from "dompurify";
 import { marked } from "marked";
@@ -17,7 +17,7 @@ import { confirm, formatDate, h, modKey, toast } from "./ui";
 interface Message {
   role: "user" | "assistant";
   content: string;
-  label?: string; // visningstext för snabbval
+  label?: string; // display text for quick prompts
   thinking?: string;
   meta?: string;
   error?: string;
@@ -50,7 +50,7 @@ export interface AIPanelDeps {
   showInText: (phrase: string) => boolean;
   flush: () => Promise<void>;
   prefs: () => AIPrefs;
-  /** Texttyp och om det finns egna instruktioner (från dokumentets metadata). */
+  /** Text type and whether there are custom instructions (from the document's metadata). */
   textInfo: () => { genre: string; instructions: boolean };
   openMeta: () => void;
   savePrefs: (patch: Partial<AIPrefs>) => void;
@@ -85,9 +85,9 @@ export class AIPanel {
   private models: AIModel[] = [];
   private modelError = "";
   private model = "";
-  /** Aktuellt samtal per dokument. */
+  /** Current conversation per document. */
   private conversations = new Map<string, Conversation>();
-  /** Sparade samtal per dokument, senast ändrade först. */
+  /** Saved conversations per document, most recently changed first. */
   private summaries = new Map<string, ChatSummary[]>();
   private historySelect = h("select", { class: "ai-history-select", "aria-label": "Samtal" }) as HTMLSelectElement;
   private deleteBtn = h("button", { class: "link", title: "Flytta samtalet till papperskorgen" }, "Ta bort");
@@ -101,7 +101,7 @@ export class AIPanel {
   }) as HTMLTextAreaElement;
   private sendBtn = h("button", { class: "primary" }, "Fråga");
   private renderTimer = 0;
-  /** Markering som gjorts av ett klick på ett citat – ska inte ändra frågans omfång. */
+  /** Selection made by clicking a quote – must not change the question's scope. */
   private citeSelection = "";
 
   constructor(private deps: AIPanelDeps) {
@@ -134,14 +134,14 @@ export class AIPanel {
     return !!this.status?.enabled;
   }
 
-  /** Varför AI-stödet är avstängt (t.ex. att servern inte kan nås). */
+  /** Why AI support is disabled (e.g. the AI server cannot be reached). */
   get reason(): string {
     return this.status?.reason ?? "";
   }
 
   /**
-   * Kontrollerar med jämna mellanrum om AI-servern går att nå. Appen fungerar
-   * alltid; AI-funktionen slås bara på och av.
+   * Periodically checks whether the AI server can be reached. The app always
+   * works; the AI feature is just switched on and off.
    */
   monitor(onChange: (available: boolean) => void, intervalMs = 60_000): void {
     const check = async () => {
@@ -149,12 +149,12 @@ export class AIPanel {
       const now = await this.init();
       if (now !== before) {
         if (!now) this.stop();
-        if (now) this.models = []; // hämta modellistan på nytt
+        if (now) this.models = []; // fetch the model list again
         onChange(now);
       }
     };
     window.setInterval(() => void check(), intervalMs);
-    // Kolla direkt när fönstret får fokus igen (t.ex. efter att datorn sovit).
+    // Check right away when the window regains focus (e.g. after the computer slept).
     window.addEventListener("focus", () => void check());
   }
 
@@ -176,16 +176,16 @@ export class AIPanel {
     return this.conversation.messages;
   }
 
-  /** Hämtar dokumentets sparade samtal och öppnar det senaste (en gång per dokument). */
+  /** Fetches the document's saved conversations and opens the latest (once per document). */
   private async loadConversations(doc: string): Promise<void> {
     if (!doc || this.conversations.has(doc)) return;
     let list: ChatSummary[] = [];
     try {
       list = await api.chats(doc);
     } catch {
-      /* dokumentet kan ha tagits bort – börja med ett tomt samtal */
+      /* the document may have been removed – start with an empty conversation */
     }
-    if (this.conversations.has(doc)) return; // hann laddas under tiden
+    if (this.conversations.has(doc)) return; // was loaded in the meantime
     this.summaries.set(doc, list);
     let conv: Conversation = { id: newId(), messages: [] };
     if (list[0]) {
@@ -193,13 +193,13 @@ export class AIPanel {
         const chat = await api.chat(doc, list[0].id);
         conv = { id: chat.id, messages: chat.messages.map((m) => ({ ...m, content: m.content ?? "" })) };
       } catch {
-        /* öppna ett nytt samtal i stället */
+        /* open a new conversation instead */
       }
     }
     if (!this.conversations.has(doc)) this.conversations.set(doc, conv);
   }
 
-  /** Hämtar listan över sparade samtal på nytt (servern har sparat ett svar). */
+  /** Fetches the list of saved conversations again (Rust has saved an answer). */
   private async refreshSummaries(conv: Conversation, retry = true): Promise<void> {
     const doc = [...this.conversations].find(([, c]) => c === conv)?.[0];
     if (!doc) return;
@@ -211,13 +211,13 @@ export class AIPanel {
     }
     this.summaries.set(doc, list);
     if (doc === this.deps.documentName()) this.renderHistory();
-    // Vid Stoppa sparar servern strax efter att anslutningen stängts.
+    // On Stop, Rust saves shortly after the request has been stopped.
     if (retry && !list.some((c) => c.id === conv.id)) {
       window.setTimeout(() => void this.refreshSummaries(conv, false), 800);
     }
   }
 
-  /** Väljaren för tidigare samtal. */
+  /** The picker for earlier conversations. */
   private renderHistory(): void {
     const doc = this.deps.documentName() ?? "";
     const list = this.summaries.get(doc) ?? [];
@@ -281,7 +281,7 @@ export class AIPanel {
     }
   }
 
-  /** Glöm cachade samtal för ett dokument (t.ex. efter återställning ur papperskorgen). */
+  /** Forget cached conversations for a document (e.g. after restoring from the trash). */
   forget(doc: string): void {
     if (this.controller && doc === this.deps.documentName()) return;
     this.conversations.delete(doc);
@@ -289,7 +289,7 @@ export class AIPanel {
     if (doc === this.deps.documentName() && this.deps.drawer.classList.contains("open")) void this.render();
   }
 
-  /** Dokumentet har bytt namn – samtalen följer med (servern flyttar filerna). */
+  /** The document was renamed – the conversations follow (Rust moves the files). */
   renamed(oldName: string, newName: string): void {
     for (const map of [this.conversations, this.summaries] as Map<string, unknown>[]) {
       if (map.has(oldName)) {
@@ -314,7 +314,7 @@ export class AIPanel {
     }
   }
 
-  /** Bygger panelen. Anropas när lådan öppnas. */
+  /** Builds the panel. Called when the drawer opens. */
   async render(): Promise<void> {
     if (!this.status?.enabled) return;
     const d = this.deps.drawer;
@@ -408,7 +408,7 @@ export class AIPanel {
     this.renderMessages();
   }
 
-  /** Vad AI:n vet om texten: texttyp och egna instruktioner, med länk till metadata. */
+  /** What the AI knows about the text: text type and custom instructions, with a link to metadata. */
   private textInfoLine(): HTMLElement {
     const { genre, instructions } = this.deps.textInfo();
     const parts = [genre || "Ingen texttyp", instructions ? "egna instruktioner" : ""].filter(Boolean);
@@ -424,7 +424,7 @@ export class AIPanel {
     this.input.focus();
   }
 
-  /** Markerad text som frågan ska gälla (minst tre ord, inte en citatmarkering). */
+  /** Selected text the question should be about (at least three words, not a quote selection). */
   private scopedSelection(): string {
     const sel = this.deps.selectionText();
     if (this.citeSelection && normalizeSpace(sel) === this.citeSelection) return "";
@@ -452,7 +452,7 @@ export class AIPanel {
     this.sendBtn.textContent = "Fråga";
   }
 
-  /** Avbryt pågående svar (t.ex. vid byte av dokument). */
+  /** Abort the answer in progress (e.g. when switching documents). */
   reset(): void {
     this.stop();
     if (this.deps.drawer.classList.contains("open")) void this.render();
@@ -508,7 +508,7 @@ export class AIPanel {
         (e: AIEvent) => {
           if (e.type === "start") {
             const user = msgs[msgs.indexOf(answer) - 1];
-            if (user && quick) user.content = e.question; // det faktiska snabbvalet följer med i historiken
+            if (user && quick) user.content = e.question; // the actual quick prompt goes into the history
           } else if (e.type === "thinking") answer.thinking += e.text;
           else if (e.type === "content") answer.content += e.text;
           else if (e.type === "done") {
@@ -596,7 +596,7 @@ export class AIPanel {
     return el;
   }
 
-  /** Gör citat som finns i texten klickbara ("visa i texten"). */
+  /** Makes quotes that exist in the text clickable ("visa i texten"). */
   private linkQuotes(root: HTMLElement, plain: string): void {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     const nodes: Text[] = [];
@@ -608,7 +608,7 @@ export class AIPanel {
       const frag = document.createDocumentFragment();
       let changed = false;
       for (const m of text.matchAll(QUOTE_RE)) {
-        // Markdown-tecken (*kursiv*, **fet**) finns inte i den synliga texten.
+        // Markdown characters (*italic*, **bold**) are not in the visible text.
         const phrase = normalizeSpace(m[1].replace(/\*{1,2}|(?<!\p{L})_|_(?!\p{L})/gu, "").replace(/^[.…]+|[.…]+$/g, ""));
         if (phrase.length < 2 || !plain.includes(phrase)) continue;
         frag.append(text.slice(last, m.index));

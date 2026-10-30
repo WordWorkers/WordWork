@@ -1,39 +1,39 @@
 /**
- * Fotnoter – Pandocs Markdown-syntax, som blir riktiga fotnoter vid export.
+ * Footnotes – Pandoc's Markdown syntax, which become real footnotes on export.
  *
  *     Romanen kom ut 1879.[^1]
  *
  *     [^1]: Albert Bonniers förlag, Stockholm.
  *
- * I Skriv-vyn är en fotnot en liten upphöjd siffra (en atom med fotnotstexten
- * som attribut). Siffrorna sätts med en CSS-räknare, så de numreras om av sig
- * själva när fotnoter läggs till, flyttas eller tas bort.
+ * In the Write view a footnote is a small superscript number (an atom with the
+ * footnote text as an attribute). The numbers are set with a CSS counter, so they
+ * renumber themselves when footnotes are added, moved or removed.
  *
- * När filen läses tas definitionerna bort ur texten och läggs i en tabell som
- * tokeniseraren slår upp i. När filen skrivs numreras fotnoterna 1, 2, 3 … i den
- * ordning de står, och definitionerna hamnar sist i texten. Namngivna fotnoter
- * ([^kalla]) behåller sina namn. Pandocs inbäddade fotnoter (^[text]) läses
- * också och sparas som vanliga fotnoter.
+ * When the file is read, the definitions are removed from the text and put in a
+ * table the tokenizer looks up in. When the file is written, the footnotes are
+ * numbered 1, 2, 3 … in the order they appear, and the definitions go at the end
+ * of the text. Named footnotes ([^kalla]) keep their names. Pandoc's inline
+ * footnotes (^[text]) are also read and saved as regular footnotes.
  */
 import { Node } from "@tiptap/core";
 
 export interface FootnoteDefs {
-  /** id → fotnotstext (Markdown, stycken åtskilda av tomrad). */
+  /** id → footnote text (Markdown, paragraphs separated by a blank line). */
   defs: Map<string, string>;
 }
 
-/** Fotnotsdefinitioner som tokeniseraren slår upp i medan en text läses in. */
+/** Footnote definitions the tokenizer looks up while a text is being loaded. */
 let parsing: Map<string, string> = new Map();
-/** Fotnoter som samlas in medan texten skrivs ut (getMarkdown). */
+/** Footnotes collected while the text is being written out (getMarkdown). */
 let rendering: { ids: Map<string, string>; defs: { id: string; text: string }[]; next: number } | null = null;
 
 const DEF_START = /^\[\^([^\]\s]+)\]:[ \t]?(.*)$/;
 const FENCE = /^\s*(```|~~~)/;
 
 /**
- * Plockar ut fotnotsdefinitionerna ur Markdown-texten. Fortsättningsrader är
- * indragna (4 mellanslag eller tabb); en tomrad följd av en indragen rad hör
- * också till fotnoten. Kodblock lämnas orörda.
+ * Extracts the footnote definitions from the Markdown text. Continuation lines are
+ * indented (4 spaces or a tab); a blank line followed by an indented line also
+ * belongs to the footnote. Code blocks are left untouched.
  */
 export function extractFootnotes(md: string): { body: string; defs: Map<string, string> } {
   const lines = md.split("\n");
@@ -60,13 +60,13 @@ export function extractFootnotes(md: string): { body: string; defs: Map<string, 
       } else break;
     }
     if (!defs.has(m[1])) defs.set(m[1], parts.join("\n").trim());
-    // Tomraden efter en borttagen definition behövs inte.
+    // The blank line after a removed definition is not needed.
     if (out.length && out[out.length - 1].trim() === "" && (lines[i + 1] ?? "").trim() === "") i++;
   }
   return { body: out.join("\n").replace(/\n{3,}/g, "\n\n").replace(/\s+$/, md.endsWith("\n") ? "\n" : ""), defs };
 }
 
-/** Fotnotstexten på en rad: radbrytningar inom ett stycke blir mellanslag. */
+/** The footnote text on one line: line breaks within a paragraph become spaces. */
 export function cleanFootnote(text: string): string {
   return text
     .replace(/\r\n?/g, "\n")
@@ -76,13 +76,13 @@ export function cleanFootnote(text: string): string {
     .join("\n\n");
 }
 
-/** Text för en definition: fortsättningsstycken dras in fyra steg. */
+/** Text for a definition: continuation paragraphs are indented four spaces. */
 function definition(id: string, text: string): string {
   const [first, ...rest] = cleanFootnote(text).split("\n\n");
   return [`[^${id}]: ${first ?? ""}`, ...rest.map((p) => `\n    ${p}`)].join("\n");
 }
 
-/** Index för "]" som avslutar "[" i början av src (balanserade hakparenteser), annars -1. */
+/** Index of the "]" closing the "[" at the start of src (balanced brackets), otherwise -1. */
 function inlineEnd(src: string): number {
   let depth = 0;
   for (let i = 0; i < src.length; i++) {
@@ -125,7 +125,7 @@ export const Footnote = Node.create({
   },
 
   renderText() {
-    return ""; // räknas inte som löptext
+    return ""; // not counted as body text
   },
 
   markdownTokenName: "footnote",
@@ -141,7 +141,7 @@ export const Footnote = Node.create({
     tokenize(src: string) {
       const ref = /^\[\^([^\]\s]+)\]/.exec(src);
       if (ref) {
-        if (!parsing.has(ref[1])) return undefined; // ingen definition: vanlig text
+        if (!parsing.has(ref[1])) return undefined; // no definition: plain text
         return { type: "footnote", raw: ref[0], id: ref[1], text: parsing.get(ref[1]) ?? "" };
       }
       if (src.startsWith("^[")) {
@@ -162,10 +162,10 @@ export const Footnote = Node.create({
     const attrs = (node as { attrs?: { id?: string; text?: string } }).attrs ?? {};
     const text = String(attrs.text ?? "");
     const old = String(attrs.id ?? "");
-    if (!rendering) return `^[${cleanFootnote(text).replace(/\n\n/g, " ")}]`; // utanför getMarkdown (t.ex. kopiering)
+    if (!rendering) return `^[${cleanFootnote(text).replace(/\n\n/g, " ")}]`; // outside getMarkdown (e.g. copying)
     let id = old && rendering.ids.get(old);
     if (!id) {
-      // Siffror numreras om i ordning; namngivna fotnoter behåller namnet.
+      // Numbers are renumbered in order; named footnotes keep their name.
       id = !old || /^\d+$/.test(old) ? String(rendering.next++) : old;
       if (old) rendering.ids.set(old, id);
       rendering.defs.push({ id, text });
@@ -175,10 +175,10 @@ export const Footnote = Node.create({
 });
 
 /**
- * Förbereder en text för inläsning i Skriv-vyn: definitionerna tas bort och
- * läggs i tabellen som tokeniseraren använder. Returnerar texten utan
- * definitioner och de definitioner som ingen hänvisning pekar på (de sparas
- * orörda sist i texten).
+ * Prepares a text for loading into the Write view: the definitions are removed and
+ * put in the table the tokenizer uses. Returns the text without definitions and
+ * the definitions no reference points to (they are saved untouched at the end
+ * of the text).
  */
 export function prepareFootnotes(md: string): { body: string; orphans: { id: string; text: string }[] } {
   const { body, defs } = extractFootnotes(md);
@@ -189,7 +189,7 @@ export function prepareFootnotes(md: string): { body: string; orphans: { id: str
   return { body, orphans };
 }
 
-/** Kör `serialize` och lägger till fotnotsdefinitionerna sist i texten. */
+/** Runs `serialize` and appends the footnote definitions at the end of the text. */
 export function withFootnotes(serialize: () => string, orphans: { id: string; text: string }[] = []): string {
   rendering = { ids: new Map(), defs: [], next: 1 };
   let md: string;
@@ -206,7 +206,7 @@ export function withFootnotes(serialize: () => string, orphans: { id: string; te
   return `${md.replace(/\s+$/, "")}\n\n${all.map((d) => definition(d.id, d.text)).join("\n\n")}\n`;
 }
 
-/** Fotnoterna i Markdown-texten i den ordning hänvisningarna står (för översikter). */
+/** The footnotes in the Markdown text in the order of their references (for overviews). */
 export function listFootnotes(md: string): { id: string; text: string }[] {
   const { body, defs } = extractFootnotes(md);
   const seen = new Set<string>();
@@ -223,11 +223,11 @@ export function listFootnotes(md: string): { id: string; text: string }[] {
   return out;
 }
 
-/** Tar bort fotnoter helt (för räkning av ord och tecken i löptexten). */
+/** Removes footnotes entirely (for counting words and characters in the body text). */
 export function stripFootnotes(md: string): string {
   const { body, defs } = extractFootnotes(md);
   let out = body.replace(/\[\^([^\]\s]+)\]/g, (all, id: string) => (defs.has(id) ? "" : all));
-  // Inbäddade ^[…]
+  // Inline ^[…]
   let i = out.indexOf("^[");
   while (i >= 0) {
     const end = inlineEnd(out.slice(i + 1));
@@ -242,8 +242,8 @@ const SUP = "⁰¹²³⁴⁵⁶⁷⁸⁹";
 export const superscript = (n: number): string => String(n).replace(/\d/g, (d) => SUP[Number(d)]);
 
 /**
- * För publicering: hänvisningar blir upphöjda siffror (<sup>) och fotnoterna en
- * numrerad lista sist i texten.
+ * For publishing: references become superscript numbers (<sup>) and the footnotes
+ * a numbered list at the end of the text.
  */
 export function footnotesForPublishing(md: string): string {
   const { body, defs } = extractFootnotes(md);

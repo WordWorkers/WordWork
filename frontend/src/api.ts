@@ -1,4 +1,4 @@
-import { Channel, invoke, isTauri } from "@tauri-apps/api/core";
+import { Channel, invoke } from "@tauri-apps/api/core";
 import { ipcRoute, type IpcRoute } from "./ipc-routes";
 
 export interface DocumentInfo {
@@ -43,7 +43,7 @@ export interface AIStatus {
   default_model?: string;
   quick?: string[];
   api?: "ollama" | "openai";
-  /** Kan "Tänk efter först" styras? (Bara mot Ollama.) */
+  /** Can "Tänk efter först" be controlled? (Only with Ollama.) */
   think_control?: boolean;
 }
 
@@ -68,7 +68,7 @@ export interface AIChatRequest {
   document: string;
   selection: string;
   history: { role: "user" | "assistant"; content: string }[];
-  /** Servern sparar fråga och svar i det här samtalet. */
+  /** Rust saves question and answer in this conversation. */
   document_name?: string;
   chat_id?: string;
   label?: string;
@@ -121,14 +121,12 @@ export class ApiError extends Error {
   }
 }
 
-const inApp = isTauri();
-
 /**
- * Mac app: the answer streams over a Tauri Channel. Aborting behaves like an
+ * The answer streams over a Tauri Channel. Aborting behaves like an
  * aborted fetch (rejects with AbortError) and stops the request in Rust, which
  * saves the partial answer as "Avbrutet".
  */
-async function aiChatInApp(body: AIChatRequest, onEvent: (e: AIEvent) => void, signal: AbortSignal): Promise<void> {
+async function aiChatStream(body: AIChatRequest, onEvent: (e: AIEvent) => void, signal: AbortSignal): Promise<void> {
   const requestId = crypto.randomUUID();
   const channel = new Channel<AIEvent>();
   let aborted = false;
@@ -171,27 +169,11 @@ export async function invokeRoute<T>(route: IpcRoute): Promise<T> {
   }
 }
 
+/** An API call: the route table in ipc-routes.ts picks the Tauri command. */
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
-  // In the Mac app: ported routes go to Rust, the rest (still) to the old backend.
-  const route = inApp ? ipcRoute(method, path, body) : null;
-  if (route) return invokeRoute<T>(route);
-  const raw = body instanceof Blob;
-  const res = await fetch(`/api${path}`, {
-    method,
-    headers:
-      body === undefined ? undefined : { "Content-Type": raw ? "application/octet-stream" : "application/json" },
-    body: body === undefined ? undefined : raw ? body : JSON.stringify(body),
-  });
-  if (!res.ok) {
-    let msg = res.statusText;
-    try {
-      msg = (await res.json()).detail ?? msg;
-    } catch {
-      /* inget JSON-svar */
-    }
-    throw new ApiError(res.status, typeof msg === "string" ? msg : JSON.stringify(msg));
-  }
-  return res.status === 204 ? (undefined as T) : ((await res.json()) as T);
+  const route = ipcRoute(method, path, body);
+  if (!route) throw new ApiError(404, `Okänt anrop: ${method} ${path}`);
+  return invokeRoute<T>(route);
 }
 
 const doc = (name: string) => `/documents/${encodeURIComponent(name)}`;
@@ -270,38 +252,7 @@ export const api = {
     request<DocumentInfo>("POST", `/import?filename=${encodeURIComponent(file.name)}`, file),
   aiStatus: () => request<AIStatus>("GET", "/ai/status"),
   aiModels: () => request<{ models: AIModel[]; default_model: string }>("GET", "/ai/models"),
-  /** Strömmar AI-svaret som NDJSON-händelser. */
-  async aiChat(body: AIChatRequest, onEvent: (e: AIEvent) => void, signal: AbortSignal): Promise<void> {
-    if (inApp) return aiChatInApp(body, onEvent, signal);
-    const res = await fetch("/api/ai/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-      signal,
-    });
-    if (!res.ok || !res.body) {
-      let msg = res.statusText;
-      try {
-        msg = (await res.json()).detail ?? msg;
-      } catch {
-        /* inget JSON-svar */
-      }
-      throw new ApiError(res.status, msg);
-    }
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buf = "";
-    for (;;) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      buf += decoder.decode(value, { stream: true });
-      let nl: number;
-      while ((nl = buf.indexOf("\n")) >= 0) {
-        const line = buf.slice(0, nl).trim();
-        buf = buf.slice(nl + 1);
-        if (line) onEvent(JSON.parse(line) as AIEvent);
-      }
-    }
-    if (buf.trim()) onEvent(JSON.parse(buf) as AIEvent);
-  },
+  /** Streams the AI answer as events; `signal` stops it. */
+  aiChat: (body: AIChatRequest, onEvent: (e: AIEvent) => void, signal: AbortSignal): Promise<void> =>
+    aiChatStream(body, onEvent, signal),
 };

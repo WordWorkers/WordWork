@@ -1,11 +1,11 @@
--- Word Work: rensar importerade dokument till sådant som Markdown och
--- editorn kan uttrycka. Ingen text ska försvinna – bara formatering.
+-- Word Work: reduces imported documents to what Markdown and the editor
+-- can express. No text may be lost – only formatting.
 --
---  * understrykning, kapitäler, upphöjt/nedsänkt, spans och divs packas upp
---  * bilder och rå HTML/XML tas bort (editorn hanterar bara text)
---  * tabeller blir ett stycke per rad med cellerna åtskilda av " – "
---  * fotnoter behålls, men bara med stycken (listor, tabeller m.m. i en
---    fotnot blir vanliga stycken)
+--  * underline, small caps, superscript/subscript, spans and divs are unwrapped
+--  * images and raw HTML/XML are removed (the editor only handles text)
+--  * tables become one paragraph per row with the cells separated by " – "
+--  * footnotes are kept, but only with paragraphs (lists, tables etc. in a
+--    footnote become regular paragraphs)
 
 local function unwrap(el) return el.content end
 
@@ -68,7 +68,7 @@ function Table(tbl)
 end
 
 function Pandoc(doc)
-  -- Metadata som enkel text, så frontmatter blir läsbar.
+  -- Metadata as plain text, so the frontmatter is readable.
   for key, value in pairs(doc.meta) do
     if type(value) == "table" and value.t ~= "MetaList" and value.t ~= "MetaMap" then
       doc.meta[key] = pandoc.MetaString(pandoc.utils.stringify(value))

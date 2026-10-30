@@ -1,8 +1,8 @@
 /**
- * Markerar mycket långa meningar i Skriv-vyn (slås på i Analys-panelen).
+ * Highlights very long sentences in the Write view (switched on in the Analys panel).
  *
- * Meningar delas som i LIX-beräkningen (stats.ts), så att markeringarna stämmer
- * med "Längsta meningarna". Vid ändringar räknas bara de ändrade styckena om.
+ * Sentences are split as in the LIX calculation (stats.ts), so the highlights match
+ * "Längsta meningarna". On changes, only the changed paragraphs are recounted.
  */
 import { Extension } from "@tiptap/core";
 import type { Node as PMNode } from "@tiptap/pm/model";
@@ -19,7 +19,7 @@ interface Sentence {
 const WORD = /[\p{L}\p{N}]+(?:[-'’][\p{L}\p{N}]+)*/gu;
 const BOUNDARY = /(?<=[.!?:…]["”’»)]*)\s+/gu;
 
-/** Meningar i en textsträng, med teckenpositioner. */
+/** Sentences in a text string, with character positions. */
 export function sentencesIn(text: string): Sentence[] {
   const masked = text.replace(ABBREVIATIONS, (m) => m.replace(/\./g, "\u0000"));
   const out: Sentence[] = [];

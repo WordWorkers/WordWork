@@ -1,17 +1,16 @@
 # Word Work
 
-En lugn, distraktionsfri ordbehandlare för kulturjournalister och författare.
-Du skriver i ett rent fönster utan verktygsfält som stör – med svensk
-stavningskontroll, synonymer, läsbarhetsanalys, versionshistorik och export
-till Word. Det finns också en AI-assistent som kan granska texten, men den
-**skriver aldrig i din text** – den föreslår bara.
+Ett ordbehandlingsprogram som fokuserar på skrivande och ordet. Du skriver direkt på en sida utan verktygsfält som stör – med svensk stavningskontroll, synonymer, läsbarhetsanalys och versionshistorik.
 
-Word Work finns för **Mac, Windows och Linux**. Texterna sparas som vanliga
-filer på din egen dator.
+Om du har tillgång till Ollama eller en OpenAI-kompatibel AI-tjänst, kan du även använda en AI-assistent som kan granska texten, men den **skriver aldrig i eller om din text** – den föreslår bara.
 
-Appen är till 99% utvecklad med hjälp av Claude, modellen som använts är Opus 5.5.
+Huvudfokus är att Word Work ska användas av någon som skriver journalistik i kultursammanhang och för författare. Med det sagt, programmet kan så klart användas av alla.
 
-Open source, och bidrag är välkomna.
+Word Work finns för **Mac, Windows och Linux**. Texterna sparas som vanliga filer på din dator.
+
+Appen är till 90% utvecklad med hjälp av Claude, modellen som använts är Claude Opus 5.5.
+
+Word Work är Open source, och bidrag är välkomna. Ni är välkomna att forka och göra vad ni vill med koden.
 
 ## Ladda ner och installera
 
@@ -37,7 +36,7 @@ och lägger till det i Start-menyn.
 
 ### Första gången du startar
 
-Word Work är ännu inte signerat av Apple eller Microsoft. Därför varnar
+Word Work är inte signerat av Apple eller Microsoft. Därför varnar
 datorn första gången – det är normalt för program som inte köps via en
 appbutik.
 

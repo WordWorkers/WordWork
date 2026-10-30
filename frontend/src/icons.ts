@@ -1,7 +1,7 @@
 /**
- * Ikoner för verktygsraden – enkla linjeikoner (24×24, currentColor) ritade för
- * Word Work. Knapparna har alltid aria-label och title, så de går att använda
- * med skärmläsare och visar en förklaring när man håller muspekaren över dem.
+ * Toolbar icons – simple line icons (24×24, currentColor) drawn for Word Work.
+ * The buttons always have aria-label and title, so they work with screen readers
+ * and show an explanation on mouse hover.
  */
 import { h } from "./ui";
 
@@ -18,7 +18,7 @@ const ICONS = {
   metadata:
     '<path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
   analysis: '<path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/>',
-  // Ett gem – en blinkning åt kontorsprogrammens gamla hjälpreda.
+  // A paperclip – a nod to the office suites' old assistant.
   ai: '<path d="M9 8v8.5a3 3 0 0 0 6 0V5.5a4.5 4.5 0 0 0-9 0V17a6 6 0 0 0 12 0V8"/>',
   history: '<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 8v4l3 2"/>',
   chars:
@@ -36,7 +36,7 @@ export function icon(name: IconName): SVGSVGElement {
   return tpl.content.firstElementChild as SVGSVGElement;
 }
 
-/** Knapp med bara en ikon. `label` blir både aria-label och (med kortkommando) title. */
+/** Icon-only button. `label` becomes both aria-label and (with shortcut) title. */
 export function iconButton(
   name: IconName,
   label: string,

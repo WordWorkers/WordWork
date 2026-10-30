@@ -1,10 +1,10 @@
 /**
- * Textstatistik och läsbarhet.
+ * Text statistics and readability.
  *
- * LIX (läsbarhetsindex, C-H Björnsson 1968):
- *   LIX = ord/meningar + (långa ord × 100)/ord, där långa ord har fler än 6 bokstäver.
- * OVIX (ordvariationsindex):
- *   OVIX = log(ord) / log(2 − log(unika ord)/log(ord))
+ * LIX (readability index, C-H Björnsson 1968):
+ *   LIX = words/sentences + (long words × 100)/words, where long words have more than 6 letters.
+ * OVIX (word variation index):
+ *   OVIX = log(words) / log(2 − log(unique words)/log(words))
  */
 import { WORD_RE } from "./spell";
 
@@ -31,7 +31,7 @@ export interface LixLevel {
   example: string;
 }
 
-/** Tolkningsskala enligt lix.se. */
+/** Interpretation scale according to lix.se. */
 export const LIX_SCALE: LixLevel[] = [
   { max: 25, label: "Mycket lätt", example: "Barnböcker" },
   { max: 30, label: "Lätt", example: "Enkla texter, ungdomsböcker" },
@@ -45,7 +45,7 @@ export function lixLevel(lix: number): LixLevel {
   return LIX_SCALE.find((l) => lix < l.max) ?? LIX_SCALE[LIX_SCALE.length - 1];
 }
 
-/** Vanliga svenska funktionsord som döljs i ordfrekvenslistan som standard. */
+/** Common Swedish function words hidden in the word frequency list by default. */
 export const STOPWORDS = new Set(
   `och i att det som en på är av för med till den har de inte om ett han men var jag sig
   från vi så kan man när år säger hon under också efter eller nu sin där vid mot ska skulle
@@ -58,11 +58,11 @@ export const STOPWORDS = new Set(
   varken samt dock bl.a t.ex`.split(/\s+/),
 );
 
-// Förkortningar vars punkter inte ska räknas som meningsslut.
+// Abbreviations whose periods must not count as sentence ends.
 export const ABBREVIATIONS =
   /\b(?:t\.ex|bl\.a|s\.k|d\.v\.s|dvs|m\.m|m\.fl|o\.s\.v|osv|t\.o\.m|f\.d|p\.g\.a|e\.d|e\.dyl|resp|ca|kl|nr|s|jfr|fr\.o\.m|t\.v|a\.k\.a|f\.ö|i\.o\.m|o\.d)\./giu;
 
-/** Delar upp text i meningar. Stycken utan avslutande skiljetecken (t.ex. rubriker) räknas som egna meningar. */
+/** Splits text into sentences. Paragraphs without final punctuation (e.g. headings) count as separate sentences. */
 export function splitSentences(text: string): string[] {
   const out: string[] = [];
   for (const para of text.split(/\n\s*\n/)) {
@@ -77,14 +77,14 @@ export function splitSentences(text: string): string[] {
 }
 
 function words(text: string): string[] {
-  // Ord som börjar med en bokstav behöver ingen regex-kontroll (de flesta).
+  // Words starting with a letter need no regex check (most of them).
   return (text.match(WORD_RE) ?? []).filter((w) => {
     const c = w.charCodeAt(0);
     return c > 57 || c < 48 ? true : /\p{L}/u.test(w);
   });
 }
 
-/** Bokstäver i ordet (bindestreck och apostrofer räknas inte). */
+/** Letters in the word (hyphens and apostrophes are not counted). */
 function letterCount(w: string): number {
   if (w.indexOf("-") < 0 && w.indexOf("'") < 0 && w.indexOf("’") < 0) return w.length;
   return w.replace(/[-'’]/g, "").length;
@@ -99,8 +99,8 @@ export interface QuickStats {
 }
 
 /**
- * Snabb statistik för statusraden – ingen ordfrekvens eller meningslista.
- * Räknar på samma sätt som analyze(), så LIX blir identiskt.
+ * Quick statistics for the status bar – no word frequency or sentence list.
+ * Counts the same way as analyze(), so LIX is identical.
  */
 export function quickStats(text: string): QuickStats {
   const ws = words(text);
@@ -115,7 +115,7 @@ export function quickStats(text: string): QuickStats {
   };
 }
 
-/** Antal meningar enligt samma regler som splitSentences(), utan att bygga listan. */
+/** Number of sentences by the same rules as splitSentences(), without building the list. */
 export function countSentences(text: string): number {
   let count = 0;
   for (const para of text.split(/\n\s*\n/)) {
@@ -182,7 +182,7 @@ export function analyze(text: string, opts: { includeStopwords?: boolean; top?: 
     ovix,
     avgSentenceLength: sentenceCount ? n / sentenceCount : 0,
     avgWordLength: n ? letters / n : 0,
-    readingMinutes: n / 200, // ca 200 ord/minut för svensk löptext
+    readingMinutes: n / 200, // about 200 words/minute for Swedish prose
     longestSentences,
     frequency,
   };
@@ -190,7 +190,7 @@ export function analyze(text: string, opts: { includeStopwords?: boolean; top?: 
 
 
 /* ------------------------------------------------------------------ */
-/* Citat                                                               */
+/* Quotes                                                              */
 /* ------------------------------------------------------------------ */
 
 export interface Quote {
@@ -198,13 +198,13 @@ export interface Quote {
   kind: "citat" | "replik";
 }
 
-// Citattecken som öppnar och stänger. Svenska ”…” och »…» använder samma tecken på båda sidor.
+// Opening and closing quotation marks. Swedish ”…” and »…» use the same character on both sides.
 const QUOTE_PATTERNS = [/”([^”\n]+)”/g, /“([^”“\n]+)”/g, /„([^“”„\n]+)[“”]/g, /»([^»«\n]+)[»«]/g, /"([^"\n]+)"/g];
 
 /**
- * Citat i texten: citerat inom citattecken (minst tre ord – enstaka ord inom
- * citattecken är oftast markeringar, inte citat) och repliker (stycken som börjar
- * med pratminus). I den ordning de står i texten.
+ * Quotes in the text: quoted text within quotation marks (at least three words – single
+ * words in quotation marks are usually emphasis, not quotes) and dialogue (paragraphs
+ * starting with a dialogue dash). In the order they appear in the text.
  */
 export function findQuotes(text: string): Quote[] {
   const found: { index: number; q: Quote }[] = [];
@@ -230,13 +230,13 @@ export function findQuotes(text: string): Quote[] {
 }
 
 /* ------------------------------------------------------------------ */
-/* Substantiveringar (nominalstil)                                     */
+/* Nominalizations (nominal style)                                     */
 /* ------------------------------------------------------------------ */
 
 /**
- * Substantiv bildade av verb och adjektiv med typiska ändelser (genomförande-
- * typer utelämnas eftersom -ande också är particip). Mönstret är avsiktligt
- * snävt: hellre färre träffar än felaktiga.
+ * Nouns formed from verbs and adjectives with typical endings (genomförande-
+ * type words are left out since -ande is also a participle). The pattern is
+ * deliberately narrow: better fewer matches than wrong ones.
  */
 const NOMINAL_RE =
   /^\p{L}{3,}(?:ning(?:en|ar|arna|ens|ars|arnas)?|het(?:en|er|erna|ens|ers|ernas)?|else(?:n|r|rna|ns|rs)?|tion(?:en|er|erna|ens|ers)?|itet(?:en|er|erna)?|andet|endet|andena|endena)$/u;

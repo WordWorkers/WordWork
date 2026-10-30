@@ -1,4 +1,4 @@
-# Fake AI server for the smoke test (WW_SPIKE=1) and manual UI testing:
+# Fake AI server for the smoke test (WW_SMOKE=1) and manual UI testing:
 #   python3 tools/fake_ollama.py [port]        (default 11434)
 # Speaks enough of Ollama's API (/api/version, /api/tags, /api/show, /api/chat)
 # and the OpenAI API (/v1/models, /v1/chat/completions, key "hemlig") to test
