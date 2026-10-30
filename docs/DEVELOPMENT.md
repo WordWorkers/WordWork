@@ -70,8 +70,8 @@ documents, so use a test data folder (`WW_DATA_DIR`).
 
   | Job | Runner | Output |
   |---|---|---|
-  | macOS (Apple Silicon) | `macos-14` | `Word-Work_<v>_macOS-AppleSilicon.dmg` |
-  | macOS (Intel) | `macos-14`, cross-compiled | `Word-Work_<v>_macOS-Intel.dmg` |
+  | macOS (Apple Silicon) | `macos-15` | `Word-Work_<v>_macOS-AppleSilicon.dmg` |
+  | macOS (Intel) | `macos-15`, cross-compiled | `Word-Work_<v>_macOS-Intel.dmg` |
   | Windows | `windows-latest` | `…_Windows-x64-setup.exe`, `…_Windows-x64.msi` |
   | Linux | `ubuntu-22.04` | `.deb`, `.rpm`, `.AppImage` |
 

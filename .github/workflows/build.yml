@@ -39,12 +39,12 @@ jobs:
       matrix:
         include:
           - name: macOS (Apple Silicon)
-            os: macos-14
+            os: macos-15
             target: aarch64-apple-darwin
             bundles: app,dmg
           - name: macOS (Intel)
             # Cross-compiled on the Apple Silicon runner (Intel runners are being retired).
-            os: macos-14
+            os: macos-15
             target: x86_64-apple-darwin
             bundles: app,dmg
           - name: Windows

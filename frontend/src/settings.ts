@@ -64,7 +64,7 @@ const DEFAULTS: Settings = {
   autoTypography: true,
   quoteStyle: "sv",
   aiModel: "",
-  aiThink: true,
+  aiThink: false, // some models crash on the AI server with thinking on
   markLongSentences: false,
   longSentenceWords: 30,
   defaultGenre: "",
