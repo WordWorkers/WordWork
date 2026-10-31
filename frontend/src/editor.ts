@@ -16,7 +16,7 @@ import { Markdown } from "@tiptap/markdown";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
 import { Decoration, DecorationSet, type EditorView } from "@tiptap/pm/view";
 import { TextSelection } from "@tiptap/pm/state";
-import { setHighlight, spellExtension, WordHighlight, type SpellService } from "./spell";
+import { setHighlight, spellExtension, WORD_RE, WordHighlight, type SpellService } from "./spell";
 import { Note, stripNotes } from "./notes";
 import { cleanComment, Comment, commentAt, stripComments, type CommentRange } from "./comments";
 import { cleanFootnote, Footnote, prepareFootnotes, stripFootnotes, withFootnotes } from "./footnotes";
@@ -98,6 +98,8 @@ export interface EditorOptions {
   onActivity: () => void;
   onSelection?: () => void;
   onContextMenu?: (event: MouseEvent, view: EditorView) => boolean;
+  /** Right-click in the Markdown view; `offset` is the character under the pointer. */
+  onSourceContextMenu?: (event: MouseEvent, offset: number) => boolean;
   /** Click on commented text (to show the comment). */
   onCommentClick?: (comment: CommentRange, rect: DOMRect) => void;
   /** Click on a footnote number. */
@@ -125,6 +127,10 @@ export class DocEditor {
   private searchRe: RegExp | null = null;
   private longSentenceLimit = 0;
   private srcMatches: Range[] = [];
+  /** Behind the Markdown text field: the same text, transparent, with spelling underlines. */
+  private sourceBox: HTMLDivElement;
+  private sourceMarks: HTMLDivElement;
+  private marksTimer: number | undefined;
   private srcCurrent = -1;
   /** Footnote definitions without a reference – saved untouched at the end of the text. */
   private orphanFootnotes: { id: string; text: string }[] = [];
@@ -135,15 +141,30 @@ export class DocEditor {
     this.wysiwygEl.className = "wysiwyg";
     this.sourceEl = document.createElement("textarea");
     this.sourceEl.className = "source";
-    this.sourceEl.spellcheck = true;
+    // Word Work's own spell check (underlines below, suggestions in the right-click menu).
+    this.sourceEl.spellcheck = false;
     this.sourceEl.lang = "sv";
     this.sourceEl.placeholder = "Skriv här …";
     this.sourceEl.setAttribute("aria-label", "Markdown-källtext");
-    this.host.append(this.wysiwygEl, this.sourceEl);
+    this.sourceMarks = document.createElement("div");
+    this.sourceMarks.className = "source-marks";
+    this.sourceMarks.setAttribute("aria-hidden", "true");
+    this.sourceBox = document.createElement("div");
+    this.sourceBox.className = "source-box";
+    this.sourceBox.append(this.sourceMarks, this.sourceEl);
+    this.host.append(this.wysiwygEl, this.sourceBox);
+    opts.spell.onUpdate(() => this.scheduleSourceMarks(0));
 
+    this.sourceEl.addEventListener("contextmenu", (event) => {
+      // Shift+right-click: the system menu, as in the Write view.
+      if (event.shiftKey || !this.opts.onSourceContextMenu) return;
+      const offset = sourceOffsetAt(this.sourceEl, event.clientX, event.clientY);
+      if (offset !== null && this.opts.onSourceContextMenu(event, offset)) event.preventDefault();
+    });
     this.sourceEl.addEventListener("input", () => {
       this.markdown = this.sourceEl.value;
       this.autoGrow();
+      this.scheduleSourceMarks();
       this.opts.onActivity();
       this.emitChange();
     });
@@ -449,8 +470,21 @@ export class DocEditor {
     ta.dispatchEvent(new Event("input", { bubbles: true }));
   }
 
-  /** Replaces text in a range (used by corrections and synonyms). */
+  /** The Markdown view's text field (for its right-click menu). */
+  get source(): HTMLTextAreaElement {
+    return this.sourceEl;
+  }
+
+  /**
+   * Replaces text in a range (used by corrections and synonyms). Positions are
+   * ProseMirror positions in the Write view and character offsets in the
+   * Markdown view.
+   */
   replaceRange(from: number, to: number, text: string): void {
+    if (this.mode === "markdown") {
+      this.replaceSource(from, to, text);
+      return;
+    }
     if (!this.editor) return;
     const view = this.editor.view;
     view.dispatch(view.state.tr.insertText(text, from, to));
@@ -461,15 +495,18 @@ export class DocEditor {
     this.host.dataset.mode = this.mode;
     if (this.mode === "write") {
       this.sourceEl.hidden = true;
+      this.sourceBox.hidden = true;
       this.wysiwygEl.hidden = false;
       this.mountWysiwyg();
     } else {
       this.editor?.destroy();
       this.editor = null;
       this.wysiwygEl.hidden = true;
+      this.sourceBox.hidden = false;
       this.sourceEl.hidden = false;
       this.sourceEl.value = this.markdown;
       this.autoGrow();
+      this.scheduleSourceMarks(0);
     }
     if (this.searchRe) this.applySearch();
     if (this.mode === "write" && this.editor && this.longSentenceLimit) setLongSentences(this.editor.view, this.longSentenceLimit);
@@ -662,12 +699,73 @@ export class DocEditor {
     }
   }
 
+  /** Spelling underlines in the Markdown view, a moment after typing stops. */
+  private scheduleSourceMarks(delay = 300): void {
+    window.clearTimeout(this.marksTimer);
+    this.marksTimer = window.setTimeout(() => this.renderSourceMarks(), delay);
+  }
+
+  private renderSourceMarks(): void {
+    const spell = this.opts.spell;
+    if (this.mode !== "markdown" || !spell.enabled) {
+      this.sourceMarks.replaceChildren();
+      return;
+    }
+    const text = this.sourceEl.value;
+    const words = sourceWords(text);
+    spell.request(words.map((w) => w.word)); // unknown words: checked, then onUpdate renders again
+    const out: (string | HTMLElement)[] = [];
+    let last = 0;
+    for (const w of words) {
+      if (!spell.isMisspelled(w.word)) continue;
+      out.push(text.slice(last, w.from));
+      const mark = document.createElement("span");
+      mark.className = "misspelled";
+      mark.textContent = text.slice(w.from, w.to);
+      out.push(mark);
+      last = w.to;
+    }
+    out.push(text.slice(last));
+    this.sourceMarks.replaceChildren(...out);
+  }
+
   private autoGrow(): void {
     const ta = this.sourceEl;
     if (ta.hidden) return;
     ta.style.height = "auto";
     ta.style.height = `${ta.scrollHeight}px`;
   }
+}
+
+/**
+ * The words to spell-check in Markdown source: not in the frontmatter, code
+ * (fenced or `inline`), web addresses, link targets, HTML tags or footnote
+ * markers – like the Write view, which only checks the visible text.
+ */
+export function sourceWords(text: string): { word: string; from: number; to: number }[] {
+  const skip: [number, number][] = [];
+  const fm = splitFrontmatter(text).frontmatter.length;
+  if (fm) skip.push([0, fm]);
+  const add = (re: RegExp) => {
+    for (const m of text.matchAll(re)) skip.push([m.index!, m.index! + m[0].length]);
+  };
+  add(/^(```|~~~)[^\n]*\n[\s\S]*?(?:^\1[^\n]*$|(?![\s\S]))/gm); // fenced code
+  add(/`[^`\n]+`/g); // inline code
+  add(/\]\([^)\n]*\)/g); // link targets
+  add(/<[^>\n]+>/g); // HTML tags (own notes' text between <!-- --> is checked)
+  add(/\b(?:https?:\/\/|www\.)\S+/g); // web addresses
+  add(/\[\^[^\]\n]+\]/g); // footnote markers [^1]
+  skip.sort((a, b) => a[0] - b[0]);
+  const out: { word: string; from: number; to: number }[] = [];
+  let i = 0;
+  for (const m of text.matchAll(WORD_RE)) {
+    const from = m.index!;
+    const to = from + m[0].length;
+    while (i < skip.length && skip[i][1] <= from) i++;
+    if (i < skip.length && skip[i][0] < to) continue;
+    out.push({ word: m[0], from, to });
+  }
+  return out;
 }
 
 /** A single trailing newline – stable files and diffs. */
@@ -700,6 +798,46 @@ export function splitFrontmatter(md: string): { frontmatter: string; body: strin
   const m = FRONTMATTER_RE.exec(md);
   if (!m) return { frontmatter: "", body: md };
   return { frontmatter: m[0], body: md.slice(m[0].length) };
+}
+
+/**
+ * The character offset in a text field under a screen point, or null. A text
+ * field has no API for this, so an exact, transparent copy is laid over it
+ * for a moment and asked with caretRangeFromPoint / caretPositionFromPoint.
+ */
+function sourceOffsetAt(ta: HTMLTextAreaElement, x: number, y: number): number | null {
+  const cs = getComputedStyle(ta);
+  const rect = ta.getBoundingClientRect();
+  const mirror = document.createElement("div");
+  for (const p of ["font", "letterSpacing", "lineHeight", "padding", "border", "boxSizing", "tabSize", "wordSpacing", "textIndent"] as const) {
+    mirror.style[p] = cs[p];
+  }
+  Object.assign(mirror.style, {
+    position: "fixed",
+    left: `${rect.left}px`,
+    top: `${rect.top - ta.scrollTop}px`,
+    width: `${rect.width}px`,
+    whiteSpace: "pre-wrap",
+    overflowWrap: "break-word",
+    borderColor: "transparent",
+    color: "transparent",
+    opacity: "0",
+    zIndex: "2147483647",
+  });
+  const text = document.createTextNode(ta.value + "\u200b");
+  mirror.append(text);
+  document.body.append(mirror);
+  try {
+    const doc = document as Document & {
+      caretPositionFromPoint?: (x: number, y: number) => { offsetNode: Node; offset: number } | null;
+    };
+    const pos = doc.caretPositionFromPoint?.(x, y);
+    if (pos) return pos.offsetNode === text ? Math.min(pos.offset, ta.value.length) : null;
+    const range = document.caretRangeFromPoint?.(x, y);
+    return range && range.startContainer === text ? Math.min(range.startOffset, ta.value.length) : null;
+  } finally {
+    mirror.remove();
+  }
 }
 
 /** Height (px) from the text field's top edge to a character, measured with an invisible copy. */

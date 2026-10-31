@@ -6,14 +6,14 @@ Licensed under the Apache License, Version 2.0 (see LICENSE).
 
 Word Work innehåller eller använder komponenter från tredje part med egna
 licenser. Den fullständiga förteckningen med licenstexter finns i
-THIRD_PARTY_LICENSES.md och LICENSES/ (i Docker-imagen: /app/licenses/).
+THIRD_PARTY_LICENSES.md, resources/licenses/THIRD_PARTY_NOTICES.txt och
+LICENSES/ – i appen under Om Word Work → Visa alla licenstexter.
 
 Särskilt:
 
-- Pandoc, Copyright (C) 2006-2024 John MacFarlane, GNU GPL version 2 eller
-  senare. Körs som ett separat program och följer med i Docker-imagen
-  (via pypandoc_binary). Källkoden finns på https://github.com/jgm/pandoc
-  (taggen för versionen som anges i THIRD_PARTY_NOTICES.txt).
+- Pandoc 3.9, Copyright (C) 2006-2024 John MacFarlane, GNU GPL version 2 eller
+  senare. Körs som ett separat program (ww-pandoc) och följer med i appen.
+  Källkoden finns på https://github.com/jgm/pandoc/tree/3.9.
 
 - Den stora svenska ordlistan (sv_SE.aff, sv_SE.dic),
   Copyright © 2003-19 Göran Andersson, GNU LGPL version 3.

@@ -5,7 +5,7 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
-use tauri::menu::{AboutMetadata, Menu, MenuItem, MenuItemBuilder, PredefinedMenuItem, Submenu, SubmenuBuilder};
+use tauri::menu::{Menu, MenuItem, MenuItemBuilder, PredefinedMenuItem, Submenu, SubmenuBuilder};
 use tauri::{AppHandle, Emitter, Manager, Runtime, WebviewWindow};
 use ww_core::{Error, Result};
 
@@ -17,18 +17,21 @@ const FULLSCREEN_KEY: &str = "F11";
 /// Menu item ids are sent to the frontend as-is (`ww://menu`).
 const MENU: &[(&str, &str, Option<&str>)] = &[
     // id, label, accelerator
+    ("about", "Om Word Work", None),
     ("settings", "Inställningar …", Some("CmdOrCtrl+,")),
     ("new", "Nytt dokument", Some("CmdOrCtrl+N")),
     ("documents", "Dokument …", Some("CmdOrCtrl+O")),
     ("import", "Importera …", Some("CmdOrCtrl+Shift+O")),
     ("export", "Exportera …", Some("CmdOrCtrl+E")),
     ("publish", "Kopiera för publicering", Some("CmdOrCtrl+Shift+C")),
+    ("print", "Skriv ut …", Some("CmdOrCtrl+P")),
     ("save", "Spara version", Some("CmdOrCtrl+S")),
     ("history", "Versionshistorik …", None),
     ("trash", "Papperskorgen …", None),
     ("backup", "Spara allt (zip) …", None),
     ("find", "Sök …", Some("CmdOrCtrl+F")),
     ("replace", "Sök och ersätt …", Some("CmdOrCtrl+Alt+F")),
+    ("searchall", "Sök i alla dokument …", Some("CmdOrCtrl+Shift+F")),
     ("chars", "Infoga tecken …", Some("CmdOrCtrl+.")),
     ("note", "Egen anteckning", Some("CmdOrCtrl+Alt+M")),
     ("comment", "Kommentera …", Some("CmdOrCtrl+Alt+K")),
@@ -54,16 +57,10 @@ fn item<R: Runtime>(app: &AppHandle<R>, id: &str) -> tauri::Result<MenuItem<R>> 
 
 pub fn build_menu<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<Menu<R>> {
     let sep = || PredefinedMenuItem::separator(app);
-    let about = AboutMetadata {
-        name: Some("Word Work".into()),
-        version: Some(ww_core::VERSION.into()),
-        copyright: Some("© 2026 Mikke Schirén – Apache License 2.0".into()),
-        comments: Some("En lugn, distraktionsfri ordbehandlare för kulturjournalister och författare.".into()),
-        ..Default::default()
-    };
 
     let app_menu: Submenu<R> = SubmenuBuilder::new(app, "Word Work")
-        .item(&PredefinedMenuItem::about(app, Some("Om Word Work"), Some(about))?)
+        // Our own window: version, licences and the third-party notices.
+        .item(&item(app, "about")?)
         .item(&sep()?)
         .item(&item(app, "settings")?)
         .item(&sep()?)
@@ -87,6 +84,7 @@ pub fn build_menu<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<Menu<R>> {
         .item(&sep()?)
         .item(&item(app, "export")?)
         .item(&item(app, "publish")?)
+        .item(&item(app, "print")?)
         .item(&item(app, "backup")?)
         .item(&sep()?)
         .item(&item(app, "trash")?)
@@ -106,6 +104,7 @@ pub fn build_menu<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<Menu<R>> {
         .item(&sep()?)
         .item(&item(app, "find")?)
         .item(&item(app, "replace")?)
+        .item(&item(app, "searchall")?)
         .item(&sep()?)
         .item(&item(app, "chars")?)
         .item(&item(app, "note")?)

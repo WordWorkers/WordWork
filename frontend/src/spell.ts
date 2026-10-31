@@ -124,6 +124,16 @@ export class SpellService {
     return this.known.get(word) === false && !this.ignored.has(word);
   }
 
+  /** Checks one word now (cached), e.g. for the right-click menu in the Markdown view. */
+  async checkNow(word: string): Promise<boolean> {
+    if (/\d/.test(word) || word.length < 2) return false;
+    if (!this.known.has(word)) {
+      const { misspelled } = await api.spellCheck([word]);
+      this.known.set(word, !misspelled.includes(word));
+    }
+    return this.isMisspelled(word);
+  }
+
   /** Queues words that have not been checked yet. */
   request(words: Iterable<string>): void {
     for (const w of words) {

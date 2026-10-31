@@ -1,6 +1,7 @@
 /**
- * Right-click menu in the Write view: correction suggestions, custom dictionary and synonyms.
- * Nothing in the text changes until the user picks an option.
+ * Right-click menu: correction suggestions, custom dictionary and synonyms –
+ * in the Write view (plus comments, footnotes and notes) and in the Markdown
+ * view. Nothing in the text changes until the user picks an option.
  */
 import type { EditorView } from "@tiptap/pm/view";
 import { TextSelection } from "@tiptap/pm/state";
@@ -132,6 +133,87 @@ export function openContextMenu(event: MouseEvent, view: EditorView, deps: MenuD
   return true;
 }
 
+/** What the Markdown view's menu needs: the text field and how to change it. */
+export interface SourceMenuDeps {
+  spell: SpellService;
+  source: HTMLTextAreaElement;
+  /** Replaces characters `from`–`to` in the source text (undoable). */
+  replace: (from: number, to: number, text: string) => void;
+  openChars: () => void;
+}
+
+/** Right-click in the Markdown view; `offset` is the character under the pointer. */
+export function openSourceContextMenu(event: MouseEvent, offset: number, deps: SourceMenuDeps): boolean {
+  const ta = deps.source;
+  const value = ta.value;
+  // The word under the pointer, looked for in its line only.
+  const lineStart = value.lastIndexOf("\n", offset - 1) + 1;
+  const lineEnd = value.indexOf("\n", offset) < 0 ? value.length : value.indexOf("\n", offset);
+  const line = value.slice(lineStart, lineEnd);
+  let range: WordRange | null = null;
+  for (const m of line.matchAll(WORD_RE)) {
+    const from = lineStart + m.index!;
+    const to = from + m[0].length;
+    if (from <= offset && offset <= to) {
+      range = { word: m[0], from, to };
+      break;
+    }
+  }
+  // A selection of 2–6 words the click is inside: offer it as a phrase.
+  const [selFrom, selTo] = [ta.selectionStart, ta.selectionEnd];
+  let phrase: string | null = null;
+  if (selFrom !== selTo && selFrom <= offset && offset <= selTo) {
+    const text = value.slice(selFrom, selTo).split(/\s+/).filter(Boolean).join(" ");
+    const n = text.match(WORD_RE)?.length ?? 0;
+    if (n >= 2 && n <= MAX_PHRASE_WORDS) phrase = text;
+  }
+
+  closeMenu();
+  const menu = h("div", { class: "context-menu", role: "menu" });
+  current = menu;
+  const chars = item("Infoga tecken …", () => {
+    closeMenu();
+    ta.focus();
+    ta.setSelectionRange(offset, offset);
+    deps.openChars();
+  });
+  if (!range) {
+    ta.focus();
+    ta.setSelectionRange(offset, offset);
+    menu.append(chars);
+    document.body.append(menu);
+    position(menu, event.clientX, event.clientY);
+    return true;
+  }
+  const word = range;
+  // Select the word so it is clear what the menu applies to (keep a phrase selection).
+  if (!phrase) {
+    ta.focus();
+    ta.setSelectionRange(word.from, word.to);
+  }
+  const choose = (text: string) => {
+    deps.replace(word.from, word.to, matchCase(word.word, text));
+    closeMenu();
+  };
+  if (phrase) buildPhrase(menu, phrase, deps);
+  const spelling = h("div", {}); // filled in if the word is misspelled
+  menu.append(spelling);
+  buildSynonyms(menu, word, choose);
+  menu.append(h("hr", {}), chars);
+  document.body.append(menu);
+  position(menu, event.clientX, event.clientY);
+  // The Markdown view has no underlines of its own, so the word is checked now.
+  void deps.spell
+    .checkNow(word.word)
+    .then((misspelled) => {
+      if (!misspelled || current !== menu) return;
+      buildSpelling(spelling, word, deps, choose);
+      reposition(menu);
+    })
+    .catch(() => undefined);
+  return true;
+}
+
 const MAX_PHRASE_WORDS = 6;
 
 /**
@@ -170,7 +252,7 @@ function phraseCandidate(
   return { text: words.slice(a, b + 1).map((w) => w.word).join(" "), fromSelection: false };
 }
 
-function buildPhrase(menu: HTMLElement, phrase: string, deps: MenuDeps): void {
+function buildPhrase(menu: HTMLElement, phrase: string, deps: { spell: SpellService }): void {
   menu.append(
     h("div", { class: "menu-heading" }, `Fras: ”${phrase}”`),
     item("Lägg till fras i egen ordlista", async () => {
@@ -254,7 +336,7 @@ function item(label: string, onclick: () => void, cls = ""): HTMLButtonElement {
 function buildSpelling(
   menu: HTMLElement,
   range: WordRange,
-  deps: MenuDeps,
+  deps: { spell: SpellService },
   choose: (t: string) => void,
 ): void {
   const list = h("div", { class: "menu-group" }, h("div", { class: "menu-note" }, "Söker förslag …"));

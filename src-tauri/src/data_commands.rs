@@ -8,6 +8,7 @@ use serde::Serialize;
 use serde_json::{Map, Value};
 use tauri::{AppHandle, State};
 use tauri_plugin_dialog::DialogExt;
+use ww_core::search::{search, SearchHit, SearchOptions};
 use ww_core::storage::{Document, DocumentInfo, Version};
 use ww_core::userdata::{self, ChatSummary, Restored, TrashItem};
 use ww_core::{Error, Result};
@@ -28,6 +29,19 @@ async fn blocking<T: Send + 'static>(
 #[tauri::command(rename_all = "snake_case")]
 pub async fn doc_list(state: State<'_, AppState>) -> Result<Vec<DocumentInfo>> {
     blocking(&state, |c| c.storage.list()).await
+}
+
+/// Search across all documents (the search field in the document list).
+#[tauri::command(rename_all = "snake_case")]
+pub async fn doc_search(
+    state: State<'_, AppState>,
+    query: String,
+    case_sensitive: Option<bool>,
+    whole_word: Option<bool>,
+) -> Result<Vec<SearchHit>> {
+    let opts =
+        SearchOptions { case_sensitive: case_sensitive.unwrap_or(false), whole_word: whole_word.unwrap_or(false) };
+    blocking(&state, move |c| search(&c.storage, &query, opts)).await
 }
 
 #[tauri::command(rename_all = "snake_case")]
@@ -212,14 +226,21 @@ pub fn data_dir_get(state: State<'_, AppState>) -> DataDir {
 #[tauri::command(rename_all = "snake_case")]
 pub async fn data_dir_choose(app: AppHandle, state: State<'_, AppState>) -> Result<Option<DataDir>> {
     let current = state.data().storage.root().to_path_buf();
+    let dialog_app = app.clone();
     let picked = tauri::async_runtime::spawn_blocking(move || {
-        app.dialog().file().set_title("Välj datamapp för Word Work").set_directory(current).blocking_pick_folder()
+        dialog_app
+            .dialog()
+            .file()
+            .set_title("Välj datamapp för Word Work")
+            .set_directory(current)
+            .blocking_pick_folder()
     })
     .await
     .map_err(|e| Error::internal(e.to_string()))?;
     let Some(picked) = picked else { return Ok(None) };
     let path = picked.into_path().map_err(|e| Error::bad_request(e.to_string()))?;
     state.set_data_dir(&path)?;
+    state.watcher.start(&app, state.data().storage.root());
     Ok(Some(data_dir_get(state)))
 }
 
