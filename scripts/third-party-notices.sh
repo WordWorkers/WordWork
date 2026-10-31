@@ -23,7 +23,8 @@ about() { # template output
 }
 about about.hbs "$TMP/rust.txt"
 about about-md.hbs "$TMP/rust.md"
-node "$ROOT/frontend/scripts/notices.mjs" "$TMP/npm.txt"
+# Output via stdout, not a path argument: on Windows, Node and Git Bash see /tmp differently.
+node "$ROOT/frontend/scripts/notices.mjs" >"$TMP/npm.txt"
 node "$ROOT/frontend/scripts/notices.mjs" --json >"$TMP/npm.json"
 
 LINE="=============================================================================="
