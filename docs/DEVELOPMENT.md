@@ -100,8 +100,8 @@ builds are unsigned (SmartScreen asks once).
 crates/ww-core/   storage, language, convert (Pandoc), ai – no Tauri, `cargo test`
 src-tauri/        Tauri app: commands, state, config, icons, Pandoc sidecar
 frontend/         editor UI (from word-work 1.10.0)
-resources/        Swedish dictionaries, Lua filters, export templates
-scripts/          fetch-pandoc.sh
+resources/        Swedish dictionaries, Lua filters, export templates, licence notices
+scripts/          fetch-pandoc.sh, third-party-notices.sh
 tools/            spylls reference generator, fake Ollama server
 docs/             phase reports
 ```
@@ -111,3 +111,16 @@ docs/             phase reports
 Apache License 2.0, © 2026 Mikke Schirén. Third-party components: see
 [THIRD_PARTY_LICENSES.md](../THIRD_PARTY_LICENSES.md) and [LICENSES/](../LICENSES/).
 Pandoc (GPL-2.0-or-later) is shipped as a separate program, not linked.
+
+The app shows every bundled component with its licence text under *Om Word
+Work → Visa alla licenstexter*. That text and the overview in
+THIRD_PARTY_LICENSES.md are generated – run this after changing dependencies
+(the Build workflow also does it for every build):
+
+```sh
+cargo install --locked cargo-about --features cli   # once
+scripts/third-party-notices.sh                      # needs frontend/node_modules
+```
+
+`about.toml` lists the licences that are accepted for Rust crates; a crate
+with any other licence makes the script fail.

@@ -5,6 +5,7 @@ pub mod ai;
 pub mod convert;
 pub mod error;
 pub mod language;
+pub mod search;
 pub mod storage;
 pub mod text;
 pub mod userdata;

@@ -54,13 +54,30 @@
     "externalBin": [
       "binaries/ww-pandoc"
     ],
+    "fileAssociations": [
+      {
+        "ext": [
+          "md",
+          "markdown"
+        ],
+        "name": "Markdown-dokument",
+        "description": "Markdown-dokument",
+        "role": "Editor",
+        "rank": "Alternate",
+        "mimeType": "text/markdown",
+        "contentTypes": [
+          "net.daringfireball.markdown"
+        ]
+      }
+    ],
     "resources": {
       "../resources/sv/": "sv/",
       "../resources/filters/": "filters/",
       "../resources/templates/": "templates/",
       "../LICENSE": "licenses/LICENSE",
       "../NOTICE": "licenses/NOTICE",
-      "../LICENSES/": "licenses/"
+      "../LICENSES/": "licenses/",
+      "../resources/licenses/": "licenses/"
     },
     "macOS": {
       "minimumSystemVersion": "11.0",
@@ -74,10 +91,12 @@
     "linux": {
       "deb": {
         "depends": [],
-        "section": "editors"
+        "section": "editors",
+        "desktopTemplate": "linux/word-work.desktop"
       },
       "rpm": {
-        "depends": []
+        "depends": [],
+        "desktopTemplate": "linux/word-work.desktop"
       }
     },
     "windows": {

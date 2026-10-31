@@ -5,8 +5,11 @@ mod commands;
 mod data_commands;
 mod export_commands;
 mod language_commands;
+mod open_files;
+mod print;
 mod shell;
 mod state;
+mod watch;
 
 use std::sync::atomic::Ordering;
 
@@ -14,14 +17,17 @@ use tauri::{Manager, RunEvent, WindowEvent};
 
 pub fn run() {
     let app = tauri::Builder::default()
-        // Must be first: a second launch just brings the open window forward.
-        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+        // Must be first: a second launch just brings the open window forward
+        // (and opens the files it was given, e.g. "Open with" on Windows/Linux).
+        .plugin(tauri_plugin_single_instance::init(|app, args, cwd| {
             if let Some(w) = app.get_webview_window("main") {
                 let _ = w.unminimize();
                 let _ = w.show();
                 let _ = w.set_focus();
             }
+            open_files::open_paths(app, open_files::paths_from_args(&args, std::path::Path::new(&cwd)));
         }))
+        .manage(open_files::OpenQueue::default())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_clipboard_manager::init())
@@ -40,7 +46,12 @@ pub fn run() {
         })
         .setup(|app| {
             let state = state::AppState::new(app.handle())?;
+            state.watcher.start(app.handle(), state.data().storage.root());
             app.manage(state);
+            // Files given at launch (Windows/Linux "Open with", or the command line).
+            let args: Vec<String> = std::env::args().collect();
+            let cwd = std::env::current_dir().unwrap_or_default();
+            open_files::open_paths(app.handle(), open_files::paths_from_args(&args, &cwd));
             // `WW_SMOKE=1 cargo tauri dev` runs the smoke test in the real WebView
             // and prints the results to stdout (debug builds only).
             #[cfg(debug_assertions)]
@@ -57,6 +68,7 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             commands::health,
+            commands::third_party_notices,
             language_commands::spell_check,
             language_commands::spell_suggest,
             language_commands::synonyms,
@@ -69,6 +81,8 @@ pub fn run() {
             export_commands::export_save,
             export_commands::backup_save,
             export_commands::import_file,
+            export_commands::print_html,
+            export_commands::print_window,
             ai_commands::ai_genres,
             ai_commands::ai_status,
             ai_commands::ai_models,
@@ -78,6 +92,8 @@ pub fn run() {
             ai_commands::ai_config_set,
             commands::smoke_report,
             data_commands::doc_list,
+            data_commands::doc_search,
+            open_files::opened_files,
             data_commands::doc_create,
             data_commands::doc_get,
             data_commands::doc_save,
@@ -107,6 +123,12 @@ pub fn run() {
         .expect("error while building Word Work");
 
     app.run(|app, event| {
+        // macOS: files opened from Finder or dropped on the Dock icon (also at launch).
+        #[cfg(target_os = "macos")]
+        if let RunEvent::Opened { urls } = &event {
+            let paths = urls.iter().filter_map(|u| u.to_file_path().ok()).collect();
+            open_files::open_paths(app, paths);
+        }
         // ⌘Q from the Dock, logging out …: save first, like closing the window.
         // (`code` is set when we exit ourselves, after saving.)
         if let RunEvent::ExitRequested { code: None, api, .. } = event {

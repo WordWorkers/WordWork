@@ -108,7 +108,7 @@ pub(super) async fn chat(
             .ok()
             .and_then(|v| v.get("error").and_then(Value::as_str).map(String::from))
             .unwrap_or(body);
-        return Err(bad_gateway(format!("Ollama svarade med fel ({status}): {body}")));
+        return Err(bad_gateway(format!("Ollama svarade med fel ({status}): {body}{}", think_hint(think, status))));
     }
 
     let mut stream = res.bytes_stream();
@@ -125,13 +125,34 @@ pub(super) async fn chat(
         buf.extend_from_slice(&chunk.map_err(unreachable)?);
         while let Some(nl) = buf.iter().position(|&b| b == b'\n') {
             let line: Vec<u8> = buf.drain(..=nl).collect();
-            handle_line(&line, model, emit)?;
+            handle_line(&line, model, emit).map_err(|e| with_think_hint(e, think))?;
         }
     }
     if !buf.is_empty() {
-        handle_line(&buf, model, emit)?;
+        handle_line(&buf, model, emit).map_err(|e| with_think_hint(e, think))?;
     }
     Ok(Outcome::Finished)
+}
+
+/// Some models crash on the server with thinking on (e.g. "CUDA error: an
+/// illegal memory access") while working fine without it – say so.
+const THINK_HINT: &str =
+    " Om felet kommer tillbaka: avmarkera ”Tänk efter först” – alla modeller klarar inte tankesteg.";
+
+fn think_hint(think: bool, status: u16) -> &'static str {
+    if think && status >= 500 {
+        THINK_HINT
+    } else {
+        ""
+    }
+}
+
+/// The hint for an error reported in the middle of the answer.
+fn with_think_hint(mut e: Error, think: bool) -> Error {
+    if think && e.detail.starts_with("Ollama: ") {
+        e.detail.push_str(THINK_HINT);
+    }
+    e
 }
 
 fn handle_line(line: &[u8], model: &str, emit: &mut (dyn FnMut(AIEvent) + Send)) -> Result<()> {

@@ -77,6 +77,10 @@ molnsynkad mapp.
   AI-samtal, papperskorg och inställningar – i en enda fil.
 - Har du använt den webbaserade (Docker-)versionen av Word Work? Välj dess
   `data`-mapp som datamapp, så finns allt med. Inget behöver konverteras.
+- Ändrar du en text i ett annat program, eller kommer en ny version via
+  iCloud eller Dropbox, märker Word Work det direkt: listan uppdateras och
+  den öppna texten laddas om. Har du osparade ändringar får du välja vilken
+  version som gäller.
 
 ## Så fungerar det
 
@@ -114,6 +118,10 @@ eller `800 ord`).
   eller avslutar Word Work sparas texten först.
 - **⌘S** sparar och lägger en version i historiken. Dessutom sparas en
   automatisk version högst var femte minut.
+- De automatiska versionerna gallras: alla från den senaste veckan finns
+  kvar, sedan den sista från varje dag och efter tre månader den sista från
+  varje vecka. Versioner du sparat med ⌘S, namngivna versioner och
+  återställningar sparas alltid.
 - Under **Versionshistorik** kan du förhandsgranska en version, jämföra den
   med nuvarande text och återställa den. Den nuvarande texten sparas alltid
   först, så inget går förlorat.
@@ -126,6 +134,11 @@ eller `800 ord`).
 **⌘F** söker, **⌥⌘F** öppnar sök och ersätt. Enter går till nästa träff,
 Shift+Enter till föregående. *Aa* skiljer på stora och små bokstäver och
 *Hela ord* hittar bara hela ord. *Ersätt alla* ångras med ett **⌘Z**.
+
+**Sök i alla dokument** (⇧⌘F, eller sökfältet överst i dokumentlistan) visar
+vilka dokument som innehåller ordet, hur många träffar det finns och några
+rader runt dem. Klicka på ett dokument för att öppna det med träffarna
+markerade.
 
 ### Anteckningar, kommentarer och fotnoter
 
@@ -153,9 +166,9 @@ Shift+Enter till föregående. *Aa* skiljer på stora och små bokstäver och
 
 ### Stavning och synonymer
 
-- **Stavningskontrollen** (svensk ordlista) stryker under okända ord.
-  Högerklicka för rättningsförslag, *Lägg till i egen ordlista* eller
-  *Ignorera*.
+- **Stavningskontrollen** (svensk ordlista) stryker under okända ord, både i
+  Skriv- och Markdown-vyn. Högerklicka för rättningsförslag, *Lägg till i egen
+  ordlista* eller *Ignorera*.
 - **Egen ordlista:** under Inställningar kan du lägga till, ändra och ta bort
   ord. Även fraser som "open source" eller "New York Times" fungerar – de
   godkänns bara när orden står tillsammans.
@@ -182,6 +195,11 @@ Markerar du några ord gäller analysen bara markeringen.
 - Word och OpenDocument har tre mallar, alla i A4 med sidnummer: *Standard*,
   *Manus* (Times, 1,5 radavstånd) och *Artikel*. Du kan välja **ny sida före
   varje kapitel**.
+- **Skriv ut och PDF** (⌘P, eller *PDF eller utskrift* i exportrutan): samma
+  mallar, A4 med 2,5 cm marginaler. PDF sparar du från utskriftsrutan – på
+  Mac under **PDF ▾ → Spara som PDF**, på Windows med skrivaren *Microsoft
+  Print to PDF* och på Linux med *Skriv ut till fil*. ⌘P använder mallen och
+  kapitelinställningen du valde senast.
 - **Kopiera för publicering** (⇧⌘C) lägger texten i urklipp med rubriker,
   fet och kursiv stil, citat, listor och länkar – klar att klistra in i
   WordPress eller ett annat publiceringssystem. Anteckningar och kommentarer
@@ -193,6 +211,11 @@ Markerar du några ord gäller analysen bara markeringen.
 OpenDocument, RTF, HTML, Markdown och text. Formatering som Markdown inte kan
 uttrycka tas bort, fotnoter behålls och titel och författare hamnar i
 Metadata.
+
+Du kan också öppna Markdown-filer (.md) direkt från Finder eller Utforskaren
+med **Öppna med → Word Work**, eller dra dem till Word Work i Dock. En fil
+utanför datamappen öppnas som en kopia – originalet ändras inte, och öppnar
+du samma fil igen visas samma kopia.
 
 ## AI-assistenten
 
@@ -235,9 +258,11 @@ syns bara inte.
 | ⌘S | Ctrl+S | Spara och skapa version |
 | ⌘/ | Ctrl+/ | Växla Skriv/Markdown |
 | ⌘E | Ctrl+E | Exportera |
+| ⌘P | Ctrl+P | Skriv ut eller spara som PDF |
 | ⇧⌘C | Ctrl+Shift+C | Kopiera för publicering |
 | ⇧⌘O | Ctrl+Shift+O | Importera |
 | ⌘F / ⌥⌘F | Ctrl+F / Ctrl+Alt+F | Sök / sök och ersätt |
+| ⇧⌘F | Ctrl+Shift+F | Sök i alla dokument |
 | ⌘G, F3 | Ctrl+G, F3 | Nästa träff (med Shift: föregående) |
 | ⌥⌘M | Ctrl+Alt+M | Egen anteckning |
 | ⌥⌘K | Ctrl+Alt+K | Kommentera markerad text |
@@ -265,8 +290,11 @@ Word Work använder komponenter från andra, med egna licenser:
 - **Typsnitten** Literata, Source Sans 3 och IBM Plex Mono (SIL Open Font
   License 1.1).
 
-Fullständig förteckning: [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md)
-och [LICENSES/](LICENSES/).
+I appen: **Word Work → Om Word Work** (eller länken längst ner i
+Inställningar) visar versionen, licenserna och – under *Visa alla
+licenstexter* – alla komponenter med sina licenstexter. Samma förteckning:
+[THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) och
+[resources/licenses/THIRD_PARTY_NOTICES.txt](resources/licenses/THIRD_PARTY_NOTICES.txt).
 
 Vill du bygga Word Work själv eller bidra? Se
 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).

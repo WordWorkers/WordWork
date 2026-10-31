@@ -6,7 +6,7 @@ use std::path::PathBuf;
 
 use serde::Serialize;
 use tauri::ipc::{InvokeBody, Request};
-use tauri::{AppHandle, State};
+use tauri::{AppHandle, State, WebviewWindow};
 use tauri_plugin_dialog::DialogExt;
 use ww_core::convert::{export_file_name, export_format, export_options, ExportOptions};
 use ww_core::storage::DocumentInfo;
@@ -83,6 +83,29 @@ pub async fn export_save(
         return Ok(None);
     };
     write_file(&state, path, &data).map(Some)
+}
+
+/// The document as HTML for printing (and "Save as PDF" in the print dialog):
+/// the same Pandoc conversion as the HTML export – notes and comments removed,
+/// footnotes and chapter page breaks included. The frontend lays it out with
+/// the chosen template's print styles.
+#[tauri::command(rename_all = "snake_case")]
+pub async fn print_html(state: State<'_, AppState>, name: String, chapters: Option<u8>) -> Result<String> {
+    let (pandoc, ctx) = (state.pandoc.clone(), state.data());
+    tauri::async_runtime::spawn_blocking(move || {
+        let doc = ctx.storage.read(&name)?;
+        let (data, _) = pandoc.export(&name, &doc.content, "html", "standard", chapters.unwrap_or(0))?;
+        Ok(String::from_utf8_lossy(&data).into_owned())
+    })
+    .await
+    .map_err(|e| Error::internal(e.to_string()))?
+}
+
+/// The system print dialog for the window, A4 with 2.5 cm margins (see
+/// print.rs). "Save as PDF" is in that dialog on every platform.
+#[tauri::command(rename_all = "snake_case")]
+pub fn print_window(window: WebviewWindow) -> Result<()> {
+    crate::print::print(&window)
 }
 
 /// The whole data folder as a zip.

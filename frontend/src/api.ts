@@ -112,6 +112,18 @@ export interface TrashItem {
   messages?: number;
 }
 
+/** One document in the results of a search across all documents. */
+export interface SearchHit {
+  name: string;
+  modified: number;
+  /** The document's name matches. */
+  name_match: boolean;
+  /** Matches in the text. */
+  count: number;
+  /** The first few matches with some text around them. */
+  snippets: { before: string; text: string; after: string }[];
+}
+
 export class ApiError extends Error {
   constructor(
     public status: number,
@@ -189,6 +201,11 @@ export interface Health {
 export const api = {
   health: () => request<Health>("GET", "/health"),
   list: () => request<DocumentInfo[]>("GET", "/documents"),
+  search: (query: string, caseSensitive = false, wholeWord = false) =>
+    request<SearchHit[]>(
+      "GET",
+      `/search?q=${encodeURIComponent(query)}&case=${caseSensitive ? 1 : 0}&word=${wholeWord ? 1 : 0}`,
+    ),
   create: (name?: string, content = "") =>
     request<DocumentInfo>("POST", "/documents", { name, content }),
   get: (name: string) => request<DocumentData>("GET", doc(name)),

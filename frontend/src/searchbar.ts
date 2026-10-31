@@ -88,6 +88,17 @@ export class SearchBar {
     target.select();
   }
 
+  /** Opens the search bar with a given query (from the search across all documents). */
+  openWith(text: string, caseSensitive: boolean, wholeWord: boolean): void {
+    this.find.value = text;
+    this.caseBtn.setAttribute("aria-pressed", String(caseSensitive));
+    this.wordBtn.setAttribute("aria-pressed", String(wholeWord));
+    this.el.hidden = false;
+    this.run(true);
+    if (this.status.count && this.editor.mode === "markdown") this.status = this.editor.searchStep(0);
+    this.render();
+  }
+
   close(): void {
     if (!this.isOpen) return;
     window.clearTimeout(this.timer);

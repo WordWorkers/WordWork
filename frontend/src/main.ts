@@ -8,7 +8,7 @@ import "@fontsource/ibm-plex-mono/600.css";
 import "./style.css";
 
 import { diffWords } from "diff";
-import { api, ApiError, invokeRoute, type Version } from "./api";
+import { api, ApiError, invokeRoute, type DocumentData, type SearchHit, type Version } from "./api";
 import { AIPanel } from "./ai";
 import { renderCharPanel } from "./chars";
 import { closeMenu, openContextMenu, openSourceContextMenu } from "./contextmenu";
@@ -278,6 +278,7 @@ class App {
     );
 
     this.bindGlobalEvents();
+    this.bindDocSearch();
     this.bindAppShell();
     this.bindDropImport();
     this.setView((localStorage.getItem(VIEW_KEY) as ViewMode) || "write", false);
@@ -306,11 +307,52 @@ class App {
         }
       });
     });
-    const docs = await api.list();
-    let name = localStorage.getItem(LAST_DOC_KEY);
-    if (!name || !docs.some((d) => d.name === name)) name = docs[0]?.name ?? null;
+    // A file opened from Finder/Explorer (or the command line) wins over the last document.
+    let name = await this.takeOpenedFiles();
+    if (!name) {
+      const docs = await api.list();
+      name = localStorage.getItem(LAST_DOC_KEY);
+      if (!name || !docs.some((d) => d.name === name)) name = docs[0]?.name ?? null;
+    }
     if (!name) name = (await api.create(undefined, this.newDocContent())).name;
     await this.open(name);
+    this.markReady();
+  }
+
+  /** Resolved when start() has opened the first document. */
+  private markReady!: () => void;
+  private ready = new Promise<void>((r) => (this.markReady = r));
+
+  /**
+   * Files opened from outside (Rust queues them, see open_files.rs): documents
+   * in the data folder are opened, other files are imported as copies.
+   * Returns the document to show, or null.
+   */
+  private async takeOpenedFiles(): Promise<string | null> {
+    let r: { opened: { name: string; imported: boolean }[]; errors: string[] };
+    try {
+      r = await invokeRoute({ cmd: "opened_files", args: {} });
+    } catch (e) {
+      toast(errorText(e));
+      return null;
+    }
+    for (const err of r.errors) toast(`Kunde inte öppna ${err}`);
+    const imported = r.opened.filter((o) => o.imported);
+    if (imported.length === 1) {
+      toast(`”${imported[0].name}” öppnades som en kopia i Word Work – originalfilen ändras inte`);
+    } else if (imported.length > 1) {
+      toast(`${imported.length} filer öppnades som kopior i Word Work – originalfilerna ändras inte`);
+    }
+    return r.opened.at(-1)?.name ?? null;
+  }
+
+  /** ww://open-files while running: open the (last) file. */
+  private async onOpenFiles(): Promise<void> {
+    await this.ready;
+    const name = await this.takeOpenedFiles();
+    if (!name) return;
+    await this.open(name);
+    this.closeDrawers();
   }
 
   /** Settings are saved by Rust; the localStorage copy is only used for a quick start. */
@@ -551,7 +593,7 @@ class App {
 
   private showConflict(): void {
     this.banner.replaceChildren(
-      h("span", {}, "Dokumentet har ändrats någon annanstans, t.ex. i en annan flik."),
+      h("span", {}, "Dokumentet har ändrats utanför Word Work, t.ex. i ett annat program eller av synkning."),
       h(
         "button",
         {
@@ -572,6 +614,66 @@ class App {
           },
         },
         "Behåll min version",
+      ),
+    );
+    this.banner.hidden = false;
+  }
+
+  /**
+   * Documents changed outside the app (another program, iCloud/Dropbox sync,
+   * Finder) – reported by Rust. Our own saves come here too; they are
+   * recognised because the file then holds exactly what we saved.
+   */
+  private async onFilesChanged(names: string[]): Promise<void> {
+    if (this.docsDrawer.classList.contains("open")) void this.fillDocsBody();
+    const cur = this.current;
+    if (!cur || !names.includes(cur.name)) return;
+    if (this.savePromise) await this.savePromise.catch(() => undefined);
+    if (this.current !== cur) return; // another document was opened meanwhile
+    let doc: DocumentData;
+    try {
+      doc = await api.get(cur.name);
+    } catch (e) {
+      if (e instanceof ApiError && e.status === 404) this.showMissing(cur.name);
+      return;
+    }
+    if (doc.content === this.lastSaved) {
+      cur.modified = doc.modified; // our own save, or the same text
+      return;
+    }
+    if (this.saveState === "saved") {
+      // No unsaved changes here: show the new version.
+      await this.open(cur.name);
+      toast(`”${cur.name}” ändrades utanför Word Work – den nya versionen visas`);
+    } else {
+      this.setSaveState("conflict");
+      this.showConflict();
+    }
+  }
+
+  /** The open document was deleted or renamed outside the app. */
+  private showMissing(name: string): void {
+    this.setSaveState("conflict");
+    this.banner.replaceChildren(
+      h("span", {}, `”${name}” har tagits bort eller bytt namn utanför Word Work. Texten finns kvar här.`),
+      h(
+        "button",
+        {
+          class: "primary",
+          onclick: async () => {
+            try {
+              const created = await api.create(name, this.editor.getMarkdown());
+              this.hideBanner();
+              this.current = null; // nothing to flush: the text is in the new document
+              await this.open(created.name);
+              if (this.docsDrawer.classList.contains("open")) void this.fillDocsBody();
+              toast(`Sparat som ”${created.name}”`);
+            } catch (e) {
+              toast(errorText(e));
+            }
+          },
+        },
+        "Spara som nytt dokument",
       ),
     );
     this.banner.hidden = false;
@@ -816,8 +918,10 @@ class App {
       [`${modKey}+/`, "Växla mellan Skriv och Markdown"],
       [`${modKey}+O`, "Dokumentlistan"],
       [`${modKey}+E`, "Exportera"],
+      [`${modKey}+P`, "Skriv ut eller spara som PDF"],
       [`${modKey}+Shift+C`, "Kopiera texten för publicering (HTML och ren text)"],
       [`${modKey}+F / ${modKey}+Alt+F`, "Sök / sök och ersätt"],
+      [`${modKey}+Shift+F`, "Sök i alla dokument"],
       [`${modKey}+Alt+M`, "Gör stycket till en egen anteckning (följer inte med vid export)"],
       [`${modKey}+Alt+K`, "Kommentera markerad text (följer inte med vid export)"],
       [`${modKey}+Alt+N`, "Infoga fotnot (blir en riktig fotnot vid export)"],
@@ -860,6 +964,68 @@ class App {
     );
   }
 
+  /** "Om Word Work": version, licence, the main components and all licence texts. */
+  private showAbout(): void {
+    this.closeDrawers();
+    const parts: [string, string, string, string?][] = [
+      ["Pandoc 3.9", "GPL-2.0 eller senare", "Import och export (separat program)", "https://github.com/jgm/pandoc/tree/3.9"],
+      ["Den stora svenska ordlistan", "LGPL-3.0", "Stavningskontrollen – Göran Andersson"],
+      ["Synlex – Folkets synonymlexikon", "Synlex-licensen", "Synonymerna – Viggo Kann, KTH"],
+      ["Literata, Source Sans 3, IBM Plex Mono", "SIL OFL 1.1", "Typsnitten"],
+      ["Tauri och andra Rust-bibliotek", "MIT, Apache-2.0 m.fl.", "Appens kärna och fönster"],
+      ["TipTap, DOMPurify, marked m.fl.", "MIT, Apache-2.0, MPL-2.0", "Editorn"],
+    ];
+    const notices = h("pre", { class: "notices", hidden: true });
+    const showAll = h("button", {}, "Visa alla licenstexter …") as HTMLButtonElement;
+    showAll.addEventListener("click", async () => {
+      showAll.disabled = true;
+      try {
+        notices.textContent = await invokeRoute<string>({ cmd: "third_party_notices", args: {} });
+        notices.hidden = false;
+        showAll.hidden = true;
+        notices.focus();
+      } catch (e) {
+        toast(errorText(e));
+        showAll.disabled = false;
+      }
+    });
+    void showModal((close) =>
+      h(
+        "div",
+        { class: "about" },
+        h("h2", {}, "Word Work"),
+        h("p", { class: "meta" }, `Version ${__APP_VERSION__}`),
+        h("p", {}, "En lugn, distraktionsfri ordbehandlare för kulturjournalister och författare."),
+        h(
+          "p",
+          { class: "meta" },
+          "© 2026 Mikke Schirén. Fri programvara under ",
+          h("a", { href: "https://www.apache.org/licenses/LICENSE-2.0" }, "Apache License 2.0"),
+          ".",
+        ),
+        h("h3", {}, "Byggd med"),
+        h(
+          "table",
+          { class: "about-parts" },
+          h(
+            "tbody",
+            {},
+            ...parts.map(([name, license, what, url]) =>
+              h(
+                "tr",
+                {},
+                h("td", {}, url ? h("a", { href: url }, name) : name, h("div", { class: "meta" }, what)),
+                h("td", { class: "meta" }, license),
+              ),
+            ),
+          ),
+        ),
+        notices,
+        h("div", { class: "actions" }, showAll, h("button", { class: "primary", onclick: close }, "Stäng")),
+      ),
+    );
+  }
+
   // ---------------- drawers & panels ----------------
   /** Button that opens/closes a drawer, with aria-expanded/aria-controls. */
   private panelButton(drawer: HTMLElement, key: string, iconName: IconName, label: string, shortcut = ""): HTMLButtonElement {
@@ -893,8 +1059,19 @@ class App {
       else if (drawer === this.metaDrawer) ready = this.renderMeta();
       else ready = this.renderHistory();
       // Move focus into the panel so it can be used with the keyboard.
-      if (drawer !== this.aiDrawer) {
-        void Promise.resolve(ready).then(() => {
+      // The drawer is focusable only once its visibility transition has started,
+      // so focus after the next frames, not right away.
+      const shown = Promise.resolve(ready).then(
+        () => new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r()))),
+      );
+      if (drawer === this.docsDrawer && this.focusDocSearch) {
+        this.focusDocSearch = false;
+        void shown.then(() => {
+          this.docSearch.focus();
+          this.docSearch.select();
+        });
+      } else if (drawer !== this.aiDrawer) {
+        void shown.then(() => {
           const target =
             drawer.querySelector<HTMLElement>(".list li.active .item, .list .item, .freq button") ??
             drawer.querySelector<HTMLElement>("button, input, select, textarea");
@@ -922,8 +1099,163 @@ class App {
     this.syncExpanded();
   }
 
+  // ---- search across all documents (in the document list) ----
+  private docSearch = h("input", {
+    type: "search",
+    class: "text doc-search",
+    placeholder: "Sök i alla dokument",
+    "aria-label": "Sök i alla dokument",
+    spellcheck: "false",
+  }) as HTMLInputElement;
+  private docSearchCase = h("button", { class: "toggle", "aria-pressed": "false", title: "Skilj på stora och små bokstäver" }, "Aa");
+  private docSearchWord = h("button", { class: "toggle", "aria-pressed": "false", title: "Bara hela ord" }, "Hela ord");
+  private docSearchTimer: number | undefined;
+  private docSearchSeq = 0;
+  private focusDocSearch = false;
+  /** Holds either the document list or the search results. */
+  private docsBody = h("div", { class: "docs-body" });
+
+  private bindDocSearch(): void {
+    const rerun = () => {
+      window.clearTimeout(this.docSearchTimer);
+      this.docSearchTimer = window.setTimeout(() => void this.fillDocsBody(), 200);
+    };
+    this.docSearch.addEventListener("input", rerun);
+    this.docSearch.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && this.docSearch.value) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.docSearch.value = "";
+        rerun();
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        this.docsBody.querySelector<HTMLElement>(".item")?.focus();
+      }
+    });
+    for (const btn of [this.docSearchCase, this.docSearchWord]) {
+      btn.addEventListener("click", () => {
+        btn.setAttribute("aria-pressed", String(btn.getAttribute("aria-pressed") !== "true"));
+        void this.fillDocsBody();
+      });
+    }
+  }
+
+  /** ⇧⌘F: the document list with the search field focused. */
+  private searchAllDocuments(): void {
+    // Selected text in the editor (one line) becomes the query.
+    const sel = this.editor.getSelectedForSearch();
+    const fill = !!sel && !sel.includes("\n") && sel.length <= 120 && sel !== this.docSearch.value;
+    if (fill) this.docSearch.value = sel;
+    if (!this.docsDrawer.classList.contains("open")) {
+      this.focusDocSearch = true; // toggleDrawer focuses the field when the list is ready
+      this.toggleDrawer(this.docsDrawer);
+      return;
+    }
+    if (fill) void this.fillDocsBody();
+    this.docSearch.focus();
+    this.docSearch.select();
+  }
+
   private async renderDocs(): Promise<void> {
     await this.flush();
+    const typing = document.activeElement === this.docSearch;
+    this.docsDrawer.replaceChildren(
+      h(
+        "div",
+        { class: "drawer-head" },
+        this.closeButton(),
+        h("h2", {}, "Dokument"),
+        h("button", { onclick: () => this.chooseImport(), title: "Importera DOCX, ODT, RTF, HTML, Markdown eller text" }, "Importera …"),
+        h("button", { onclick: () => this.newDocument() }, "Nytt"),
+      ),
+      h("div", { class: "doc-search-row" }, this.docSearch, this.docSearchCase, this.docSearchWord),
+      this.docsBody,
+      h("p", { class: "meta hint-drop" }, "Du kan också släppa filer var som helst i fönstret för att importera dem."),
+      h(
+        "div",
+        { class: "drawer-foot" },
+        h("button", { class: "link", onclick: () => this.showTrash() }, "Papperskorgen …"),
+        h(
+          "button",
+          {
+            class: "link",
+            title: "Alla dokument, versioner, AI-samtal, papperskorgen och inställningar i en zip-fil",
+            onclick: async () => {
+              await this.flush();
+              await this.download("/api/backup", "Sparade");
+            },
+          },
+          "Spara allt (zip) …",
+        ),
+      ),
+    );
+    if (typing) this.docSearch.focus();
+    await this.fillDocsBody();
+  }
+
+  /** The document list, or the search results when there is a query. */
+  private async fillDocsBody(): Promise<void> {
+    const seq = ++this.docSearchSeq;
+    const query = this.docSearch.value.trim();
+    if (!query) {
+      const list = await this.docList();
+      if (seq === this.docSearchSeq) this.docsBody.replaceChildren(list);
+      return;
+    }
+    const caseSensitive = this.docSearchCase.getAttribute("aria-pressed") === "true";
+    const wholeWord = this.docSearchWord.getAttribute("aria-pressed") === "true";
+    let hits: SearchHit[];
+    try {
+      hits = await api.search(query, caseSensitive, wholeWord);
+    } catch (e) {
+      if (seq === this.docSearchSeq) this.docsBody.replaceChildren(h("p", { class: "meta" }, errorText(e)));
+      return;
+    }
+    if (seq !== this.docSearchSeq) return; // a newer search is on its way
+    const total = hits.reduce((n, x) => n + x.count, 0);
+    const list = h("ul", { class: "list search-results" });
+    for (const hit of hits) {
+      const active = hit.name === this.current?.name;
+      const what = hit.count
+        ? `${hit.count.toLocaleString("sv-SE")} ${hit.count === 1 ? "träff" : "träffar"}`
+        : "namnet matchar";
+      list.append(
+        h(
+          "li",
+          { class: active ? "active" : "" },
+          h(
+            "button",
+            {
+              class: "item",
+              onclick: async () => {
+                await this.open(hit.name);
+                this.closeDrawers();
+                if (hit.count) this.searchBar.openWith(query, caseSensitive, wholeWord);
+                else this.editor.focus();
+              },
+            },
+            h("span", { class: "name" }, hit.name),
+            h("span", { class: "meta" }, `${what} · ${formatDate(new Date(hit.modified * 1000))}`),
+            ...hit.snippets.map((sn) =>
+              h("span", { class: "snippet" }, sn.before, h("mark", {}, sn.text), sn.after),
+            ),
+          ),
+        ),
+      );
+    }
+    this.docsBody.replaceChildren(
+      h(
+        "p",
+        { class: "meta search-summary", "aria-live": "polite" },
+        hits.length
+          ? `${total.toLocaleString("sv-SE")} ${total === 1 ? "träff" : "träffar"} i ${hits.length} ${hits.length === 1 ? "dokument" : "dokument"}`
+          : `Inga träffar för ”${query}”`,
+      ),
+      list,
+    );
+  }
+
+  private async docList(): Promise<HTMLElement> {
     const docs = await api.list();
     const list = h("ul", { class: "list" });
     for (const d of docs) {
@@ -961,35 +1293,7 @@ class App {
         ),
       );
     }
-    this.docsDrawer.replaceChildren(
-      h(
-        "div",
-        { class: "drawer-head" },
-        this.closeButton(),
-        h("h2", {}, "Dokument"),
-        h("button", { onclick: () => this.chooseImport(), title: "Importera DOCX, ODT, RTF, HTML, Markdown eller text" }, "Importera …"),
-        h("button", { onclick: () => this.newDocument() }, "Nytt"),
-      ),
-      list,
-      h("p", { class: "meta hint-drop" }, "Du kan också släppa filer var som helst i fönstret för att importera dem."),
-      h(
-        "div",
-        { class: "drawer-foot" },
-        h("button", { class: "link", onclick: () => this.showTrash() }, "Papperskorgen …"),
-        h(
-          "button",
-          {
-            class: "link",
-            title: "Alla dokument, versioner, AI-samtal, papperskorgen och inställningar i en zip-fil",
-            onclick: async () => {
-              await this.flush();
-              await this.download("/api/backup", "Sparade");
-            },
-          },
-          "Spara allt (zip) …",
-        ),
-      ),
-    );
+    return list;
   }
 
   private async renderHistory(): Promise<void> {
@@ -1818,7 +2122,7 @@ class App {
   }
 
   // ---------------- import & export ----------------
-  private async showExport(): Promise<void> {
+  private async showExport(preselect?: string): Promise<void> {
     if (!this.current) return;
     this.closeDrawers();
     await this.flush();
@@ -1840,6 +2144,9 @@ class App {
     let format = remembered("ww.exportFormat", "docx");
     let template = remembered("ww.exportTemplate", "standard");
     let chapters = remembered("ww.exportChapters", "0");
+    // PDF goes through the system print dialog, with the same templates (not a Pandoc format).
+    opts.formats.push({ key: "pdf", label: "PDF eller utskrift", templates: true, pages: true });
+    if (preselect) format = preselect;
     if (!opts.formats.some((f) => f.key === format)) format = opts.formats[0].key;
 
     await showModal((close) => {
@@ -1868,8 +2175,11 @@ class App {
         h("span", {}, "Ny sida före kapitel"),
         chapSelect,
       );
+      const saveBtn = h("button", { class: "primary" }, "Spara …") as HTMLButtonElement;
       const updateTpl = () => {
         const f = opts.formats.find((x) => x.key === format);
+        saveBtn.textContent = format === "pdf" ? "Skriv ut …" : "Spara …";
+        pdfHint.hidden = format !== "pdf";
         tplSelect.disabled = !f?.templates;
         tplRow.classList.toggle("disabled", !f?.templates);
         chapSelect.disabled = !f?.pages;
@@ -1896,6 +2206,30 @@ class App {
           ),
         ),
       );
+      const pdfHint = h(
+        "p",
+        { class: "meta", hidden: true },
+        isMac
+          ? "PDF: välj PDF ▾ → Spara som PDF i utskriftsrutan."
+          : "PDF: välj skrivaren Microsoft Print to PDF (Windows) eller Skriv ut till fil (Linux).",
+      );
+      saveBtn.addEventListener("click", () => {
+        try {
+          localStorage.setItem("ww.exportFormat", format);
+          localStorage.setItem("ww.exportTemplate", template);
+          localStorage.setItem("ww.exportChapters", chapters);
+        } catch {
+          /* ignore */
+        }
+        close();
+        if (format === "pdf") {
+          void this.printDocument(template, Number(chapters));
+          return;
+        }
+        const tpl = opts.formats.find((x) => x.key === format)?.templates ? template : "standard";
+        const pages = opts.formats.find((x) => x.key === format)?.pages;
+        void this.download(api.exportUrl(name, format, tpl, pages ? Number(chapters) : 0));
+      });
       updateTpl();
       return h(
         "div",
@@ -1904,7 +2238,8 @@ class App {
         radios,
         tplRow,
         chapRow,
-        h("p", { class: "meta" }, "Mallen gäller Word och OpenDocument. Titel och författare i frontmatter (title, author) följer med som dokumentegenskaper."),
+        pdfHint,
+        h("p", { class: "meta" }, "Mallen gäller Word, OpenDocument och PDF/utskrift. Titel och författare i frontmatter (title, author) följer med som dokumentegenskaper."),
         h(
           "div",
           { class: "publish-copy" },
@@ -1948,29 +2283,54 @@ class App {
           "div",
           { class: "actions" },
           h("button", { onclick: close }, "Avbryt"),
-          h(
-            "button",
-            {
-              class: "primary",
-              onclick: () => {
-                try {
-                  localStorage.setItem("ww.exportFormat", format);
-                  localStorage.setItem("ww.exportTemplate", template);
-                  localStorage.setItem("ww.exportChapters", chapters);
-                } catch {
-                  /* ignore */
-                }
-                const tpl = opts.formats.find((x) => x.key === format)?.templates ? template : "standard";
-                const pages = opts.formats.find((x) => x.key === format)?.pages;
-                void this.download(api.exportUrl(name, format, tpl, pages ? Number(chapters) : 0));
-                close();
-              },
-            },
-            "Spara …",
-          ),
+          saveBtn,
         ),
       );
     });
+  }
+
+  // ---- print / PDF ----
+  /** Holds the document laid out for printing; only visible in print (see style.css). */
+  private printRoot = h("div", { id: "print-root", "aria-hidden": "true" });
+  private printing = false;
+
+  /**
+   * Prints the document with a template's layout. The system print dialog also
+   * saves as PDF (macOS: PDF ▾ → Spara som PDF; Windows: Microsoft Print to
+   * PDF; Linux: Skriv ut till fil).
+   */
+  private async printDocument(template?: string, chapters?: number): Promise<void> {
+    if (!this.current || this.printing) return; // ⌘P can arrive from both the menu and the keyboard
+    this.printing = true;
+    try {
+      await this.flush();
+      const remembered = (key: string, fallback: string) => {
+        try {
+          return localStorage.getItem(key) ?? fallback;
+        } catch {
+          return fallback;
+        }
+      };
+      template ??= remembered("ww.exportTemplate", "standard");
+      chapters ??= Number(remembered("ww.exportChapters", "0"));
+      const html = await invokeRoute<string>({ cmd: "print_html", args: { name: this.current.name, chapters } });
+      const body = new DOMParser().parseFromString(html, "text/html").body.innerHTML;
+      // The text may contain raw HTML: sanitize, and leave out styles (the template's own apply).
+      this.printRoot.innerHTML = DOMPurify.sanitize(body, { FORBID_TAGS: ["style", "link", "img", "iframe", "form"] });
+      this.printRoot.className = `tpl-${template}`;
+      if (!this.printRoot.isConnected) document.body.append(this.printRoot);
+      // Windows prints with the WebView's own dialog, which takes the margins from CSS.
+      if (/Win/.test(navigator.platform) && !document.getElementById("print-page")) {
+        document.head.append(h("style", { id: "print-page" }, "@page { margin: 2.5cm; }"));
+      }
+      await document.fonts.ready;
+      await invokeRoute({ cmd: "print_window", args: {} });
+    } catch (e) {
+      toast(`Kunde inte skriva ut: ${errorText(e)}`);
+    } finally {
+      // The dialog may still be open (macOS shows it as a sheet), so the layout stays until the next print.
+      window.setTimeout(() => (this.printing = false), 1000);
+    }
   }
 
   private publishWithTitle(): boolean {
@@ -2350,7 +2710,11 @@ class App {
       ),
       this.aiSection(),
       this.dataDirSection(),
-      h("p", { class: "hint version" }, `Word Work ${__APP_VERSION__}`),
+      h(
+        "p",
+        { class: "hint version" },
+        h("button", { class: "link", onclick: () => this.showAbout() }, `Word Work ${__APP_VERSION__} – om appen och licenser`),
+      ),
     );
   }
 
@@ -2476,6 +2840,8 @@ class App {
    */
   private bindAppShell(): void {
     void listen<string>("ww://menu", (e) => this.menuAction(e.payload));
+    void listen<string[]>("ww://files-changed", (e) => void this.onFilesChanged(e.payload));
+    void listen("ww://open-files", () => void this.onOpenFiles());
 
     // Closing the window or quitting: save first. Rust closes anyway after
     // 5 s, and unsaved text is also kept locally (offered at next start).
@@ -2520,9 +2886,11 @@ class App {
       settings: () => this.toggleSettings(),
       new: () => this.newDocument(),
       documents: () => this.toggleDrawer(this.docsDrawer),
+      searchall: () => this.searchAllDocuments(),
       import: () => this.chooseImport(),
       export: () => this.showExport(),
       publish: () => this.copyForPublishing(),
+      print: () => this.printDocument(),
       save: () => this.save(true),
       history: () => this.toggleDrawer(this.historyDrawer),
       trash: () => this.showTrash(),
@@ -2540,6 +2908,7 @@ class App {
       ai: () => (this.aiButton.hidden ? toast(this.ai.reason || "AI-stödet är inte tillgängligt") : this.toggleDrawer(this.aiDrawer)),
       fullscreen: () => this.toggleFullscreen(),
       shortcuts: () => this.showShortcuts(),
+      about: () => this.showAbout(),
     };
     const run = actions[id];
     if (!run) return;
@@ -2566,9 +2935,15 @@ class App {
       } else if (e.key === "F1") {
         e.preventDefault();
         this.showShortcuts();
+      } else if (isMod(e) && !e.shiftKey && e.key.toLowerCase() === "p") {
+        e.preventDefault(); // not the WebView's own print of the whole window
+        void this.printDocument();
       } else if (isMod(e) && e.key.toLowerCase() === "e") {
         e.preventDefault();
         void this.showExport();
+      } else if (isMod(e) && e.shiftKey && e.code === "KeyF") {
+        e.preventDefault();
+        this.searchAllDocuments();
       } else if (isMod(e) && e.code === "KeyF") {
         e.preventDefault();
         this.searchBar.open(e.altKey);

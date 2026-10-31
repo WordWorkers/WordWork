@@ -155,6 +155,10 @@ pub struct Storage {
     root: PathBuf,
     snapshot_minutes: f64,
     lock: ReentrantMutex<()>,
+    /// Word counts for the document list, by name, valid while the file's
+    /// modification time and size are unchanged – so listing doesn't read
+    /// every document every time.
+    words: parking_lot::Mutex<std::collections::HashMap<String, (std::time::SystemTime, u64, usize)>>,
 }
 
 impl Storage {
@@ -164,7 +168,7 @@ impl Storage {
         let _ = fs::create_dir_all(&root);
         // dunce: plain `C:\…` paths on Windows instead of `\\?\C:\…` (shown in Inställningar).
         let root = dunce::canonicalize(&root).unwrap_or(root);
-        Self { root, snapshot_minutes, lock: ReentrantMutex::new(()) }
+        Self { root, snapshot_minutes, lock: ReentrantMutex::new(()), words: Default::default() }
     }
 
     pub fn root(&self) -> &Path {
@@ -217,6 +221,8 @@ impl Storage {
     pub fn list(&self) -> Result<Vec<DocumentInfo>> {
         let mut docs = Vec::new();
         let entries = fs::read_dir(&self.root).map_err(|e| io_err(&self.root, e))?;
+        let mut cache = self.words.lock();
+        let mut seen = std::collections::HashSet::new();
         for entry in entries.flatten() {
             let file_name = entry.file_name().to_string_lossy().into_owned();
             let Some(stem) = file_name.strip_suffix(EXT) else { continue };
@@ -224,14 +230,25 @@ impl Storage {
             if file_name.starts_with('.') || !path.is_file() {
                 continue;
             }
-            let text = read_text(&path)?;
+            let meta = fs::metadata(&path).map_err(|e| io_err(&path, e))?;
+            let modified = meta.modified().map_err(|e| io_err(&path, e))?;
+            let words = match cache.get(stem) {
+                Some(&(m, size, words)) if m == modified && size == meta.len() => words,
+                _ => {
+                    let words = count_words(&read_text(&path)?);
+                    cache.insert(stem.to_string(), (modified, meta.len(), words));
+                    words
+                }
+            };
+            seen.insert(stem.to_string());
             docs.push(DocumentInfo {
                 id: stem.to_string(),
                 name: stem.to_string(),
-                modified: mtime(&path)?,
-                words: count_words(&text),
+                modified: modified.duration_since(UNIX_EPOCH).map(|d| d.as_secs_f64()).unwrap_or(0.0),
+                words,
             });
         }
+        cache.retain(|name, _| seen.contains(name));
         docs.sort_by(|a, b| b.modified.total_cmp(&a.modified));
         Ok(docs)
     }
@@ -404,6 +421,19 @@ impl Storage {
         };
         atomic_write(&self.hist_dir(name)?.join(format!("{vid}{EXT}")), &content)?;
         versions.push(v.clone());
+        let dir = self.hist_dir(name)?;
+        let old = thin_out(&versions, t);
+        if !old.is_empty() {
+            for i in &old {
+                // A file that is already gone doesn't matter.
+                let _ = fs::remove_file(dir.join(format!("{}{EXT}", versions[*i].id)));
+            }
+            let mut i = 0;
+            versions.retain(|_| {
+                i += 1;
+                !old.contains(&(i - 1))
+            });
+        }
         self.save_index(name, &versions)?;
         Ok(Some(v))
     }
@@ -435,6 +465,44 @@ impl Storage {
         self.snapshot(name, "restore", "")?;
         mtime(&path)
     }
+}
+
+/// Automatic versions are kept like this (everything else – ⌘S, named
+/// versions, "Före återställning" and restores – is always kept):
+/// all from the last [`KEEP_ALL_DAYS`] days, then the last one of each day,
+/// and after [`KEEP_DAILY_DAYS`] days the last one of each week. Without this
+/// a document written on for a year gets thousands of snapshots.
+pub const KEEP_ALL_DAYS: i64 = 7;
+pub const KEEP_DAILY_DAYS: i64 = 90;
+
+/// Indexes (ascending) of the automatic versions to remove. `versions` is
+/// oldest first, as in index.json.
+pub(crate) fn thin_out(versions: &[Version], now: DateTime<Utc>) -> Vec<usize> {
+    use chrono::Datelike;
+    let mut seen = std::collections::HashSet::new();
+    let mut remove = Vec::new();
+    // Newest first, so the last version of each day/week is the one kept.
+    for (i, v) in versions.iter().enumerate().rev() {
+        if v.kind != "auto" || !v.label.is_empty() {
+            continue;
+        }
+        let Ok(created) = DateTime::parse_from_rfc3339(&v.created) else { continue };
+        let created = created.with_timezone(&Utc);
+        let age_days = (now - created).num_days();
+        let bucket = if age_days < KEEP_ALL_DAYS {
+            continue;
+        } else if age_days < KEEP_DAILY_DAYS {
+            format!("d{}", created.date_naive())
+        } else {
+            let w = created.iso_week();
+            format!("w{}-{}", w.year(), w.week())
+        };
+        if !seen.insert(bucket) {
+            remove.push(i);
+        }
+    }
+    remove.reverse();
+    remove
 }
 
 /// Same file on disk (e.g. two spellings on a case-insensitive file system)?
@@ -491,6 +559,44 @@ mod tests {
             "[\n {\n  \"id\": \"a\",\n  \"created\": \"c\",\n  \"kind\": \"auto\",\n  \"label\": \"Före\",\n  \"words\": 3\n }\n]"
         );
         assert_eq!(to_json(&Vec::<Version>::new()), "[]");
+    }
+
+    #[test]
+    fn list_counts_words_and_notices_changes() {
+        let dir = tempfile::tempdir().unwrap();
+        let s = Storage::new(dir.path(), 5.0);
+        s.create(Some("A"), "ett två tre\n").unwrap();
+        assert_eq!(s.list().unwrap()[0].words, 3);
+        // Changed outside the app (other size): counted again.
+        fs::write(dir.path().join("A.md"), "ett två tre fyra fem\n").unwrap();
+        assert_eq!(s.list().unwrap()[0].words, 5);
+        fs::remove_file(dir.path().join("A.md")).unwrap();
+        assert!(s.list().unwrap().is_empty());
+        assert!(s.words.lock().is_empty());
+    }
+
+    #[test]
+    fn thinning_keeps_recent_daily_and_weekly() {
+        let now: DateTime<Utc> = "2026-10-31T12:00:00Z".parse().unwrap();
+        let v = |created: &str, kind: &str, label: &str| Version {
+            id: created.into(),
+            created: created.into(),
+            kind: kind.into(),
+            label: label.into(),
+            words: 0,
+        };
+        let versions = vec![
+            v("2026-01-05T09:00:00+00:00", "auto", ""), // 0: week 2 – removed (older in the same week)
+            v("2026-01-06T09:00:00+00:00", "auto", ""), // 1: week 2 – kept (last of the week)
+            v("2026-01-06T10:00:00+00:00", "named", "Första utkastet"), // 2: kept
+            v("2026-10-01T09:00:00+00:00", "auto", ""), // 3: same day as 4 – removed
+            v("2026-10-01T17:00:00+00:00", "auto", ""), // 4: last of the day – kept
+            v("2026-10-01T18:00:00+00:00", "manual", ""), // 5: ⌘S – kept
+            v("2026-10-02T09:00:00+00:00", "auto", "Före återställning"), // 6: kept
+            v("2026-10-30T09:00:00+00:00", "auto", ""), // 7: this week – kept
+            v("2026-10-30T09:05:00+00:00", "auto", ""), // 8: kept
+        ];
+        assert_eq!(thin_out(&versions, now), [0, 3]);
     }
 
     #[test]

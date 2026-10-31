@@ -215,6 +215,36 @@ async fn chat_error_from_ollama_is_streamed() {
     assert!(message.contains("not found") && message.starts_with("Ollama svarade med fel"));
 }
 
+/// A model that crashes on the server with thinking on: the error suggests turning it off.
+#[tokio::test]
+async fn server_error_with_thinking_suggests_turning_it_off() {
+    let server = MockServer::start().await;
+    Mock::given(path("/api/show"))
+        .respond_with(ResponseTemplate::new(200).set_body_json(json!({"capabilities": ["completion", "thinking"]})))
+        .mount(&server)
+        .await;
+    Mock::given(path("/api/tags"))
+        .respond_with(ResponseTemplate::new(200).set_body_json(json!({"models": tags()})))
+        .mount(&server)
+        .await;
+    Mock::given(method("POST"))
+        .and(path("/api/chat"))
+        .respond_with(ResponseTemplate::new(500).set_body_json(json!({
+            "error": "an error was encountered while running the model: CUDA error: an illegal memory access was encountered"
+        })))
+        .mount(&server)
+        .await;
+    let (_d, s) = storage();
+    let message = |r: &Run| match r.events.last() {
+        Some(AIEvent::Error { message }) => message.clone(),
+        other => panic!("{other:?} {:?}", r.result),
+    };
+    let r = run(&ollama(&server.uri()), &s, json!({"prompt": "Hej", "think": true})).await;
+    assert!(message(&r).contains("CUDA error") && message(&r).contains("Tänk efter först"), "{}", message(&r));
+    let r = run(&ollama(&server.uri()), &s, json!({"prompt": "Hej", "think": false})).await;
+    assert!(!message(&r).contains("Tänk efter först"));
+}
+
 #[tokio::test]
 async fn disabled() {
     assert!(AiClient::new(AiConfig { url: "  ".into(), ..Default::default() }).is_none());

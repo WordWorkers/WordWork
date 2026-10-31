@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<defs><clipPath id="sq"><rect x="100" y="100" width="824" height="824" rx="185"/></clipPath><linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#eaf6ff"/><stop offset=".38" stop-color="#7fb8e6"/><stop offset=".5" stop-color="#2d4f7a"/>
+<stop offset=".53" stop-color="#e9b98a"/><stop offset=".75" stop-color="#9a5a34"/><stop offset="1" stop-color="#f6dcb8"/></linearGradient><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b2a6b"/>
+<stop offset=".55" stop-color="#c8507a"/><stop offset="1" stop-color="#f5a35a"/></linearGradient></defs>
+<g clip-path="url(#sq)"><rect x="100" y="100" width="824" height="824" fill="#3b2a6b"/><rect x="100" y="100" width="824" height="824" fill="url(#sky)"/><rect x="100" y="760" width="824" height="200" fill="#5a2a48"/><g transform="translate(512 540) scale(1.0) translate(-371 -170)"><path d="M-20 0 L110 0 L100 22 L132 170 L158 60 L222 60 L248 170 L280 22 L270 0 L400 0 L376 22 L300 310 L216 310 L190 206 L164 310 L80 310 L4 22 Z" fill="#dcecf8" stroke="#1d1a17" stroke-width="30" stroke-linejoin="miter" transform="translate(0 0) rotate(-4 190 155)"/><path d="M-20 0 L110 0 L100 22 L132 170 L158 60 L222 60 L248 170 L280 22 L270 0 L400 0 L376 22 L300 310 L216 310 L190 206 L164 310 L80 310 L4 22 Z" fill="#dcecf8" stroke="#1d1a17" stroke-width="30" stroke-linejoin="miter" transform="translate(352 20) rotate(4 190 155)"/></g></g>
+<rect x="100" y="100" width="824" height="824" rx="185" fill="none" stroke="#1d1a17" stroke-opacity=".25" stroke-width="4"/>
+</svg>

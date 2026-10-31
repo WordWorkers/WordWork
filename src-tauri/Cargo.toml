@@ -23,15 +23,25 @@ tauri-plugin-clipboard-manager = "2.5"
 tauri-plugin-window-state = "2.5"
 tauri-plugin-single-instance = "2.5"
 parking_lot = "0.13"
+dunce = "1"
 url = "2"
 serde.workspace = true
 serde_json.workspace = true
 tokio-util.workspace = true
 log.workspace = true
+notify-debouncer-mini = "0.7.0"
 
 # API key for the AI server, in the platform's own store.
+[dev-dependencies]
+tempfile = "3"
+
 [target.'cfg(target_os = "macos")'.dependencies]
 keyring = { version = "3", features = ["apple-native"] }
+# Native print dialog with A4 and margins (print.rs) – the versions wry uses.
+objc2 = "0.6"
+objc2-foundation = { version = "0.3", default-features = false, features = ["std", "NSGeometry", "objc2-core-foundation"] }
+objc2-app-kit = { version = "0.3", default-features = false, features = ["std", "objc2-core-foundation", "NSPrintInfo", "NSPrintOperation", "NSResponder", "NSView", "NSWindow"] }
+objc2-web-kit = { version = "0.3", default-features = false, features = ["std", "objc2-app-kit", "WKWebView"] }
 
 [target.'cfg(target_os = "windows")'.dependencies]
 keyring = { version = "3", features = ["windows-native"] }
@@ -40,3 +50,6 @@ keyring = { version = "3", features = ["windows-native"] }
 # cached in the kernel keyring.
 [target.'cfg(target_os = "linux")'.dependencies]
 keyring = { version = "3", features = ["linux-native-sync-persistent", "crypto-rust"] }
+# Native print dialog with A4 and margins (print.rs) – the versions wry uses.
+gtk = "0.18"
+webkit2gtk = "2.0"

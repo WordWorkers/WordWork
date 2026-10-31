@@ -329,7 +329,38 @@ body.focus-paragraph .prose > :not(.is-current) {
   opacity: 0.32;
 }
 
+/* Markdown view: the spelling underlines are drawn by a transparent copy of
+ * the text behind the text field (a textarea can't style words). */
+.source-box {
+  position: relative;
+}
+
+.source-box[hidden] {
+  display: none;
+}
+
+.source-marks {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  color: transparent;
+  font: inherit;
+  line-height: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.source-marks .misspelled {
+  text-decoration: underline wavy #c8553d;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.18em;
+  text-decoration-skip-ink: none;
+}
+
 .source {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   min-height: 50vh;
@@ -442,6 +473,56 @@ h2 {
 .list .empty {
   padding: 10px;
   color: var(--muted);
+}
+
+/* Search across all documents (top of the document list). */
+.doc-search-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 10px;
+  font-size: 13px;
+}
+
+.doc-search-row input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.doc-search-row .toggle {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.doc-search-row .toggle[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--text);
+}
+
+.search-summary {
+  margin: 0 0 6px;
+  padding: 0 10px;
+}
+
+.search-results .snippet {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.search-results mark {
+  background: color-mix(in srgb, #e3b341 38%, transparent);
+  color: var(--text);
+  border-radius: 2px;
 }
 
 /* ---------- Settings (popover) ---------- */
@@ -1956,4 +2037,197 @@ dialog.modal:has(.prompt-text) {
   background: var(--bg);
   color: var(--text);
   font: inherit;
+}
+
+/* "Om Word Work" */
+.about {
+  max-width: 34rem;
+}
+
+.about h3 {
+  font-size: 13px;
+  margin: 18px 0 6px;
+}
+
+.about-parts {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.about-parts td {
+  padding: 6px 0;
+  vertical-align: top;
+  border-top: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+}
+
+.about-parts td + td {
+  padding-left: 12px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.about .notices {
+  max-height: 40vh;
+  overflow: auto;
+  margin: 12px 0 0;
+  padding: 10px;
+  font-size: 10.5px;
+  line-height: 1.4;
+  white-space: pre; /* the notices are laid out for 78 columns */
+  background: color-mix(in srgb, var(--text) 5%, transparent);
+  border-radius: 6px;
+}
+
+/* ---------------------------------------------------------------- print / PDF
+ * The document is laid out in #print-root (filled by printDocument) and only
+ * that is printed. The three templates match the Word/OpenDocument templates.
+ */
+#print-root {
+  display: none;
+}
+
+/* Margins: set natively on macOS and Linux (WebKit ignores @page margins);
+ * Windows adds them in printDocument. */
+@page {
+  size: A4;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  body > *:not(#print-root) {
+    display: none !important;
+  }
+
+  #print-root {
+    display: block;
+    color: #000;
+    font-family: Cambria, "Literata Variable", Georgia, serif;
+    font-size: 12pt;
+    line-height: 1.3;
+    orphans: 2;
+    widows: 2;
+  }
+
+  #print-root h1,
+  #print-root h2,
+  #print-root h3,
+  #print-root h4 {
+    font-family: Calibri, "Source Sans 3 Variable", Arial, sans-serif;
+    line-height: 1.2;
+    margin: 1.2em 0 0.4em;
+    break-after: avoid;
+  }
+
+  #print-root h1 {
+    font-size: 18pt;
+  }
+
+  #print-root h2 {
+    font-size: 14pt;
+  }
+
+  #print-root h3 {
+    font-size: 12pt;
+  }
+
+  #print-root p {
+    margin: 0 0 0.5em;
+  }
+
+  #print-root blockquote {
+    margin: 0.8em 1.5em;
+    font-style: italic;
+  }
+
+  #print-root a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  #print-root pre,
+  #print-root code {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10pt;
+  }
+
+  #print-root pre {
+    white-space: pre-wrap;
+  }
+
+  /* Title, author and date from the frontmatter (Pandoc's title block). */
+  #print-root #title-block-header {
+    margin-bottom: 2em;
+  }
+
+  #print-root #title-block-header .title {
+    font-size: 22pt;
+    margin: 0 0 0.3em;
+  }
+
+  #print-root #title-block-header .author,
+  #print-root #title-block-header .date {
+    margin: 0;
+    color: #444;
+  }
+
+  #print-root .page-break {
+    break-after: page;
+  }
+
+  #print-root .footnotes {
+    font-size: 10pt;
+    margin-top: 2em;
+  }
+
+  #print-root .footnotes hr {
+    width: 30%;
+    margin: 0 0 0.8em;
+    border: 0;
+    border-top: 1px solid #000;
+  }
+
+  #print-root .footnote-ref,
+  #print-root .footnote-back {
+    text-decoration: none;
+  }
+
+  /* Manus – Times 12 pt, 1.5 line spacing, indented paragraphs. */
+  #print-root.tpl-manus {
+    font-family: "Times New Roman", Times, "Liberation Serif", serif;
+    line-height: 1.5;
+  }
+
+  #print-root.tpl-manus h1,
+  #print-root.tpl-manus h2,
+  #print-root.tpl-manus h3,
+  #print-root.tpl-manus h4 {
+    font-family: inherit;
+  }
+
+  #print-root.tpl-manus p {
+    margin: 0;
+  }
+
+  #print-root.tpl-manus p + p {
+    text-indent: 1.25cm;
+  }
+
+  /* Artikel – Georgia 11 pt, space between paragraphs. */
+  #print-root.tpl-artikel {
+    font-family: Georgia, "Literata Variable", serif;
+    font-size: 11pt;
+    line-height: 1.45;
+  }
+
+  #print-root.tpl-artikel p {
+    margin: 0 0 0.9em;
+  }
 }

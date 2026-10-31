@@ -69,6 +69,11 @@ jobs:
       - name: Pandoc sidecar (pinned 3.9, checksum-verified)
         run: scripts/fetch-pandoc.sh ${{ matrix.target }}
 
+      - name: Licence notices (all bundled components, see "Om Word Work")
+        run: |
+          cargo install --locked cargo-about --features cli
+          scripts/third-party-notices.sh
+
       - name: Apple signing (only if the secrets exist)
         if: runner.os == 'macOS'
         env:

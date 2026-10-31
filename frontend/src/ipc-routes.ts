@@ -29,6 +29,9 @@ const r = (cmd: string, args: Record<string, unknown> = {}): IpcRoute => ({ cmd,
 // ---------- documents, history, chats, trash, settings ----------
 route("GET", "/health", () => r("health"));
 route("GET", "/documents", () => r("doc_list"));
+route("GET", "/search", (_, __, q) =>
+  r("doc_search", { query: q.get("q") ?? "", case_sensitive: q.get("case") === "1", whole_word: q.get("word") === "1" }),
+);
 route("POST", "/documents", (_, b) => r("doc_create", { name: b?.name ?? null, content: b?.content ?? "" }));
 route("GET", "/documents/:name", ([name]) => r("doc_get", { name }));
 route("PUT", "/documents/:name", ([name], b) =>

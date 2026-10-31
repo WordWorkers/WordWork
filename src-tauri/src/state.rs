@@ -42,6 +42,8 @@ pub struct AppState {
     pub ai: RwLock<Option<AiClient>>,
     /// Running AI requests by id, so the UI can cancel them ("Stoppa").
     pub ai_running: Mutex<HashMap<String, CancellationToken>>,
+    /// Notices documents changed outside the app.
+    pub watcher: crate::watch::Watcher,
 }
 
 /// `<app config dir>/config.json` – app-level settings that can't live in the
@@ -88,6 +90,7 @@ impl AppState {
             pandoc: Pandoc::new(pandoc_path(), resources),
             ai,
             ai_running: Mutex::new(HashMap::new()),
+            watcher: Default::default(),
         })
     }
 
